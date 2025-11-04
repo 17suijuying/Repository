@@ -123,6 +123,14 @@ body {
 }
 
 /* 头像和名字部分 */
+.couple-header {
+  display: grid;
+  grid-template-columns: 1fr minmax(280px, 2fr) 1fr; /* 左头像 | 中间 | 右头像 */
+  align-items: center;
+  gap: 24px;
+  padding: 24px 16px;
+  border-radius: 16px;
+}
 /* 左右头像列 */
 .person-column {
   text-align: center;
