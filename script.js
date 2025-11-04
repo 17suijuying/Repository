@@ -11,28 +11,51 @@ document.addEventListener('DOMContentLoaded', function() {
     // 表单提交处理
     document.getElementById('rsvpForm').addEventListener('submit', handleFormSubmit);
     
-    // 音乐控制
+    // 初始化音乐控制
+    initMusicControl();
+});
+
+// 初始化音乐控制
+function initMusicControl() {
     const musicToggle = document.getElementById('musicToggle');
     const bgMusic = document.getElementById('bgMusic');
     
+    // 设置音乐参数
+    bgMusic.volume = 0.3;
+    
+    // 音乐切换按钮事件
     musicToggle.addEventListener('click', function() {
         if (bgMusic.paused) {
-            bgMusic.play().catch(e => {
-                console.log('自动播放被阻止，需要用户交互');
+            bgMusic.play().then(() => {
+                musicToggle.textContent = '🔊';
+            }).catch(e => {
+                console.log('音乐播放失败:', e);
             });
-            musicToggle.textContent = '🔊';
         } else {
             bgMusic.pause();
             musicToggle.textContent = '🔇';
         }
     });
-});
+}
 
-// 进入网站
+// 进入网站并播放音乐
 function enterSite() {
     const cover = document.getElementById('cover');
     const mainContent = document.getElementById('mainContent');
+    const bgMusic = document.getElementById('bgMusic');
+    const musicToggle = document.getElementById('musicToggle');
     
+    // 先播放音乐（用户点击按钮触发的，符合自动播放策略）
+    bgMusic.play().then(() => {
+        console.log('音乐开始播放');
+        musicToggle.textContent = '🔊';
+    }).catch(e => {
+        console.log('音乐播放失败:', e);
+        // 如果播放失败，显示提示
+        alert('音乐播放失败，请检查音乐文件路径或浏览器设置');
+    });
+    
+    // 然后显示主要内容
     cover.style.opacity = '0';
     cover.style.transform = 'translateY(-20px)';
     
@@ -40,13 +63,6 @@ function enterSite() {
         cover.style.display = 'none';
         mainContent.classList.remove('hidden');
         mainContent.classList.add('fade-in');
-        
-        // 尝试播放音乐（需要用户交互）
-        const bgMusic = document.getElementById('bgMusic');
-        bgMusic.volume = 0.3;
-        bgMusic.play().catch(e => {
-            console.log('音乐播放需要用户交互');
-        });
     }, 500);
 }
 
@@ -154,8 +170,7 @@ window.addEventListener('scroll', checkScroll);
 function preloadImages() {
     const images = [
         'images/couple-1.jpg',
-        'images/couple-2.jpg',
-        'images/cover-bg.jpg'
+        'images/couple-2.jpg'
     ];
     
     images.forEach(src => {
