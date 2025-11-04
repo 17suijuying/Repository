@@ -110,7 +110,7 @@ body {
   /* 你原来的样式... */
   font-family: 'Dancing Script', cursive;
   font-size: 10em;
-  color: #ADD8E6;                 /* 浅蓝 */
+  color: #2478ff;                 /* 浅蓝 */
   text-shadow: 3px 3px 10px rgba(0,0,0,.3);
   line-height: 1;
   animation: fadeInUp 1.5s ease-out;
