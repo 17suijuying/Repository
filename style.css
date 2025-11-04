@@ -104,29 +104,30 @@ body {
     pointer-events: none;
 }
 
-.title-group {
-    animation: fadeInUp 1s ease-out;
+.love-title {
+    font-family: 'Dancing Script', cursive;
+    font-size: 8em;
+    color: white;
+    text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.3);
+    margin-bottom: 20px;
+    animation: fadeInUp 1.5s ease-out;
 }
 
-.main-title {
-    font-family: 'ZCOOL QingKe HuangYou', cursive;
-    font-size: 4em;
-    color: var(--dark-bg);
-    margin-bottom: 30px;
-    letter-spacing: 3px;
-    text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
+.subtitle {
+    animation: fadeInUp 1.5s ease-out 0.5s both;
 }
 
-.date-badge {
-    display: inline-block;
-    padding: 15px 30px;
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 50px;
-    font-family: 'Ma Shan Zheng', cursive;
+.subtitle p {
     font-size: 1.8em;
+    color: var(--dark-bg);
+    margin-bottom: 10px;
+    font-family: 'Ma Shan Zheng', cursive;
+}
+
+.date {
+    font-size: 1.5em;
     color: var(--secondary-color);
-    border: 3px solid var(--secondary-color);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    font-weight: 600;
 }
 
 .scroll-hint {
@@ -149,213 +150,141 @@ body {
     }
 }
 
-/* 时间线部分 */
-.timeline-section {
+/* 主要内容区域 */
+.content-section {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 80px 20px;
-    position: relative;
+    padding: 40px 20px;
 }
 
-.timeline-section::before {
-    content: '';
-    position: absolute;
-    left: 50%;
-    top: 0;
-    bottom: 0;
-    width: 3px;
-    background: linear-gradient(to bottom, 
-        var(--primary-color) 0%, 
-        var(--secondary-color) 50%, 
-        var(--accent-color) 100%);
-    transform: translateX(-50%);
-    z-index: -1;
-}
-
-.timeline-item {
-    margin: 60px 0;
-    position: relative;
+/* 文本框和图片组合 */
+.text-image-block {
+    display: flex;
+    align-items: center;
+    gap: 50px;
+    margin: 80px 0;
     opacity: 0;
     transform: translateY(30px);
     transition: all 0.8s ease;
 }
 
-.timeline-item.visible {
+.text-image-block.visible {
     opacity: 1;
     transform: translateY(0);
 }
 
-.timeline-item.left {
-    text-align: right;
-    padding-right: 55%;
+.text-image-block.reverse {
+    flex-direction: row-reverse;
 }
 
-.timeline-item.right {
-    text-align: left;
-    padding-left: 55%;
-}
-
-.timeline-year {
-    font-family: 'Ma Shan Zheng', cursive;
-    font-size: 2.5em;
-    color: var(--secondary-color);
-    margin-bottom: 15px;
-    position: relative;
-}
-
-.timeline-item.left .timeline-year::after {
-    content: '';
-    position: absolute;
-    right: -70px;
-    top: 50%;
-    width: 20px;
-    height: 20px;
-    background: var(--primary-color);
-    border: 3px solid white;
-    border-radius: 50%;
-    transform: translateY(-50%);
-    box-shadow: 0 0 10px rgba(110, 203, 245, 0.5);
-}
-
-.timeline-item.right .timeline-year::after {
-    content: '';
-    position: absolute;
-    left: -70px;
-    top: 50%;
-    width: 20px;
-    height: 20px;
-    background: var(--secondary-color);
-    border: 3px solid white;
-    border-radius: 50%;
-    transform: translateY(-50%);
-    box-shadow: 0 0 10px rgba(255, 133, 162, 0.5);
-}
-
-.timeline-content {
+.text-content {
+    flex: 1;
+    padding: 40px;
     background: rgba(255, 255, 255, 0.95);
-    padding: 30px;
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     border-left: 5px solid var(--primary-color);
 }
 
-.timeline-item.right .timeline-content {
+.text-image-block.reverse .text-content {
     border-left: none;
     border-right: 5px solid var(--secondary-color);
 }
 
-.timeline-content h3 {
+.text-content h2 {
     color: var(--dark-bg);
-    margin-bottom: 15px;
-    font-size: 1.4em;
-}
-
-.timeline-content p {
-    margin-bottom: 10px;
-    line-height: 1.8;
-    color: #555;
-}
-
-.highlight-text {
-    color: var(--secondary-color);
-    font-weight: 600;
-    font-size: 1.1em;
-}
-
-/* 记忆部分 */
-.memory-section {
-    display: flex;
-    justify-content: space-between;
-    margin: 80px 0;
-    gap: 30px;
-}
-
-.memory-left, .memory-right {
-    flex: 1;
-}
-
-.memory-card {
-    background: rgba(255, 255, 255, 0.95);
-    padding: 30px;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    height: 100%;
-    border-top: 5px solid var(--primary-color);
-}
-
-.memory-right .memory-card {
-    border-top-color: var(--secondary-color);
-}
-
-.memory-card h4 {
-    color: var(--dark-bg);
-    margin-bottom: 15px;
-    font-size: 1.3em;
-}
-
-/* 异地恋部分 */
-.long-distance-section {
-    margin: 80px 0;
-    text-align: center;
-}
-
-.ld-content {
-    background: rgba(255, 255, 255, 0.95);
-    padding: 50px 40px;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    border: 3px dashed var(--accent-color);
-}
-
-.ld-title {
-    font-size: 1.4em;
-    color: var(--dark-bg);
+    font-size: 1.8em;
     margin-bottom: 20px;
     font-weight: 600;
+}
+
+.text-content p {
+    margin-bottom: 15px;
+    line-height: 1.8;
+    color: #555;
+    font-size: 1.1em;
 }
 
 .highlight {
     color: var(--secondary-color);
     font-weight: 600;
-    font-size: 1.1em;
-    margin: 15px 0;
+    font-size: 1.2em;
 }
 
-/* 工作时期 */
-.work-period-section {
+.sub-highlight {
+    color: var(--primary-color);
+    font-weight: 600;
+    font-size: 1.3em;
+    margin: 20px 0;
+    font-family: 'Ma Shan Zheng', cursive;
+}
+
+.image-content {
+    flex: 1;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.image-content img {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.image-content:hover img {
+    transform: scale(1.05);
+}
+
+/* 记忆部分 */
+.memory-section {
     margin: 80px 0;
-    text-align: center;
 }
 
-.work-content {
+.memory-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.memory-card {
     background: rgba(255, 255, 255, 0.95);
-    padding: 40px;
+    padding: 40px 30px;
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    border-right: 5px solid var(--primary-color);
-    border-left: 5px solid var(--secondary-color);
+    text-align: center;
+    border-top: 5px solid var(--accent-color);
+    transition: transform 0.3s ease;
 }
 
-.time-marker {
-    font-family: 'Ma Shan Zheng', cursive;
-    font-size: 1.8em;
-    color: var(--secondary-color);
-    margin-bottom: 20px;
+.memory-card:hover {
+    transform: translateY(-5px);
 }
 
-/* 爱的承诺 */
+.memory-card h3 {
+    color: var(--dark-bg);
+    margin-bottom: 15px;
+    font-size: 1.4em;
+}
+
+.memory-card p {
+    color: #555;
+    line-height: 1.6;
+}
+
+/* 承诺部分 */
 .promise-section {
     margin: 80px 0;
     text-align: center;
     background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
-    padding: 60px 40px;
+    padding: 80px 40px;
     border-radius: 30px;
     color: white;
 }
 
-.promise-text {
-    font-size: 1.8em;
+.promise-content h2 {
+    font-size: 2.2em;
     margin-bottom: 20px;
     font-weight: 300;
     line-height: 1.4;
@@ -363,35 +292,8 @@ body {
 
 .promise-date {
     font-family: 'Ma Shan Zheng', cursive;
-    font-size: 1.4em;
+    font-size: 1.5em;
     opacity: 0.9;
-}
-
-/* 订婚部分 */
-.engagement-section {
-    margin: 80px 0;
-    text-align: center;
-}
-
-.engagement-content {
-    background: rgba(255, 255, 255, 0.95);
-    padding: 50px 40px;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-}
-
-.engagement-title {
-    font-family: 'Ma Shan Zheng', cursive;
-    font-size: 2em;
-    color: var(--secondary-color);
-    margin: 20px 0;
-}
-
-.romantic-text {
-    color: var(--primary-color);
-    font-weight: 600;
-    font-size: 1.2em;
-    margin-top: 20px;
 }
 
 /* 证书部分 */
@@ -402,17 +304,16 @@ body {
 
 .certificate-content {
     background: rgba(255, 255, 255, 0.95);
-    padding: 40px;
+    padding: 60px 40px;
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    border: 2px solid var(--accent-color);
+    border: 3px solid var(--accent-color);
 }
 
-.certificate-title {
-    font-size: 1.6em;
+.certificate-content h2 {
+    font-size: 2em;
     color: var(--dark-bg);
     margin-bottom: 20px;
-    font-weight: 600;
 }
 
 /* 十年部分 */
@@ -420,48 +321,48 @@ body {
     margin: 80px 0;
     text-align: center;
     background: linear-gradient(135deg, var(--secondary-color) 0%, #ff6b9d 100%);
-    padding: 60px 40px;
+    padding: 80px 40px;
     border-radius: 30px;
     color: white;
 }
 
-.decade-text {
-    font-size: 2em;
+.decade-content h2 {
+    font-size: 2.5em;
     margin-bottom: 20px;
     font-weight: 300;
 }
 
-/* 邀请部分 */
-.invitation-section {
+.decade-content p {
+    font-size: 1.2em;
+    opacity: 0.9;
+}
+
+/* 邀请语部分 */
+.invitation-text-section {
     margin: 80px 0;
     text-align: center;
 }
 
 .invitation-content {
     background: rgba(255, 255, 255, 0.95);
-    padding: 50px 40px;
+    padding: 60px 40px;
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     position: relative;
 }
 
-.invitation-intro {
-    font-size: 1.3em;
+.invitation-content h2 {
+    font-size: 1.8em;
     color: var(--dark-bg);
     margin-bottom: 20px;
     font-style: italic;
 }
 
-.invitation-label {
-    position: absolute;
-    top: -15px;
-    right: 30px;
-    background: var(--primary-color);
-    color: white;
-    padding: 10px 20px;
-    border-radius: 25px;
-    font-family: 'ZCOOL QingKe HuangYou', cursive;
-    font-size: 1.2em;
+.invitation-content p {
+    margin-bottom: 15px;
+    line-height: 1.8;
+    color: #555;
+    font-size: 1.1em;
 }
 
 /* 婚礼详情 */
@@ -469,23 +370,24 @@ body {
     margin: 80px 0;
 }
 
-.details-grid {
+.details-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 30px;
 }
 
-.detail-item {
+.detail-box {
     background: rgba(255, 255, 255, 0.95);
-    padding: 40px 30px;
+    padding: 50px 30px;
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     text-align: center;
     border-top: 5px solid var(--primary-color);
+    transition: transform 0.3s ease;
 }
 
-.detail-item.address-item {
-    border-top-color: var(--secondary-color);
+.detail-box:hover {
+    transform: translateY(-5px);
 }
 
 .detail-icon {
@@ -493,15 +395,16 @@ body {
     margin-bottom: 20px;
 }
 
-.detail-content h4 {
+.detail-box h3 {
     color: var(--dark-bg);
-    margin-bottom: 15px;
-    font-size: 1.4em;
+    margin-bottom: 20px;
+    font-size: 1.5em;
 }
 
-.detail-content p {
-    margin-bottom: 8px;
+.detail-box p {
+    margin-bottom: 10px;
     color: #555;
+    line-height: 1.6;
 }
 
 /* 结束语 */
@@ -509,7 +412,7 @@ body {
     margin: 80px 0;
     text-align: center;
     background: linear-gradient(135deg, var(--dark-bg) 0%, #34495e 100%);
-    padding: 80px 40px;
+    padding: 100px 40px;
     border-radius: 30px;
     color: white;
 }
@@ -521,7 +424,7 @@ body {
 }
 
 .signature {
-    font-size: 1.4em;
+    font-size: 1.5em;
     opacity: 0.9;
 }
 
@@ -580,66 +483,70 @@ body {
 
 /* 响应式设计 */
 @media (max-width: 768px) {
-    .timeline-section::before {
-        left: 30px;
+    .love-title {
+        font-size: 5em;
     }
-
-    .timeline-item.left,
-    .timeline-item.right {
-        text-align: left;
-        padding: 0 0 0 80px;
-    }
-
-    .timeline-item.left .timeline-year::after,
-    .timeline-item.right .timeline-year::after {
-        left: -55px;
-        right: auto;
-    }
-
-    .memory-section {
+    
+    .text-image-block,
+    .text-image-block.reverse {
         flex-direction: column;
+        gap: 30px;
     }
-
-    .main-title {
-        font-size: 2.5em;
+    
+    .text-content {
+        padding: 30px 20px;
     }
-
-    .details-grid {
-        grid-template-columns: 1fr;
+    
+    .text-content h2 {
+        font-size: 1.5em;
     }
-
-    .promise-text,
-    .decade-text {
-        font-size: 1.4em;
+    
+    .promise-content h2,
+    .decade-content h2 {
+        font-size: 1.8em;
     }
-
+    
     .closing-content h2 {
         font-size: 2em;
+    }
+    
+    .details-container {
+        grid-template-columns: 1fr;
     }
 }
 
 @media (max-width: 480px) {
-    .timeline-section {
-        padding: 40px 15px;
-    }
-
-    .timeline-content,
-    .memory-card,
-    .ld-content,
-    .work-content,
-    .engagement-content,
-    .certificate-content,
-    .invitation-content,
-    .detail-item {
+    .content-section {
         padding: 20px 15px;
     }
-
-    .main-title {
-        font-size: 2em;
+    
+    .love-title {
+        font-size: 4em;
     }
-
-    .date-badge {
+    
+    .subtitle p {
+        font-size: 1.4em;
+    }
+    
+    .date {
         font-size: 1.2em;
-        padding: 10px 20px;
+    }
+    
+    .text-image-block {
+        margin: 50px 0;
+    }
+    
+    .memory-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .promise-section,
+    .decade-section,
+    .closing-section {
+        padding: 50px 20px;
+    }
+    
+    .detail-box {
+        padding: 30px 20px;
     }
 }
