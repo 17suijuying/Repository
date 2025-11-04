@@ -170,7 +170,7 @@ body {
 /* 中间名字 + 主图 */
 .center-block {
   text-align: center
-  margin-top: 28px;
+  margin-top: 40px;
 }
 
 /* 粉红色名字（居中） */
@@ -188,7 +188,7 @@ body {
 
 /* 主图在名字下方 */
 .center-image img {
-  width: min(100%, 360px);
+  width: min(100%, 200px);
   height: auto;
   border-radius: 14px;
   box-shadow: 0 10px 30px rgba(0,0,0,.12);
@@ -199,6 +199,7 @@ body {
 .story-text,
 .story-text.left-text,
 .story-text.right-text {
+  font-family: "FangSong", "FangSong_GB2312", "STFangsong", serif;
   background: transparent !important;   /* 关键：透明 */
   border: none !important;
   box-shadow: none !important;
