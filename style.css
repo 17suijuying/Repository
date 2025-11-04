@@ -107,13 +107,19 @@ body {
 
 /* 顶部大花体Love */
 .love-title {
-    font-family: 'Dancing Script', cursive;
-    font-size: 10em;
-    color: light blue;
-    text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.3);
-    margin-bottom: 20px;
-    animation: fadeInUp 1.5s ease-out;
-    line-height: 1;
+  /* 你原来的样式... */
+  font-family: 'Dancing Script', cursive;
+  font-size: 10em;
+  color: #ADD8E6;                 /* 浅蓝 */
+  text-shadow: 3px 3px 10px rgba(0,0,0,.3);
+  line-height: 1;
+  animation: fadeInUp 1.5s ease-out;
+
+  /* 关键：占据中线到右侧 */
+  display: block;
+  width: 60%;                     /* 右半边 */
+  margin-left: auto;              /* 把盒子推到最右，使其覆盖中线~右侧 */
+  text-align: center;             /* 文本在这块区域里居中，可按需改为 left/right */
 }
 
 /* 头像和名字部分 */
