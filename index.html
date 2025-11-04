@@ -1,225 +1,195 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>翁晨博 & 胡琼雅 · 婚礼邀请</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@300;400;600&display=swap" rel="stylesheet">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Love · 翁晨博 & 胡琼雅</title>
+  <meta name="description" content="我们的故事 · Wedding Invitation" />
+
+  <!-- 字体：标题花体 + 正文字体（中文衬线） -->
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-    <!-- 背景音乐 -->
-    <audio id="bgMusic" loop>
-        <source src="music/达尔文.mp3" type="audio/mpeg">
-    </audio>
+  <!-- 顶部大标题 -->
+  <header class="site-hero">
+    <h1 class="logo-script">Love</h1>
+    <div class="hero-meta">
+      <div class="mini-col">
+        <span class="role-label">My Groom</span>
+        <img class="mini-avatar" src="images/groom-avatar.jpg" alt="新郎" onerror="this.src='images/placeholder-avatar.svg'">
+      </div>
+      <div class="mini-col">
+        <span class="role-label">My Bride</span>
+        <img class="mini-avatar" src="images/bride-avatar.jpg" alt="新娘" onerror="this.src='images/placeholder-avatar.svg'">
+      </div>
+    </div>
+  </header>
 
-    <!-- 音乐控制按钮 -->
-    <button id="musicToggle" class="music-btn">🎵</button>
+  <!-- 头部模块：左右头像 + 中间名字 + 大图 -->
+  <section class="intro container">
+    <div class="intro-grid">
+      <!-- 左侧新郎 -->
+      <div class="person">
+        <div class="avatar-frame">
+          <img class="avatar" src="images/groom-avatar.jpg" alt="新郎翁晨博" onerror="this.src='images/placeholder-avatar.svg'">
+        </div>
+        <div class="person-name">翁晨博</div>
+      </div>
 
-    <!-- 加载页面 -->
-    <div id="loading" class="loading">
-        <div class="ring"></div>
-        <p>正在加载我们的幸福时刻...</p>
+      <!-- 中间名字与主图 -->
+      <div class="center-block">
+        <h2 class="couple-name">
+          翁晨博 <span class="amp">&amp;</span> 胡琼雅
+        </h2>
+        <div class="center-image">
+          <img src="images/couple-main.jpg" alt="我们的爱情" onerror="this.src='images/placeholder-img-3x4.svg'">
+        </div>
+      </div>
+
+      <!-- 右侧新娘 -->
+      <div class="person">
+        <div class="avatar-frame">
+          <img class="avatar" src="images/bride-avatar.jpg" alt="新娘胡琼雅" onerror="this.src='images/placeholder-avatar.svg'">
+        </div>
+        <div class="person-name">胡琼雅</div>
+      </div>
     </div>
 
-    <div class="container">
-        <!-- 封面 -->
-        <section class="cover-section">
-            <div class="cover-content">
-                <!-- 顶部大花体Love -->
-                <h1 class="love-title">Love</h1>
-                
-                <!-- 头像和名字部分 -->
-                <div class="couple-header">
-                  <!-- 左侧新郎 -->
-                  <div class="person-column groom-column">
-                    <p class="role-label">My Groom</p>
-                    <div class="avatar-frame">
-                      <img src="images/groom-avatar.jpg" alt="新郎翁晨博" class="avatar"
-                           onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjhjZmRlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzY2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPuWkqeWliOWkp+WwjzwvdGV4dD48L3N2Zz4='">
-                    </div>
-                    <h2 class="person-name">翁晨博</h2>
-                    <div class="story-text left-text">
-                      <p>我们相遇在2018年的夏末</p>
-                      <p>一路走来的酸甜苦辣组成了我们的故事</p>
-                    </div>
-                  </div>
+    <!-- 两侧故事文字（无背景，仅浅蓝文字） -->
+    <div class="story-pair">
+      <p class="story-text">我们相遇在 2018 年的夏末</p>
+      <p class="story-text">一路走来的酸甜苦辣组成了我们的故事</p>
+      <p class="story-text">如今我们决定以夫妻之名续写未来的人生</p>
+    </div>
+  </section>
 
-                  <!-- 中间名字 + 主图 -->
-                  <div class="center-block">
-                    <h1 class="couple-name">翁晨博<span class="amp">&amp;</span>胡琼雅</h1>
-                    <div class="center-image">
-                      <img src="images/couple-main.jpg" alt="我们的爱情"
-                           onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjUwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjhmY2ZlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzY2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPui/meS4quWkp+Wwj+Wls+WEvzwvdGV4dD48L3N2Zz4='">
-                    </div>
-                  </div>
+  <div class="section-divider"></div>
 
-                  <!-- 右侧新娘 -->
-                  <div class="person-column bride-column">
-                    <p class="role-label">My Bride</p>
-                    <div class="avatar-frame">
-                      <img src="images/bride-avatar.jpg" alt="新娘胡琼雅" class="avatar"
-                           onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjhjZmRlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzY2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPuiKseiKsTwvdGV4dD48L3N2Zz4='">
-                    </div>
-                    <h2 class="person-name">胡琼雅</h2>
-                    <div class="story-text right-text">
-                      <p class="highlight">如今我们决定以夫妻之名续写未来的人生</p>
-                  </div>
-                </div>
-
-                
-                <!-- 日期 -->
-                <div class="wedding-date">
-                    <p>2025.12.10</p>
-                </div>
-            </div>
-            <div class="scroll-hint">↓</div>
-        </section>
-
-        <!-- 主要内容 - 文本框和图片组合 -->
-        <main class="content-section">
-            <!-- 故事开始 -->
-            <section class="text-image-block reverse">
-                <div class="text-content">
-                    <h2>故事开始在2015年的夏天</h2>
-                    <p>高二的我们换到了同一个班级</p>
-                    <p>同学，是我们之间的第一个身份</p>
-                </div>
-                <div class="image-content">
-                    <img src="images/class-2015.jpg" alt="2015年同班" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZmVmMWZmIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzY2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPjIwMTXlubTlpKnlpoflr7nkuIo8L3RleHQ+PC9zdmc+'">
-                </div>
-            </section>
-
-            <!-- 印象部分 -->
-            <section class="memory-section">
-                <div class="memory-cards">
-                    <div class="memory-card">
-                        <h3>印象里 他好像有强迫症</h3>
-                        <p>作业工工整整</p>
-                    </div>
-                    <div class="memory-card">
-                        <h3>印象里 她勤奋好学</h3>
-                        <p>但眼神中又透露着清澈的"天真"</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 异地恋 -->
-            <section class="text-image-block">
-                <div class="text-content">
-                    <h2>和他在一起的时光总是快乐的</h2>
-                    <p>起初一人在杭州，一人在上海</p>
-                    <p>从小和山到野马浜</p>
-                    <p class="highlight">厚厚的车票连结起两颗炽热的心</p>
-                    <p>在大大的城市里留下了两人的小小足迹</p>
-                </div>
-                <div class="image-content">
-                    <img src="images/train-tickets.jpg" alt="车票记忆" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjhmY2ZlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzY2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPuaWsOmXu+WkqeWmguS9kzwvdGV4dD48L3N2Zz4='">
-                </div>
-            </section>
-
-            <!-- 工作时期 -->
-            <section class="text-image-block reverse">
-                <div class="text-content">
-                    <h2>后来</h2>
-                    <p>一人在杭州念书</p>
-                    <p>一人回温州工作</p>
-                    <p>在忙碌的生活中</p>
-                    <p>每个周末的短暂相逢承载了</p>
-                    <p class="highlight">简单的幸福与对未来的承诺</p>
-                </div>
-                <div class="image-content">
-                    <img src="images/weekend-meet.jpg" alt="周末相聚" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZmZlZmZmIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzY2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPuaXpeWkqeaTjeS9nDwvdGV4dD48L3N2Zz4='">
-                </div>
-            </section>
-
-            <!-- 爱的承诺 -->
-            <section class="promise-section">
-                <div class="promise-content">
-                    <h2>想把全部的爱绘你，你是我的唯一</h2>
-                    <div class="promise-date">2025年2月15日</div>
-                </div>
-            </section>
-
-            <!-- 订婚 -->
-            <section class="text-image-block">
-                <div class="text-content">
-                    <h2>我们在双方家人的见证下缔结婚约</h2>
-                    <p class="sub-highlight">所谓订婚</p>
-                    <p>是一生相知相守的约定</p>
-                    <p>愿我们成为彼此余生的依靠</p>
-                    <p class="highlight">往后漫长岁月，余生都是你</p>
-                </div>
-                <div class="image-content">
-                    <img src="images/engagement.jpg" alt="订婚时刻" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjhjZmRlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzY2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPuaTjeS+nTwvdGV4dD48L3N2Zz4='">
-                </div>
-            </section>
-
-            <!-- 从学生证到结婚证 -->
-            <section class="certificate-section">
-                <div class="certificate-content">
-                    <h2>从"学生证"到"结婚证"</h2>
-                    <p>那个炙热的夏天在今岁初冬迎来续集</p>
-                    <p class="highlight">终于</p>
-                    <p>在2025年12月10日我们决定举办婚礼</p>
-                </div>
-            </section>
-
-            <!-- 十年爱情 -->
-            <section class="decade-section">
-                <div class="decade-content">
-                    <h2>16岁认识你，26岁嫁给你</h2>
-                    <p>很幸运可以与你携手度过一个又一个十年</p>
-                </div>
-            </section>
-
-            <!-- 邀请语 -->
-            <section class="invitation-text-section">
-                <div class="invitation-content">
-                    <h2>此刻我正在温柔的晨光里</h2>
-                    <p>写着这些文字，这样的好天气</p>
-                    <p>人的一生有三万多天</p>
-                    <p class="highlight">很荣幸这一天</p>
-                    <p>您能专程为我们而来</p>
-                    <p>与我们共同分享、见证这美好时刻</p>
-                </div>
-            </section>
-
-            <!-- 婚礼详情 -->
-            <section class="wedding-details-section">
-                <div class="details-container">
-                    <div class="detail-box">
-                        <div class="detail-icon">⏰</div>
-                        <h3>时间</h3>
-                        <p>2025年12月10日 星期三</p>
-                        <p>农历十月廿一 18:00</p>
-                    </div>
-                    <div class="detail-box">
-                        <div class="detail-icon">📍</div>
-                        <h3>地点</h3>
-                        <p>温州城中希尔顿酒店</p>
-                        <p>一楼天长地久AB厅</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 结束语 -->
-            <section class="closing-section">
-                <div class="closing-content">
-                    <h2>我们婚礼见!</h2>
-                    <div class="signature">
-                        <p>翁晨博 & 胡琼雅</p>
-                    </div>
-                </div>
-            </section>
-        </main>
+  <!-- 轻盈三图排版（示意你的小图穿插） -->
+  <section class="gallery container">
+    <div class="section-title">
+      <img src="images/flower-badge.svg" alt="" class="section-icon" onerror="this.style.display='none'">
+      <h3 class="script-heading">Moments</h3>
     </div>
 
-    <!-- 装饰元素 -->
-    <div class="decoration-heart">❤</div>
-    <div class="decoration-star">✦</div>
-    <div class="decoration-flower">❀</div>
+    <div class="masonry">
+      <img src="images/pic-01.jpg" alt="" onerror="this.src='images/placeholder-img-3x4.svg'">
+      <img src="images/pic-02.jpg" alt="" onerror="this.src='images/placeholder-img-3x4.svg'">
+      <img src="images/pic-03.jpg" alt="" onerror="this.src='images/placeholder-img-3x4.svg'">
+    </div>
 
-    <script src="script.js"></script>
+    <article class="story-block">
+      <h4 class="story-heading">我们的故事</h4>
+      <p class="story-text paragraph">
+        从青涩到成熟，从憧憬到笃定。风景在变，心意不变；我们把点滴的温柔，拼成彼此的日常。
+      </p>
+    </article>
+
+    <div class="masonry">
+      <img src="images/pic-04.jpg" alt="" onerror="this.src='images/placeholder-img-3x4.svg'">
+      <img src="images/pic-05.jpg" alt="" onerror="this.src='images/placeholder-img-3x4.svg'">
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- 结婚信息区 -->
+  <section class="wedding container">
+    <div class="section-title">
+      <img src="images/flower-badge.svg" alt="" class="section-icon" onerror="this.style.display='none'">
+      <h3 class="script-heading">Wedding</h3>
+    </div>
+
+    <div class="wedding-cards">
+      <div class="card">
+        <h5>时间</h5>
+        <p class="muted">2025 年 12 月 20 日（周六）</p>
+        <p>上午 10:30 迎宾 · 11:18 仪式 · 12:00 宴席</p>
+      </div>
+      <div class="card">
+        <h5>地点</h5>
+        <p class="muted">幸福酒店 · 三楼宴会厅</p>
+        <p>杭州市 西湖区 桃源路 18 号</p>
+        <a class="btn-link" href="#" onclick="openMap(event)">打开地图</a>
+      </div>
+    </div>
+
+    <!-- 两张竖图（呼应你的示例） -->
+    <div class="masonry">
+      <img src="images/pic-06.jpg" alt="" onerror="this.src='images/placeholder-img-3x4.svg'">
+      <img src="images/pic-07.jpg" alt="" onerror="this.src='images/placeholder-img-3x4.svg'">
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- 邀请 / 日历 / 倒计时 -->
+  <section class="invite container">
+    <div class="section-title small-gap">
+      <h3 class="script-heading">Invitation</h3>
+    </div>
+
+    <p class="invite-words">
+      诚挚邀请您见证我们的誓言与欢喜。期待在这一天，与您共同举杯、共享祝福。
+    </p>
+
+    <div class="calendar-wrap">
+      <div class="calendar-head">
+        <div class="cal-meta">
+          <span id="cal-year">2025</span> 年
+          <span id="cal-month">12</span> 月
+        </div>
+        <div class="countdown" id="countdown">倒计时...</div>
+      </div>
+      <div id="calendar" class="calendar"></div>
+    </div>
+
+    <div class="cta-area">
+      <a class="btn-primary" href="#rsvp" onclick="scrollToRSVP(event)">我会到场</a>
+    </div>
+
+    <div class="hero-photo">
+      <img src="images/pic-08.jpg" alt="" onerror="this.src='images/placeholder-img-3x4.svg'">
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- RSVP 表单（JS 仅示例反馈，不做后台） -->
+  <section id="rsvp" class="rsvp container">
+    <div class="section-title small-gap">
+      <h3 class="script-heading">RSVP</h3>
+    </div>
+
+    <form class="rsvp-form" onsubmit="return handleRSVP(event)">
+      <label>
+        姓名
+        <input type="text" name="name" required placeholder="请输入您的姓名">
+      </label>
+      <label>
+        出席人数
+        <input type="number" name="count" min="1" max="10" value="1" required>
+      </label>
+      <label>
+        联系方式
+        <input type="tel" name="phone" placeholder="手机号码">
+      </label>
+      <label>
+        备注
+        <textarea name="note" rows="3" placeholder="忌口/座位需求等"></textarea>
+      </label>
+      <button class="btn-primary" type="submit">提交</button>
+      <p id="rsvp-result" class="form-result" aria-live="polite"></p>
+    </form>
+  </section>
+
+  <footer class="site-footer">
+    <p>感谢您的祝福与见证 · 爱与喜悦常在</p>
+  </footer>
+
+  <script src="script.js"></script>
 </body>
 </html>
