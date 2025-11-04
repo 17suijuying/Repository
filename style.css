@@ -139,7 +139,8 @@ body {
 /* 角色小标签：淡蓝点缀 */
 .role-label {
   font-family: 'Dancing Script', cursive;
-  font-size: 0.9rem;
+  font-size: 1.2rem;
+  font-weight: 600
   color: #24bdff; /* 浅蓝 */
   margin-bottom: 8px;
   letter-spacing: 0.5px;
@@ -147,8 +148,8 @@ body {
 
 /* 头像样式 */
 .avatar-frame {
-  width: 200px;
-  height: 200px;
+  width: 170px;
+  height: 170px;
   margin: 0 auto 8px;
   border-radius: 50%;
   overflow: hidden;
@@ -168,13 +169,14 @@ body {
 
 /* 中间名字 + 主图 */
 .center-block {
-  text-align: center;
+  text-align: center
+  margin-top: 28px;
 }
 
 /* 粉红色名字（居中） */
 .couple-name {
   font-family: 'Dancing Script', cursive;
-  font-size: clamp(2rem, 6vw, 4rem);
+  font-size: clamp(1.6rem, 4.5vw, 3rem);
   color: #ff4da6;             /* 粉红色标题 */
   margin: 0 0 12px;
   line-height: 1.1;
@@ -186,7 +188,7 @@ body {
 
 /* 主图在名字下方 */
 .center-image img {
-  width: min(100%, 520px);
+  width: min(100%, 360px);
   height: auto;
   border-radius: 14px;
   box-shadow: 0 10px 30px rgba(0,0,0,.12);
@@ -224,17 +226,12 @@ body {
 
 /* 响应式微调：窄屏下堆叠，顺序为 左头像 -> 中间块 -> 右头像 */
 @media (max-width: 768px) {
-  .couple-header {
-    grid-template-columns: 1fr;
-  }
-  .person-column,
-  .center-block {
-    order: initial;
-  }
-  .avatar-frame {
-    width: 160px;
-    height: 160px;
-  }
+  .center-block { margin-top: 20px; }
+  .couple-name { font-size: clamp(1.4rem, 6vw, 2.4rem); }
+  .center-image img { width: min(100%, 340px); }
+  .role-label { font-size: 1.1rem; }
+  .avatar-frame { width: 140px; height: 140px; }
+}
 }
 
 
