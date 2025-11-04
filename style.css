@@ -123,17 +123,6 @@ body {
 }
 
 /* 头像和名字部分 */
-/* 整段背景更浅的蓝色点缀，可按需调整或去掉 */
-.couple-header {
-  display: grid;
-  grid-template-columns: 1fr minmax(280px, 2fr) 1fr; /* 左头像 | 中间 | 右头像 */
-  align-items: center;
-  gap: 24px;
-  padding: 24px 16px;
-  background: #EAF6FF; /* 更浅的蓝色背景 */
-  border-radius: 16px;
-}
-
 /* 左右头像列 */
 .person-column {
   text-align: center;
@@ -141,8 +130,9 @@ body {
 
 /* 角色小标签：淡蓝点缀 */
 .role-label {
+  font-family: 'Dancing Script', cursive;
   font-size: 0.9rem;
-  color: #5AA9E6; /* 浅蓝 */
+  color: #24bdff; /* 浅蓝 */
   margin-bottom: 8px;
   letter-spacing: 0.5px;
 }
