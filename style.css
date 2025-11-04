@@ -193,6 +193,35 @@ body {
   display: inline-block;
 }
 
+/* 去背景、去描边与阴影、恢复自然排版 */
+.story-text,
+.story-text.left-text,
+.story-text.right-text {
+  background: transparent !important;   /* 关键：透明 */
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;                /* 如果原来有内边距就清掉 */
+  color: #24bdff;                       /* 更浅的蓝色文字 */
+  margin-top: 8px;                      /* 适度留白 */
+  line-height: 1.6;
+}
+
+/* 如果 .highlight 之前有背景色，顺便清理 */
+.story-text .highlight {
+  background: transparent !important;
+  color: #24bdff;        /* 与普通文字保持同一浅蓝 */
+  padding: 0 !important;
+  box-shadow: none !important;
+  border: 0 !important;
+}
+
+/* 可选：让两侧文本对齐方式更好看 */
+.left-text p,
+.right-text p { 
+  text-align: center;    /* 你也可以改成 left/right */
+  margin: 0.25em 0;
+}
+
 /* 响应式微调：窄屏下堆叠，顺序为 左头像 -> 中间块 -> 右头像 */
 @media (max-width: 768px) {
   .couple-header {
