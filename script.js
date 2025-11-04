@@ -1,111 +1,109 @@
-// 初始化函数
-document.addEventListener('DOMContentLoaded', function() {
-    // 模拟加载
-    setTimeout(() => {
-        document.getElementById('loading').style.display = 'none';
-    }, 2000);
+// === 可配置：婚礼日期（用于日历与倒计时） ===
+const WEDDING_DATE = new Date(2025, 11, 20); // 注意：月份从 0 开始，11=12月
 
-    // 初始化音乐控制
-    initMusicControl();
-    
-    // 初始化滚动动画
-    initScrollAnimation();
+document.addEventListener('DOMContentLoaded', () => {
+  renderCalendar(WEDDING_DATE);
+  startCountdown(WEDDING_DATE);
 });
 
-// 初始化音乐控制
-function initMusicControl() {
-    const musicToggle = document.getElementById('musicToggle');
-    const bgMusic = document.getElementById('bgMusic');
-    
-    // 设置音乐参数
-    bgMusic.volume = 0.3;
-    
-    // 音乐切换按钮事件
-    musicToggle.addEventListener('click', function() {
-        if (bgMusic.paused) {
-            bgMusic.play().then(() => {
-                musicToggle.textContent = '🔊';
-            }).catch(e => {
-                console.log('音乐播放失败:', e);
-            });
-        } else {
-            bgMusic.pause();
-            musicToggle.textContent = '🔇';
-        }
-    });
-    
-    // 点击封面时尝试播放音乐
-    document.querySelector('.cover-section').addEventListener('click', function() {
-        if (bgMusic.paused) {
-            bgMusic.play().then(() => {
-                musicToggle.textContent = '🔊';
-            }).catch(e => {
-                console.log('音乐播放失败:', e);
-            });
-        }
-    });
+// 渲染日历，仅展示婚礼所在月份
+function renderCalendar(date){
+  const y = date.getFullYear();
+  const m = date.getMonth(); // 0-11
+  const first = new Date(y, m, 1);
+  const last = new Date(y, m + 1, 0);
+  const $cal = document.getElementById('calendar');
+  const $year = document.getElementById('cal-year');
+  const $month = document.getElementById('cal-month');
+
+  if($year) $year.textContent = y;
+  if($month) $month.textContent = m + 1;
+
+  const weekdayNames = ['日','一','二','三','四','五','六'];
+  $cal.innerHTML = '';
+
+  // 星期标题
+  weekdayNames.forEach(w => {
+    const wd = document.createElement('div');
+    wd.className = 'wd';
+    wd.textContent = w;
+    $cal.appendChild(wd);
+  });
+
+  // 空白补位
+  for(let i = 0; i < first.getDay(); i++){
+    const blank = document.createElement('div');
+    $cal.appendChild(blank);
+  }
+
+  // 日期
+  for(let d = 1; d <= last.getDate(); d++){
+    const cell = document.createElement('div');
+    cell.className = 'day';
+    cell.textContent = d;
+
+    const today = new Date();
+    if (y === today.getFullYear() && m === today.getMonth() && d === today.getDate()){
+      cell.classList.add('today');
+    }
+    if (d === date.getDate()){
+      cell.classList.add('event');
+      cell.title = '婚礼当天';
+    }
+    $cal.appendChild(cell);
+  }
 }
 
-// 初始化滚动动画
-function initScrollAnimation() {
-    const textBlocks = document.querySelectorAll('.text-image-block');
-    
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-            }
-        });
-    }, {
-        threshold: 0.3,
-        rootMargin: '0px 0px -50px 0px'
-    });
-    
-    textBlocks.forEach(block => {
-        observer.observe(block);
-    });
+// 倒计时
+function startCountdown(targetDate){
+  const el = document.getElementById('countdown');
+  if(!el) return;
+
+  function tick(){
+    const now = new Date();
+    const diff = targetDate - now;
+
+    if (diff <= 0){
+      el.textContent = '今天见！';
+      return;
+    }
+    const days = Math.floor(diff / (1000*60*60*24));
+    const hours = Math.floor(diff / (1000*60*60)) % 24;
+    const mins = Math.floor(diff / (1000*60)) % 60;
+
+    el.textContent = `还有 ${days} 天 ${hours} 小时 ${mins} 分`;
+    requestAnimationFrame(() => setTimeout(tick, 1000));
+  }
+  tick();
 }
 
-// 添加一些交互效果
-document.addEventListener('DOMContentLoaded', function() {
-    // 为所有卡片添加悬停效果
-    const cards = document.querySelectorAll('.text-content, .memory-card, .detail-box');
-    
-    cards.forEach(card => {
-        card.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-5px)';
-            this.style.boxShadow = '0 15px 40px rgba(0, 0, 0, 0.15)';
-        });
-        
-        card.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0)';
-            this.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.1)';
-        });
-    });
-    
-    // 点击封面滚动到内容
-    document.querySelector('.cover-section').addEventListener('click', function() {
-        window.scrollTo({
-            top: window.innerHeight,
-            behavior: 'smooth'
-        });
-    });
-    
-    // 添加图片懒加载
-    const images = document.querySelectorAll('img');
-    const imageObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const img = entry.target;
-                img.src = img.dataset.src;
-                imageObserver.unobserve(img);
-            }
-        });
-    });
-    
-    images.forEach(img => {
-        if (img.dataset.src) {
-            imageObserver.observe(img);
-        }
-    });
-});
+// 地图示例（你可以换成真实地图链接）
+function openMap(e){
+  e.preventDefault();
+  const query = encodeURIComponent('幸福酒店 三楼宴会厅 杭州市 西湖区 桃源路 18 号');
+  window.open(`https://www.google.com/maps/search/?api=1&query=${query}`, '_blank');
+}
+
+// RSVP 简单前端反馈
+function handleRSVP(e){
+  e.preventDefault();
+  const form = e.target;
+  const name = form.name.value.trim();
+  const count = form.count.value;
+  const result = document.getElementById('rsvp-result');
+
+  if(!name){
+    result.textContent = '请填写姓名噢～';
+    return false;
+  }
+
+  result.textContent = `收到啦，${name}（${count}人）。期待与你相见！`;
+  form.reset();
+  return false;
+}
+
+// 平滑滚动
+function scrollToRSVP(e){
+  e.preventDefault();
+  document.querySelector('#rsvp').scrollIntoView({ behavior:'smooth', block:'start' });
+}
