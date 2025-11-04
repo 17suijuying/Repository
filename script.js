@@ -33,11 +33,22 @@ function initMusicControl() {
             musicToggle.textContent = '🔇';
         }
     });
+    
+    // 点击封面时尝试播放音乐
+    document.querySelector('.cover-section').addEventListener('click', function() {
+        if (bgMusic.paused) {
+            bgMusic.play().then(() => {
+                musicToggle.textContent = '🔊';
+            }).catch(e => {
+                console.log('音乐播放失败:', e);
+            });
+        }
+    });
 }
 
 // 初始化滚动动画
 function initScrollAnimation() {
-    const timelineItems = document.querySelectorAll('.timeline-item');
+    const textBlocks = document.querySelectorAll('.text-image-block');
     
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -50,30 +61,15 @@ function initScrollAnimation() {
         rootMargin: '0px 0px -50px 0px'
     });
     
-    timelineItems.forEach(item => {
-        observer.observe(item);
-    });
-    
-    // 页面滚动时自动播放音乐
-    let musicPlayed = false;
-    
-    window.addEventListener('scroll', function() {
-        if (!musicPlayed && window.scrollY > 100) {
-            const bgMusic = document.getElementById('bgMusic');
-            bgMusic.play().then(() => {
-                document.getElementById('musicToggle').textContent = '🔊';
-                musicPlayed = true;
-            }).catch(e => {
-                console.log('自动播放失败:', e);
-            });
-        }
+    textBlocks.forEach(block => {
+        observer.observe(block);
     });
 }
 
 // 添加一些交互效果
 document.addEventListener('DOMContentLoaded', function() {
     // 为所有卡片添加悬停效果
-    const cards = document.querySelectorAll('.timeline-content, .memory-card, .detail-item');
+    const cards = document.querySelectorAll('.text-content, .memory-card, .detail-box');
     
     cards.forEach(card => {
         card.addEventListener('mouseenter', function() {
@@ -93,5 +89,23 @@ document.addEventListener('DOMContentLoaded', function() {
             top: window.innerHeight,
             behavior: 'smooth'
         });
+    });
+    
+    // 添加图片懒加载
+    const images = document.querySelectorAll('img');
+    const imageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                img.src = img.dataset.src;
+                imageObserver.unobserve(img);
+            }
+        });
+    });
+    
+    images.forEach(img => {
+        if (img.dataset.src) {
+            imageObserver.observe(img);
+        }
     });
 });
