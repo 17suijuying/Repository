@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我们的婚礼邀请</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- 背景音乐 -->
+    <audio id="bgMusic" loop>
+        <source src="music/wedding-music.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- 音乐控制按钮 -->
+    <button id="musicToggle" class="music-btn">🎵</button>
+
+    <!-- 加载页面 -->
+    <div id="loading" class="loading">
+        <div class="ring"></div>
+        <p>正在加载我们的幸福时刻...</p>
+    </div>
+
+    <!-- 主容器 -->
+    <div class="container">
+        <!-- 封面部分 -->
+        <section id="cover" class="cover-section">
+            <div class="cover-content">
+                <h1 class="couple-names">张伟 & 李美</h1>
+                <p class="wedding-date">2024年10月1日</p>
+                <p class="invitation-text">诚挚邀请您参加我们的婚礼</p>
+                <button class="enter-btn" onclick="enterSite()">开启邀请函</button>
+            </div>
+        </section>
+
+        <!-- 主要内容 -->
+        <main id="mainContent" class="main-content hidden">
+            <!-- 新人介绍 -->
+            <section class="section couple-intro">
+                <h2>我们结婚啦</h2>
+                <div class="couple-info">
+                    <div class="groom">
+                        <h3>新郎 · 张伟</h3>
+                        <p>遇见你，是我今生最美的意外</p>
+                    </div>
+                    <div class="heart">❤</div>
+                    <div class="bride">
+                        <h3>新娘 · 李美</h3>
+                        <p>愿与你，执子之手，与子偕老</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 照片展示 -->
+            <section class="section photo-gallery">
+                <h2>我们的幸福时光</h2>
+                <div class="gallery">
+                    <div class="photo-item">
+                        <img src="images/couple-1.jpg" alt="我们的故事" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjhjZmRlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzY2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPua1i+ivleWbvuWDjzwvdGV4dD48L3N2Zz4='">
+                    </div>
+                    <div class="photo-item">
+                        <img src="images/couple-2.jpg" alt="甜蜜时刻" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjhjZmRlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzY2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPua1i+ivleWbvuWDjzwvdGV4dD48L3N2Zz4='">
+                    </div>
+                    <!-- 可以添加更多图片 -->
+                </div>
+            </section>
+
+            <!-- 婚礼详情 -->
+            <section class="section wedding-details">
+                <h2>婚礼详情</h2>
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <h3>💒 典礼时间</h3>
+                        <p>2024年10月1日 上午11:08</p>
+                    </div>
+                    <div class="detail-item">
+                        <h3>📍 典礼地点</h3>
+                        <p>幸福大酒店 · 玫瑰厅</p>
+                        <p>北京市朝阳区幸福路123号</p>
+                    </div>
+                    <div class="detail-item">
+                        <h3>🎉 宴席时间</h3>
+                        <p>2024年10月1日 中午12:00</p>
+                    </div>
+                    <div class="detail-item">
+                        <h3>📞 联系方式</h3>
+                        <p>新郎：138-xxxx-xxxx</p>
+                        <p>新娘：139-xxxx-xxxx</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 宾客表单 -->
+            <section class="section guest-form">
+                <h2>期待您的到来</h2>
+                <form id="rsvpForm" class="rsvp-form">
+                    <div class="form-group">
+                        <label for="guestName">您的姓名</label>
+                        <input type="text" id="guestName" name="guestName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="guestCount">参加人数</label>
+                        <select id="guestCount" name="guestCount" required>
+                            <option value="">请选择</option>
+                            <option value="1">1人</option>
+                            <option value="2">2人</option>
+                            <option value="3">3人</option>
+                            <option value="4">4人及以上</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="guestMessage">祝福留言</label>
+                        <textarea id="guestMessage" name="guestMessage" rows="4" placeholder="写下您的祝福..."></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">确认参加</button>
+                </form>
+            </section>
+
+            <!-- 留言墙 -->
+            <section class="section message-wall">
+                <h2>祝福留言墙</h2>
+                <div id="messagesContainer" class="messages-container">
+                    <!-- 留言将通过JavaScript动态添加 -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
