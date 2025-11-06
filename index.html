@@ -1,13 +1,21 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
+  <meta charset="utf-8">
+  <title>图片示例</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-  img.responsive { max-width: 100%; height: auto; display: block; }
+    img.responsive { max-width: 100%; height: auto; display: block; }
   </style>
-  <img class="responsive" src="images/首图.jpg" alt="首图">
 </head>
-
 <body>
-  
+  <h1>插入图片示例</h1>
+  <img
+    class="responsive"
+    src="images/首图.jpg"
+    alt="首图"
+    width="1556" height="1168"     <!-- 建议填上原始像素，能减少布局抖动 -->
+    loading="lazy"                <!-- 非首屏图片可懒加载 -->
+    decoding="async">             <!-- 异步解码提升体验 -->
 </body>
 </html>
