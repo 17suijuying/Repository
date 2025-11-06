@@ -48,7 +48,7 @@
       object-fit: contain;
     }
 
-    /* 文字区（桌面端）：更小固定字号+深灰色 */
+    /* 文字区（桌面端）：小字号 + 深灰色 */
     .kaipian {
       position: static !important;
       clear: both;
@@ -58,18 +58,18 @@
       text-align: center;
       line-height: 1.7;
       font-size: 13px;          /* 桌面端小字号 */
-      color: var(--text-color);  /* 深灰 */
+      color: var(--text-color);
     }
     .kaipian p { margin: 0.5em 0; }
 
-    /* 移动端调小字号，并限制图片稍低一点高度 */
+    /* 移动端：更小字号，并把图片高度再保守一点 */
     @media (max-width: 768px) {
       .hero-img { max-height: 45svh; }
-      /* 比之前更小：最小 11px，上限 13px，随屏自适应 */
+      /* 再缩小：最小 11px，最大 13px，自适应 */
       .kaipian { font-size: clamp(10px, 2.0vw, 12px); }
     }
 
-    /* 背景音乐按钮（自动播放受阻时可见） */
+    /* 背景音乐按钮（自动播放受阻或用于手动控制时可见） */
     #music-toggle {
       position: fixed;
       right: 12px;
@@ -103,8 +103,8 @@
     </section>
   </main>
 
-  <!-- 背景音乐：尽力自动播放，若失败显示按钮 -->
-  <audio id="bgm" src="audio/bgm.mp3" preload="auto" loop autoplay></audio>
+  <!-- 背景音乐：预加载与循环；是否能自动播取决于策略 -->
+  <audio id="bgm" src="audio/bgm.mp3" preload="auto" loop></audio>
   <button id="music-toggle" hidden aria-label="播放或暂停音乐">▶ 音乐</button>
 
   <script>
@@ -112,31 +112,82 @@
       const audio = document.getElementById('bgm');
       const btn   = document.getElementById('music-toggle');
 
+      // —— 工具方法 ——
       function syncBtn() {
         btn.textContent = audio.paused ? '▶ 音乐' : '⏸ 音乐';
       }
+      function showBtn() {
+        if (btn.hidden) btn.hidden = false;
+        syncBtn();
+      }
 
-      async function tryAutoplay() {
+      // —— 自动播放尝试（不依赖用户手势）——
+      async function tryAutoplaySilently() {
         try {
+          // 一些浏览器需要 muted 才能自动播放；我们先静音启动，后续再解锁
+          audio.muted = true;
           await audio.play();
-          btn.hidden = false;
-          syncBtn();
+          showBtn();
         } catch (e) {
-          btn.hidden = false;
-          syncBtn();
+          // 直接失败也没关系，等待用户交互再播
+          showBtn();
         }
       }
 
-      document.addEventListener('DOMContentLoaded', tryAutoplay);
-      document.addEventListener('visibilitychange', () => {
-        if (!document.hidden && audio.paused) tryAutoplay();
-      });
+      // —— 通过“用户交互”解锁：包含滑动/滚轮/触摸/点击/键盘 —— 
+      let unlocked = false;
+      const unlockEventsWin = ['scroll', 'wheel'];
+      const unlockEventsDoc = ['pointerdown','touchstart','touchend','click','keydown'];
 
+      async function unlockAndPlay() {
+        if (unlocked) return;
+        unlocked = true;
+
+        // 尝试取消静音并播放（在同一事件调用栈内完成，满足策略）
+        try {
+          audio.muted = false;
+          if (audio.paused) await audio.play();
+        } catch (e) {
+          // 某些情况下仍可能失败，保留按钮供用户点
+        } finally {
+          removeUnlockers();
+          showBtn();
+        }
+      }
+
+      function addUnlockers() {
+        unlockEventsWin.forEach(t => window.addEventListener(t, unlockAndPlay, { passive: true }));
+        unlockEventsDoc.forEach(t => document.addEventListener(t, unlockAndPlay, { passive: true }));
+      }
+      function removeUnlockers() {
+        unlockEventsWin.forEach(t => window.removeEventListener(t, unlockAndPlay));
+        unlockEventsDoc.forEach(t => document.removeEventListener(t, unlockAndPlay));
+      }
+
+      // —— 手动按钮控制 —— 
       btn.addEventListener('click', async () => {
         try {
-          if (audio.paused) await audio.play(); else audio.pause();
+          if (audio.paused) {
+            audio.muted = false;
+            await audio.play();
+          } else {
+            audio.pause();
+          }
         } finally {
-          syncBtn();
+          showBtn();
+        }
+      });
+
+      // 启动：先静音尝试自动播；不论成功与否，都挂载解锁器以便“滑动/滚动”等交互触发有声播放
+      document.addEventListener('DOMContentLoaded', () => {
+        tryAutoplaySilently();
+        addUnlockers();
+      });
+
+      // 从后台回前台时再试一次（有时策略会放宽）
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden && audio.paused && !unlocked) {
+          tryAutoplaySilently();
         }
       });
     })();
