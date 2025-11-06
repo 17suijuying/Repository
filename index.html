@@ -6,66 +6,67 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <style>
-    /* 基础与防御性设置 */
-    * { box-sizing: border-box; }
-    html { overflow-y: auto; }
-    body { margin: 0; background: #fff; font-family: system-ui, -apple-system, "Segoe UI", Roboto, "PingFang SC","Noto Sans CJK SC","Microsoft YaHei", sans-serif; line-height: 1.65; }
-
+    /* 颜色与布局参数 */
     :root {
       --gap: 24px;        /* 图片与文字的间距 */
       --text-max: 900px;  /* 文字区域最大宽度 */
+      --text-color: #222; /* 接近黑色的深灰 */
     }
 
-    /* 页面主区：顺序布局 + 间距，确保可滚动 */
+    * { box-sizing: border-box; }
+    html { overflow-y: auto; }
+    body {
+      margin: 0;
+      background: #fff;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "PingFang SC","Noto Sans CJK SC","Microsoft YaHei", sans-serif;
+      line-height: 1.65;
+      color: var(--text-color);
+    }
+
     main.page {
       display: flex;
       flex-direction: column;
       gap: var(--gap);
     }
 
-    /* 取消 figure 默认外边距 */
     figure { margin: 0; }
 
-    /* 首图容器：不脱离文档流；图片与文字自然分开 */
     .hero {
       padding: 0 16px;
-      position: static !important;  /* 防止被外部样式改为 absolute/fixed */
+      position: static !important;
     }
 
-    /* 关键：图片“最多半屏高”、不变形、居中显示 */
+    /* 图片最多半屏高（桌面），等比显示、不变形 */
     .hero-img {
       display: block;
-      position: static !important;  /* 防止外部样式干扰 */
+      position: static !important;
       width: auto;
       height: auto;
       max-width: 100%;
-      max-height: 50vh;             /* 桌面端：最多半屏高 */
-      margin: 0 auto;               /* 水平居中 */
-      object-fit: contain;           /* 兼容性友好：即便同时设了宽高也不变形 */
+      max-height: 50vh;   /* 桌面端半屏 */
+      margin: 0 auto;
+      object-fit: contain;
     }
 
-    /* 移动端再稍微矜持点，考虑地址栏占位 */
-    @media (max-width: 768px) {
-      .hero-img { max-height: 45svh; }
-    }
-
-    /* 文字区：一定在图片后面，清除浮动，缩小字号 */
+    /* 文字区（桌面端）：更小固定字号+深灰色 */
     .kaipian {
-      position: static !important;  /* 防止被外部样式放到图片上层 */
-      clear: both;                  /* 防止任何浮动造成叠压 */
+      position: static !important;
+      clear: both;
       max-width: var(--text-max);
       margin: 0 auto 48px;
       padding: 0 16px;
       text-align: center;
       line-height: 1.7;
-      /* 桌面端：更小的固定字号 */
-      font-size: 13px;
+      font-size: 13px;          /* 桌面端小字号 */
+      color: var(--text-color);  /* 深灰 */
     }
     .kaipian p { margin: 0.5em 0; }
 
-    /* 移动端：用更小的自适应字号（比你之前 2.2vw 更小很多） */
+    /* 移动端调小字号，并限制图片稍低一点高度 */
     @media (max-width: 768px) {
-      .kaipian { font-size: clamp(12px, 3.0vw, 14px); }
+      .hero-img { max-height: 45svh; }
+      /* 比之前更小：最小 11px，上限 13px，随屏自适应 */
+      .kaipian { font-size: clamp(11px, 2.4vw, 13px); }
     }
 
     /* 背景音乐按钮（自动播放受阻时可见） */
@@ -88,12 +89,10 @@
 <body>
 
   <main class="page" id="love-page">
-    <!-- 首图：不再撑满，最多半屏高（桌面），移动端略小 -->
     <figure class="hero">
       <img src="images/shoutu.JPG" alt="首图" class="hero-img">
     </figure>
 
-    <!-- 文字：永远在图片下方，中间有 --gap 的空隙 -->
     <section class="kaipian">
       <p>FOR YOU/给我最亲爱的你们</p>
       <p>当你们看到这些文字的时候</p>
@@ -120,10 +119,10 @@
       async function tryAutoplay() {
         try {
           await audio.play();
-          btn.hidden = false;  // 始终留一个控制入口
+          btn.hidden = false;
           syncBtn();
         } catch (e) {
-          btn.hidden = false;  // 自动播放被拦截：显示按钮
+          btn.hidden = false;
           syncBtn();
         }
       }
