@@ -5,34 +5,40 @@
   <title>Love . 翁晨博&胡琼雅</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    /* 清掉默认外边距，避免出现细微滚动条 */
+    :root { --gap: 1em; } /* 图片与开篇文字之间的“空一行”间距 */
+
+    /* 去掉默认外边距，避免出现细微滚动条 */
+    html, body { height: 100%; }
     body { margin: 0; }
 
-    /* 图片等比缩小：宽不超过屏幕， 高不超过视口高度 */
-    img.shoutu {
-      display: block;
-      max-width: 100%;
-      height: auto;
-      /* 让图片最高不超过可视高度（移动端工具栏变化时也合适） */
-      max-height: 100svh;        /* 现代浏览器 */
-      margin: 0 auto 1em;        /* 居中 + 和开篇文字留一行空隙 */
+    /* 首图容器：高度占满一屏，内部居中 */
+    .hero {
+      height: 100svh;             /* 现代移动端更准确的视口单位 */
+      display: grid;
+      place-items: center;         /* 让图在容器里水平/垂直都居中 */
+      margin: 0 0 var(--gap);      /* 与下面的开篇文字留“空一行” */
     }
-    /* 兼容老浏览器的回退 */
     @supports not (height: 100svh) {
-      img.shoutu { max-height: 100vh; }
+      .hero { height: 100vh; }     /* 兼容老浏览器 */
     }
 
-    .kaipian { text-align: center; }
-</style>
+    /* 核心：等比例缩放填充容器，不裁切不变形 */
+    .hero img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;         /* 保持比例显示整张图 */
+      display: block;
+    }
+
+    /* 开篇文案居中 */
+    .kaipian { text-align: center; padding: 0 16px; }
+  </style>
 </head>
 <body>
-  <!-- 建议保留原始像素以减少布局抖动 -->
-  <img
-    class="shoutu"
-    src="images/shoutu.JPG"
-    alt="首图"
-    width="1556"
-    height="1168">
+  <!-- 首图：不需要再写 width/height 属性，交给 CSS 计算即可 -->
+  <figure class="hero">
+    <img src="images/shoutu.JPG" alt="首图">
+  </figure>
 
   <div class="kaipian">
     <p>FOR YOU/给我最亲爱的你们</p>
