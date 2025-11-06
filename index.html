@@ -4,62 +4,136 @@
   <meta charset="utf-8">
   <title>Love . 翁晨博&胡琼雅</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    :root { --gap: 1em; }
 
-    /* 基础样式与排版 */
+  <style>
+    :root{
+      /* 图片与文字之间的空隙，你可以改成 16px / 2em 等 */
+      --gap: 24px;
+      --text-max: 900px;
+    }
+
+    /* 基础排版与重置 */
     html, body { height: 100%; }
     body {
       margin: 0;
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "PingFang SC",
+                   "Noto Sans CJK SC", "Microsoft YaHei", sans-serif;
       line-height: 1.6;
+      background: #fff;
     }
 
-    /* 首图容器：占半屏高度；不使用绝对定位，避免覆盖后面的内容 */
+    /* 首图容器：固定半屏高，下面留间距；不使用绝对定位，避免覆盖后文 */
     .hero {
-      height: 50svh;            /* 现代移动端更准确的视口单位 */
+      height: 50svh;                 /* 现代移动端更准确的视口单位 */
       display: grid;
-      place-items: center;       /* 让图在容器里水平/垂直都居中 */
-      margin: 0 0 var(--gap);    /* 与下方文字留空 */
-      background: #fff;          /* 明确背景，避免看起来像叠加 */
+      place-items: center;
+      margin: 0 0 var(--gap);
+      position: relative;            /* 参与正常文档流，不重叠 */
+      z-index: 0;                    /* 明确层级：图片层在下 */
+      background: #fff;
     }
-    /* 兼容不支持 svh 的浏览器 */
-    @supports not (height: 100svh) {
+    @supports not (height: 100svh) { /* 兼容老浏览器 */
       .hero { height: 50vh; }
     }
 
-    /* 核心：等比例缩放显示整张图，不变形不裁切 */
+    /* 图片：按比例缩放在容器内，完整显示不变形不裁切 */
     .hero img {
       width: 100%;
       height: 100%;
-      object-fit: contain;       /* 保持比例完整显示 */
+      object-fit: contain;           /* 关键：保持比例、显示完整 */
       display: block;
     }
 
-    /* 开篇文字区域：位于图片下方，不会覆盖图片 */
+    /* 开篇文字：位于图片下方，减小字号并居中，保证不重叠 */
     .kaipian {
+      position: relative;
+      z-index: 1;                    /* 比图片层级高，但不覆盖，因为有间距 */
+      max-width: var(--text-max);
+      margin: 0 auto 48px;
+      padding: 0 16px;
       text-align: center;
-      padding: 0 16px 40px;
-      max-width: 900px;
-      margin: 0 auto;
+      font-size: clamp(13px, 2.8vw, 16px); /* 缩小并随屏幕自适应 */
+      line-height: 1.7;              /* 较紧凑但易读 */
     }
     .kaipian p { margin: 0.5em 0; }
+
+    /* 自动播放被拦截时显示的小按钮 */
+    #music-toggle {
+      position: fixed;
+      right: 12px;
+      bottom: 12px;
+      z-index: 9999;
+      padding: 10px 12px;
+      border: none;
+      border-radius: 999px;
+      background: #ffffff;
+      box-shadow: 0 4px 16px rgba(0,0,0,.15);
+      font-size: 14px;
+      cursor: pointer;
+    }
+    #music-toggle[hidden] { display: none; }
   </style>
 </head>
 <body>
-  <!-- 首图半屏：按比例缩放到容器内 -->
+
+  <!-- 首图：只占半屏且完全不与下方文字重叠 -->
   <figure class="hero">
     <img src="images/shoutu.JPG" alt="首图">
   </figure>
 
-  <!-- 文字自然出现在图片下方 -->
+  <!-- 文字自然出现在图片下方，并留有 --gap 的空隙 -->
   <div class="kaipian">
     <p>FOR YOU/给我最亲爱的你们</p>
     <p>当你们看到这些文字的时候</p>
-    <p>已经被我们郑重加入到我们的INVITATION LIST</p>
+    <p>已经被我们郑重加入到我们的 INVITATION LIST</p>
     <p>如今我们决定以夫妻之名续写未来的人生</p>
-    <p>我们相恋在2018年的夏末</p>
+    <p>我们相恋在 2018 年的夏末</p>
     <p>一路走来的酸甜苦辣组成了我们的故事</p>
   </div>
+
+  <!-- 背景音乐：尽力自动播放，若失败会出现按钮让用户一键播放 -->
+  <audio id="bgm" src="music/达尔文.mp3" preload="auto" loop autoplay></audio>
+  <button id="music-toggle" hidden aria-label="播放或暂停音乐">▶ 音乐</button>
+
+  <script>
+    (function () {
+      const audio = document.getElementById('bgm');
+      const btn   = document.getElementById('music-toggle');
+
+      // 更新按钮文案
+      function syncBtn() {
+        btn.textContent = audio.paused ? '▶ 音乐' : '⏸ 音乐';
+      }
+
+      // 自动尝试播放；若被策略拦截，显示按钮
+      async function tryAutoplay() {
+        try {
+          await audio.play();          // 某些浏览器可能拒绝
+          btn.hidden = false;          // 仍显示按钮，方便用户控制
+          syncBtn();
+        } catch (e) {
+          // 自动播放被拦截（常见于移动端）：显示按钮提示用户点击
+          btn.hidden = false;
+          syncBtn();
+        }
+      }
+
+      // 初次尝试
+      document.addEventListener('DOMContentLoaded', tryAutoplay);
+      // 页面再次可见时再尝试一次（有时切后台回前台会放开策略）
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden && audio.paused) tryAutoplay();
+      });
+
+      // 点击按钮：播放/暂停切换
+      btn.addEventListener('click', async () => {
+        try {
+          if (audio.paused) await audio.play(); else audio.pause();
+        } finally {
+          syncBtn();
+        }
+      });
+    })();
+  </script>
 </body>
 </html>
