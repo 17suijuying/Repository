@@ -5,18 +5,25 @@
   <title>Love . 翁晨博&胡琼雅</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    /* 让首图自适应并水平居中，底部留一行空隙 */
+    /* 清掉默认外边距，避免出现细微滚动条 */
+    body { margin: 0; }
+
+    /* 图片等比缩小：宽不超过屏幕， 高不超过视口高度 */
     img.shoutu {
       display: block;
       max-width: 100%;
       height: auto;
-      margin: 0 auto 1em; /* 底部间距就是图片与开篇文字之间的“空一行” */
+      /* 让图片最高不超过可视高度（移动端工具栏变化时也合适） */
+      max-height: 100svh;        /* 现代浏览器 */
+      margin: 0 auto 1em;        /* 居中 + 和开篇文字留一行空隙 */
     }
-    /* 开篇文案居中 */
-    .kaipian {
-      text-align: center;
+    /* 兼容老浏览器的回退 */
+    @supports not (height: 100svh) {
+      img.shoutu { max-height: 100vh; }
     }
-  </style>
+
+    .kaipian { text-align: center; }
+</style>
 </head>
 <body>
   <!-- 建议保留原始像素以减少布局抖动 -->
