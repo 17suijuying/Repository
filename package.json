@@ -1,8 +1,8 @@
 {
-  "name": "wedding-love-site",
+  "name": "wedding-site",
   "private": true,
   "type": "module",
   "dependencies": {
-    "@vercel/kv": "1.0.1"
+    "@upstash/redis": "^1.30.0"
   }
 }
