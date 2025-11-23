@@ -137,9 +137,7 @@
       justify-items: center;
       margin: 6px 0 6px;
     }
-    .cd-item{
-      min-width: 64px;
-    }
+    .cd-item{ min-width: 64px; }
     .cd-num{
       display: block;
       font-weight: 700;
@@ -147,17 +145,51 @@
       line-height: 1.1;
       font-size: 32px;
     }
-    .cd-lbl{
-      display: block;
-      margin-top: 4px;
-      font-size: 12px;
-      opacity: .85;
+    .cd-lbl{ display: block; margin-top: 4px; font-size: 12px; opacity: .85; }
+    .cd-date{ margin: 8px 0 0; font-size: 12px; opacity: .9; }
+
+    /* —— 新增：导航卡片样式 —— */
+    .nav-card{
+      background: #fff;
+      border: 1px solid rgba(0,0,0,.06);
+      border-radius: 16px;
+      box-shadow: 0 6px 18px rgba(0,0,0,.06);
+      padding: 20px 16px;
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
     }
-    .cd-date{
-      margin: 8px 0 0;
-      font-size: 12px;
-      opacity: .9;
+    .nav-card h4{
+      margin: 0 0 6px;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: .02em;
     }
+    .nav-address{
+      font-size: 12px;
+      opacity: .8;
+      margin: 0 0 14px;
+    }
+    .nav-actions{
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .nav-btn{
+      display: inline-block;
+      text-decoration: none;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: #FF7AAE;
+      color: #fff;
+      font-size: 14px;
+      box-shadow: 0 8px 18px rgba(255,122,174,.25);
+    }
+    .nav-btn:hover{ filter: brightness(0.98); }
 
     /* 移动端适配 */
     @media (max-width: 768px) {
@@ -260,7 +292,6 @@
     <!-- 左图右文（图片=首图宽度的1/2；文字样式与 .xianglian 一致） -->
     <section class="split">
       <div class="split-image">
-        <!-- 把 src 换成你的实际图片路径 -->
         <img src="images/dinghunzhao.jpg" alt="订婚照片" class="photo-img half-img" loading="lazy" decoding="async">
       </div>
       <div class="split-text">
@@ -326,6 +357,33 @@
         </div>
       </div>
     </section>
+
+    <!-- 新增：倒计时下方 左右并排：左=高德导航，右=婚礼时间表图片 -->
+    <section class="split">
+      <!-- 左：婚礼酒店导航（替换经纬度与名称） -->
+      <div class="split-text">
+        <div class="nav-card">
+          <h4>婚礼酒店导航</h4>
+          <p class="nav-address">（请在代码中替换真实酒店名称与经纬度）</p>
+          <div class="nav-actions">
+            <!-- 查看地图：定位标记 -->
+            <a class="nav-btn" target="_blank" rel="noopener"
+               href="https://uri.amap.com/marker?position=120.63,27.97&name=%E5%A9%9A%E7%A4%BC%E9%85%92%E5%BA%97%28%E4%BE%8B%29&callnative=1">
+               查看地图
+            </a>
+            <!-- 直接导航：驾车到达 -->
+            <a class="nav-btn" target="_blank" rel="noopener"
+               href="https://uri.amap.com/navigation?to=120.63,27.97,%E5%A9%9A%E7%A4%BC%E9%85%92%E5%BA%97%28%E4%BE%8B%29&mode=car&callnative=1">
+               打开高德导航
+            </a>
+          </div>
+        </div>
+      </div>
+      <!-- 右：婚礼时间表图片（半宽、与首图对齐） -->
+      <div class="split-image">
+        <img src="images/hunlishijianbiao.jpg" alt="婚礼时间表" class="photo-img half-img" loading="lazy" decoding="async">
+      </div>
+    </section>
     
   </main>
 
@@ -380,21 +438,32 @@
       if (!document.hidden && audio.paused && !unlocked) { tryAutoplaySilently(); }
     });
 
-    /* ===== 与首图等宽：普通图=1倍，half-img=1/2，split 与 countdown 容器也等宽 ===== */
+    /* ===== 与首图等宽：普通图=1倍，half-img=半列宽，split 与 countdown 容器等宽 ===== */
     const heroImg  = document.getElementById('heroImg');
     const selector = '.photo-img';
 
+    function cssGap() {
+      const v = getComputedStyle(document.documentElement).getPropertyValue('--gap').trim();
+      const n = parseFloat(v);
+      return isNaN(n) ? 24 : n;  /* 默认 24px */
+    }
+
     function applyWidth(w) {
+      const gap = cssGap();
+
       // 1) 普通内容图：与首图等宽
       document.querySelectorAll(selector).forEach(img => {
         img.style.width  = w + 'px';
         img.style.height = 'auto';
       });
-      // 2) 半宽图片：首图宽度的 1/2
+
+      // 2) 半宽图片：列宽 ≈ (容器宽 - gap)/2
+      const half = Math.max(1, Math.round((w - gap) / 2));
       document.querySelectorAll('.half-img').forEach(img => {
-        img.style.width  = Math.max(1, Math.round(w * 0.5)) + 'px';
+        img.style.width  = half + 'px';
         img.style.height = 'auto';
       });
+
       // 3) 容器：split 和 countdown 与首图等宽并居中
       document.querySelectorAll('.split, .countdown').forEach(box => {
         box.style.width = w + 'px';
@@ -453,15 +522,6 @@
       const hEl = document.getElementById('cd-hours');
       const mEl = document.getElementById('cd-mins');
       const sEl = document.getElementById('cd-secs');
-      const dateText = document.getElementById('cd-date-text');
-
-      // 将“目标日期”文案显示成人类可读
-      try {
-        const y = target.getFullYear();
-        const mon = target.getMonth() + 1;
-        const d = target.getDate();
-        if (dateText) dateText.textContent = `${y}年${mon}月${d}日`;
-      } catch (e) {}
 
       function pad(n){ return n < 10 ? '0' + n : '' + n; }
 
