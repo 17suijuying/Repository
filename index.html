@@ -17,14 +17,12 @@
     main.page { display: flex; flex-direction: column; gap: var(--gap); }
     figure { margin: 0; }
 
-    /* 首图与普通图片容器 */
     .hero, .photo { padding: 0 16px; position: static !important; }
     .hero-img {
       display: block; position: static !important; width: auto; height: auto;
       max-width: 100%; max-height: 50vh; margin: 0 auto; object-fit: contain;
     }
 
-    /* 文字区 */
     .kaipian, .yaoqing, .guanyu, .xianglian, .jiehun, .qingjian {
       position: static !important; clear: both; max-width: var(--text-max);
       margin: 0 auto 48px; padding: 0 16px; text-align: center;
@@ -32,10 +30,8 @@
     }
     .kaipian p, .yaoqing p, .guanyu p, .xianglian p, .jiehun p, .qingjian p { margin: .5em 0; }
 
-    /* 展示图片：由 JS 同步为与首图等宽 */
     .photo-img { display: block; width: auto; height: auto; max-width: 100%; margin: 0 auto; object-fit: contain; }
 
-    /* 左右两列区块 */
     .split {
       position: static !important; clear: both; margin: 0 auto 48px;
       display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: center;
@@ -45,7 +41,6 @@
     .split-text p { margin: .5em 0; }
     .split-text h3 { margin: 0 0 8px; font-weight: 600; font-size: 12px; opacity: .9; }
 
-    /* 倒计时 */
     .countdown {
       position: static !important; clear: both; margin: 0 auto 48px; padding: 18px 16px 20px;
       text-align: center; color: #3b2a2d;
@@ -59,7 +54,6 @@
     .cd-lbl { display: block; margin-top: 4px; font-size: 12px; opacity: .85; }
     .cd-date{ margin: 8px 0 0; font-size: 12px; opacity: .9; }
 
-    /* 导航卡片 */
     .nav-card{
       background: #fff; border: 1px solid rgba(0,0,0,.06); border-radius: 16px;
       box-shadow: 0 6px 18px rgba(0,0,0,.06); padding: 20px 16px; min-height: 220px;
@@ -74,7 +68,6 @@
     }
     .nav-btn:hover, .form-btn:hover{ filter: brightness(.98); }
 
-    /* 留言表单卡片 */
     .form-card{
       position: static !important; clear: both; margin: 0 auto 48px;
       background: #fff; border: 1px solid rgba(0,0,0,.06); border-radius: 16px;
@@ -93,13 +86,39 @@
       .form-card{ width: 100% !important; }
     }
 
-    /* 音乐开关 */
-    #music-toggle{
-      position: fixed; right: 12px; bottom: 12px; z-index: 9999;
+    /* 音乐与弹幕开关 */
+    #music-toggle, #dm-toggle{
+      position: fixed; right: 12px; z-index: 9999;
       padding: 10px 12px; border: none; border-radius: 999px; background: #fff;
       box-shadow: 0 4px 16px rgba(0,0,0,.15); font-size: 14px; cursor: pointer;
     }
+    #music-toggle{ bottom: 12px; }
+    #dm-toggle{ bottom: 60px; }
     #music-toggle[hidden]{ display:none; }
+
+    /* ===== 弹幕层 ===== */
+    #danmaku-layer{
+      position: fixed; left: 0; top: 0; width: 100vw; height: 100vh;
+      pointer-events: none;      /* 不挡页面交互 */
+      overflow: hidden; z-index: 900;
+    }
+    .dm-item{
+      position: absolute; left: 100vw; top: 0;
+      white-space: nowrap;
+      font-size: clamp(12px, 2.8vw, 18px);
+      font-weight: 600;
+      color: #ffffff;
+      text-shadow: 0 1px 2px rgba(0,0,0,.4), 0 0 6px rgba(255,122,174,.45);
+      will-change: transform;
+      animation: dm-move linear var(--dur,10s);
+    }
+    @keyframes dm-move{
+      to{ transform: translateX(calc(-100vw - var(--dmw, 200px))); }
+    }
+    @media (prefers-reduced-motion: reduce){
+      #danmaku-layer{ display: none; }
+      #dm-toggle{ display:none; }
+    }
   </style>
 </head>
 <body>
@@ -130,7 +149,7 @@
     <figure class="photo">
       <img src="images/guanyuwomen.jpg" alt="关于我们" class="photo-img" loading="lazy" decoding="async">
     </figure>
-
+    
     <section class="guanyu">
       <p>故事开始在2015年的夏天</p>
       <p>高二的我们换到了同一个班级</p>
@@ -215,7 +234,6 @@
       </div>
     </section>
 
-    <!-- 倒计时下方：导航 + 时间表 -->
     <section class="split">
       <div class="split-text">
         <div class="nav-card">
@@ -241,7 +259,7 @@
     <figure class="photo">
       <img src="images/hunlijian.jpg" alt="婚礼见" class="photo-img" loading="lazy" decoding="async">
     </figure>
-
+    
     <!-- 留言板 -->
     <section class="form-card" id="rsvp">
       <h4>留言板 · RSVP</h4>
@@ -265,13 +283,15 @@
     </section>
   </main>
 
-  <!-- 背景音乐 -->
+  <!-- 背景音乐 + 弹幕层/按钮 -->
   <audio id="bgm" src="music/达尔文.mp3" preload="auto" loop></audio>
   <button id="music-toggle" hidden aria-label="播放或暂停音乐">▶ 音乐</button>
+  <button id="dm-toggle" aria-label="开关弹幕">弹幕开/关</button>
+  <div id="danmaku-layer" aria-hidden="true"></div>
 
   <script>
   (function () {
-    /* ===== 背景音乐（自动播放 + 交互解锁） ===== */
+    /* ===== 背景音乐 ===== */
     const audio = document.getElementById('bgm');
     const btn   = document.getElementById('music-toggle');
     function syncBtn(){ btn.textContent = audio.paused ? '▶' : '⏸'; }
@@ -290,7 +310,7 @@
     document.addEventListener('DOMContentLoaded', () => { tryAutoplaySilently(); addUnlockers(); });
     document.addEventListener('visibilitychange', () => { if (!document.hidden && audio.paused && !unlocked) tryAutoplaySilently(); });
 
-    /* ===== 同步内容宽度：普通图与容器等宽、半图等分 ===== */
+    /* ===== 宽度同步 ===== */
     const heroImg  = document.getElementById('heroImg');
     const selector = '.photo-img';
     function cssGap(){
@@ -356,7 +376,73 @@
       tick(); setInterval(tick, 1000);
     }
 
-    /* ===== 留言板前端交互（兼容多种返回结构） ===== */
+    /* ===== 弹幕模块 ===== */
+    const Danmaku = (function(){
+      const layer = document.getElementById('danmaku-layer');
+      const toggleBtn = document.getElementById('dm-toggle');
+      let enabled = true;
+      let lanes = calcLanes();
+      let timer = null;
+      let pool = [];     // 数据池
+      let idx  = 0;
+
+      function calcLanes(){
+        const h = window.innerHeight;
+        const line = 36; // 每行高度
+        return Math.max(3, Math.min(8, Math.floor(h / line)));
+      }
+      function add(text){
+        const el = document.createElement('div');
+        el.className = 'dm-item';
+        el.textContent = text;
+        // 随机行
+        const lane = Math.floor(Math.random() * lanes);
+        el.style.top = (8 + lane * 36) + 'px';
+        layer.appendChild(el);
+        // 测量宽度并计算时长（像素/秒）
+        const w = el.offsetWidth;
+        el.style.setProperty('--dmw', w + 'px');
+        const speed = 100 + Math.random() * 60; // px/s
+        const distance = window.innerWidth + w;
+        const dur = distance / speed;
+        el.style.setProperty('--dur', dur.toFixed(2) + 's');
+        if (!enabled) el.style.display = 'none';
+        el.addEventListener('animationend', () => el.remove());
+      }
+      function feed(rows){
+        pool = Array.isArray(rows) ? rows.slice() : [];
+        idx = 0;
+        start();
+      }
+      function start(){
+        stop();
+        if (pool.length === 0) return;
+        timer = setInterval(() => {
+          const r = pool[idx++ % pool.length] || {};
+          const name = (r.name || '匿名').trim();
+          const msg  = (r.message || '').trim();
+          const text = msg ? `${name}：${msg}` : name;
+          add(text);
+        }, 1800);
+      }
+      function stop(){ if (timer) { clearInterval(timer); timer = null; } }
+      function pushNew(r){
+        const name = (r.name || '匿名').trim();
+        const msg  = (r.message || '').trim();
+        const text = msg ? `${name}：${msg}` : name;
+        pool.unshift(r);
+        add(text);
+      }
+      function toggle(){
+        enabled = !enabled;
+        layer.style.display = enabled ? 'block' : 'none';
+      }
+      window.addEventListener('resize', () => { lanes = calcLanes(); });
+      toggleBtn.addEventListener('click', toggle);
+      return { feed, pushNew };
+    })();
+
+    /* ===== 留言板交互（含弹幕联动） ===== */
     (function(){
       const form   = document.getElementById('rsvp-form');
       const nameI  = document.getElementById('rsvp-name');
@@ -392,13 +478,9 @@
             cache: 'no-store'
           });
           const data = await res.json();
-
-          // ✅ 同时兼容两种返回：数组 或 包了一层对象
-          const rows = Array.isArray(data)
-            ? data
-            : (data.entries || data.data || data.result || []);
-
+          const rows = Array.isArray(data) ? data : (data.entries || data.data || data.result || []);
           render(rows);
+          Danmaku.feed(rows);          // ⬅️ 喂给弹幕
           statusEl.textContent = '';
         }catch(e){
           console.error(e);
@@ -428,6 +510,7 @@
           if (res.ok){
             statusEl.textContent = '提交成功，已更新列表';
             form.reset();
+            Danmaku.pushNew(ret.entry || payload);  // ⬅️ 新留言立刻加入弹幕
             await loadList();
           }else{
             statusEl.textContent = (ret && ret.error) ? ('提交失败：' + ret.error) : '提交失败，请稍后再试';
