@@ -257,22 +257,29 @@
     <figure class="photo">
       <img src="images/hunlijian.jpg" alt="婚礼见" class="photo-img" loading="lazy" decoding="async">
     </figure>
-
-    <!-- 留言板 · 直填 + 管理员查看 -->
+    
+    <!-- ===== 留言板（直接提交到后端 + 下方显示列表） ===== -->
     <section class="form-card" id="rsvp">
       <h4>留言板 · RSVP</h4>
-      <div class="form-grid">
-        <input id="f-name" class="input" placeholder="姓名">
-        <input id="f-count" class="input" type="number" min="0" max="20" placeholder="人数">
-        <textarea id="f-msg" class="textarea" placeholder="留言"></textarea>
-        <button id="f-submit" class="form-btn" type="button">提交</button>
-        <p id="f-tip" class="form-tip"></p>
-        <div class="admin-actions">
-          <button id="admin-open" class="form-btn outline" type="button">查看留言（管理员）</button>
-        </div>
+      <p class="form-tip">请填写 <strong>姓名 / 人数 / 留言</strong> 并提交。提交后会在下方显示。</p>
+
+      <form id="rsvp-form" style="max-width:600px;margin:0 auto;display:grid;grid-template-columns:1fr 120px;gap:10px;">
+        <input id="rsvp-name" type="text" placeholder="姓名（必填）" required
+               style="grid-column:1 / span 2;padding:10px 12px;border:1px solid rgba(0,0,0,.12);border-radius:10px;">
+        <input id="rsvp-count" type="number" min="1" step="1" placeholder="人数（必填）" required
+               style="padding:10px 12px;border:1px solid rgba(0,0,0,.12);border-radius:10px;">
+        <button class="form-btn" type="submit" style="height:42px;">提交</button>
+        <textarea id="rsvp-msg" rows="3" placeholder="留言（可选）"
+                  style="grid-column:1 / span 2;padding:10px 12px;border:1px solid rgba(0,0,0,.12);border-radius:10px;"></textarea>
+      </form>
+
+      <div id="rsvp-status" style="margin-top:10px;font-size:12px;opacity:.85;"></div>
+
+      <div style="max-width:720px;margin:16px auto 0;">
+        <ul id="rsvp-list" style="list-style:none;padding:0;margin:0;display:grid;gap:10px;"></ul>
       </div>
-      <div id="admin-panel" class="admin-list" hidden></div>
     </section>
+
 
   </main>
 
@@ -365,69 +372,80 @@
       tick(); setInterval(tick, 1000);
     }
 
-    /* ===== RSVP 提交到 /api/rsvp ===== */
-    const tip = document.getElementById('f-tip');
-    const submitBtn = document.getElementById('f-submit');
-    if (submitBtn) {
-      submitBtn.addEventListener('click', async () => {
-        const name = document.getElementById('f-name').value.trim();
-        const count = document.getElementById('f-count').value;
-        const message = document.getElementById('f-msg').value.trim();
-        tip.textContent = '提交中…';
-        try {
-          const resp = await fetch('/api/rsvp', {
-            method: 'POST',
-            headers: { 'content-type': 'application/json' },
-            body: JSON.stringify({ name, count, message })
-          });
-          const data = await resp.json();
-          if (data.ok) {
-            tip.textContent = '已收到，谢谢！';
-            document.getElementById('f-name').value = '';
-            document.getElementById('f-count').value = '';
-            document.getElementById('f-msg').value = '';
-          } else {
-            tip.textContent = '提交失败：' + (data.error || '未知错误');
-          }
-        } catch (e) {
-          tip.textContent = '网络错误，请稍后再试';
-        }
-      });
-    }
+    /* ===== 留言板：前端交互（调用 /api/rsvp/* ）===== */
+    (function(){
+      const form = document.getElementById('rsvp-form');
+      const nameI = document.getElementById('rsvp-name');
+      const countI = document.getElementById('rsvp-count');
+      const msgI = document.getElementById('rsvp-msg');
+      const list = document.getElementById('rsvp-list');
+      const statusEl = document.getElementById('rsvp-status');
 
-    /* ===== 管理员查看（输入 ADMIN_KEY 拉取列表） ===== */
-    const adminBtn = document.getElementById('admin-open');
-    const adminBox = document.getElementById('admin-panel');
-    if (adminBtn) {
-      adminBtn.addEventListener('click', async () => {
-        const prev = sessionStorage.getItem('ADMIN_KEY') || '';
-        const key = prompt('请输入管理员密钥（在 Vercel 的 ADMIN_KEY）：', prev || '');
-        if (!key) return;
-        sessionStorage.setItem('ADMIN_KEY', key);
-        adminBtn.disabled = true; adminBtn.textContent = '加载中…';
-        try {
-          const resp = await fetch('/api/rsvp', { headers: { 'x-admin-key': key } });
-          const data = await resp.json();
-          if (!data.ok) throw new Error(data.error || 'Unauthorized');
-          adminBox.innerHTML = data.data.map((it, idx) => `
-            <div class="admin-item">
-              <h5>#${data.data.length - idx} · ${escapeHtml(it.name)} <span class="muted">（${it.count}人）</span></h5>
-              <div>${escapeHtml(it.message || '')}</div>
-              <div class="muted" style="margin-top:6px;">${new Date(it.time).toLocaleString()} · ${escapeHtml(it.ua || '')}</div>
-            </div>
-          `).join('') || '<div class="muted">暂无留言</div>';
-          adminBox.removeAttribute('hidden');
-          adminBtn.textContent = '刷新留言';
-        } catch (e) {
-          alert('拉取失败：' + (e.message || '未知错误'));
-          adminBtn.textContent = '查看留言（管理员）';
-        } finally {
-          adminBtn.disabled = false;
+      function render(listData){
+        if (!Array.isArray(listData) || !listData.length) {
+          list.innerHTML = '<li style="padding:12px 14px;border:1px solid rgba(0,0,0,.06);border-radius:12px;color:#666;text-align:center;">暂无留言</li>';
+          return;
+        }
+        list.innerHTML = listData.map(item => {
+          const t = new Date(item.createdAt || Date.now());
+          const d = `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')} ${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}`;
+          const msg = (item.message || '').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+          return `
+            <li style="padding:12px 14px;border:1px solid rgba(0,0,0,.06);border-radius:12px;background:#fff;">
+              <div style="font-weight:700;">${item.name} <span style="font-weight:400;opacity:.7;">（${item.count}人）</span></div>
+              ${msg ? `<div style="margin-top:4px;">${msg}</div>` : ''}
+              <div style="margin-top:6px;font-size:12px;opacity:.6;">${d}</div>
+            </li>
+          `;
+        }).join('');
+      }
+
+      async function loadList(){
+        try{
+          statusEl.textContent = '加载留言中...';
+          const res = await fetch('/api/rsvp/list', { cache: 'no-store' });
+          const data = await res.json();
+          render(data);
+          statusEl.textContent = '';
+        }catch(e){
+          statusEl.textContent = '加载失败，请稍后重试';
+        }
+      }
+
+      form?.addEventListener('submit', async (e)=>{
+        e.preventDefault();
+        const payload = {
+          name: nameI.value.trim(),
+          count: Number(countI.value || 0),
+          message: msgI.value.trim()
+        };
+        if (!payload.name || !payload.count) {
+          statusEl.textContent = '请填写姓名和人数';
+          return;
+        }
+        try{
+          statusEl.textContent = '提交中...';
+          const res = await fetch('/api/rsvp/submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          const ret = await res.json();
+          if (ret.ok) {
+            statusEl.textContent = '提交成功，已更新列表';
+            form.reset();
+            await loadList();
+          } else {
+            statusEl.textContent = '提交失败，请稍后再试';
+          }
+        }catch(e){
+          statusEl.textContent = '网络异常，请稍后再试';
         }
       });
-    }
-    function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
-  })();
-  </script>
+
+      loadList();
+    })();
+    </script>
+
 </body>
 </html>
