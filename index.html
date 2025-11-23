@@ -31,7 +31,7 @@
 
     figure { margin: 0; }
 
-    /* 首图外层与下图外层都只做左右内边距，不限制宽度，确保两者基准一致 */
+    /* 首图容器与普通图片容器：仅左右内边距，保持同一基准 */
     .hero,
     .photo {
       padding: 0 16px;
@@ -84,7 +84,7 @@
       object-fit: contain;
     }
 
-    /* 新增：左右排版区块（与首图同宽、两列） */
+    /* 左右排版区块（与首图同宽、两列） */
     .split {
       position: static !important;
       clear: both;
@@ -95,24 +95,71 @@
       align-items: center;
     }
     .split-image { display: flex; justify-content: center; }
-    /* 右侧文字区：样式与 .xianglian 完全一致 */
     .split-text{
-      text-align: center;          /* 居中 */
-      line-height: 1.7;            /* 行高一致 */
-      font-size: 13px;             /* 桌面端字号一致 */
+      text-align: center;          /* 与 .xianglian 一致 */
+      line-height: 1.7;
+      font-size: 13px;
       color: var(--text-color);
       padding: 0 16px;
     }
     .split-text p{ margin: 0.5em 0; }
-    /* “< 订婚 >”标题更小 */
     .split-text h3{
       margin: 0 0 8px;
       font-weight: 600;
+      font-size: 12px;             /* “< 订婚 >”更小 */
+      opacity: .9;
+    }
+
+    /* 粉色倒计时模块（与首图等宽） */
+    .countdown {
+      position: static !important;
+      clear: both;
+      margin: 0 auto 48px;
+      padding: 18px 16px 20px;
+      text-align: center;
+      color: #3b2a2d; /* 在浅粉背景上保持可读 */
+      background: linear-gradient(180deg, #FFEAF1 0%, #FFD9E7 100%);
+      border-radius: 16px;
+      box-shadow: 0 6px 18px rgba(255, 120, 160, .12);
+    }
+    .countdown h3{
+      margin: 0 0 10px;
+      font-size: 12px;   /* 克制的小标题 */
+      font-weight: 600;
+      letter-spacing: .1em;
+      color: #5d3b45;
+    }
+    .cd-grid{
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      align-items: end;
+      justify-items: center;
+      margin: 6px 0 6px;
+    }
+    .cd-item{
+      min-width: 64px;
+    }
+    .cd-num{
+      display: block;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.1;
+      font-size: 32px;
+    }
+    .cd-lbl{
+      display: block;
+      margin-top: 4px;
+      font-size: 12px;
+      opacity: .85;
+    }
+    .cd-date{
+      margin: 8px 0 0;
       font-size: 12px;
       opacity: .9;
     }
 
-    /* 移动端适配：上下排版，图片 100% 宽；文字字号自适应与 .xianglian 一致 */
+    /* 移动端适配 */
     @media (max-width: 768px) {
       .hero-img { max-height: 45svh; }
       .kaipian { font-size: clamp(10px, 2.0vw, 12px); }
@@ -128,6 +175,9 @@
       .split-text{ font-size: clamp(10px, 2.0vw, 12px); }
       .split-text h3{ font-size: clamp(9px, 1.8vw, 11px); }
       .split-image .half-img { width: 100% !important; } /* 覆盖内联宽度 */
+
+      .cd-num{ font-size: clamp(18px, 6vw, 28px); }
+      .cd-lbl, .cd-date, .countdown h3{ font-size: clamp(10px, 2vw, 12px); }
     }
 
     /* 背景音乐按钮 */
@@ -223,7 +273,7 @@
       </div>
     </section>
 
-     <figure class="photo">
+    <figure class="photo">
       <img src="images/hunli.jpg" alt="婚礼" class="photo-img" loading="lazy" decoding="async">
     </figure>
 
@@ -249,6 +299,35 @@
     <figure class="photo">
       <img src="images/zhongshihunshazhao.jpg" alt="中式婚纱照" class="photo-img" loading="lazy" decoding="async">
     </figure>
+
+    <section class="qingjian">
+      <p>2025年12月10日 星期三</p>
+      <p>农历十月廿一 18:00</p>
+    </section>
+
+    <!-- 粉色倒计时模块（与首图等宽） -->
+    <section class="countdown" id="countdown" data-deadline="2025-12-10T00:00:00">
+      <h3>婚礼倒计时</h3>
+      <div class="cd-grid" aria-live="polite">
+        <div class="cd-item">
+          <span class="cd-num" id="cd-days">00</span>
+          <span class="cd-lbl">天</span>
+        </div>
+        <div class="cd-item">
+          <span class="cd-num" id="cd-hours">00</span>
+          <span class="cd-lbl">小时</span>
+        </div>
+        <div class="cd-item">
+          <span class="cd-num" id="cd-mins">00</span>
+          <span class="cd-lbl">分钟</span>
+        </div>
+        <div class="cd-item">
+          <span class="cd-num" id="cd-secs">00</span>
+          <span class="cd-lbl">秒</span>
+        </div>
+      </div>
+      <div class="cd-date">目标日期：<time id="cd-date-text">2025年12月10日</time></div>
+    </section>
     
   </main>
 
@@ -303,7 +382,7 @@
       if (!document.hidden && audio.paused && !unlocked) { tryAutoplaySilently(); }
     });
 
-    /* ===== 与首图等宽：普通图=1倍，half-img=1/2，左右区块容器也等宽 ===== */
+    /* ===== 与首图等宽：普通图=1倍，half-img=1/2，split 与 countdown 容器也等宽 ===== */
     const heroImg  = document.getElementById('heroImg');
     const selector = '.photo-img';
 
@@ -318,8 +397,8 @@
         img.style.width  = Math.max(1, Math.round(w * 0.5)) + 'px';
         img.style.height = 'auto';
       });
-      // 3) 左右区块容器：整体与首图等宽并居中
-      document.querySelectorAll('.split').forEach(box => {
+      // 3) 容器：split 和 countdown 与首图等宽并居中
+      document.querySelectorAll('.split, .countdown').forEach(box => {
         box.style.width = w + 'px';
       });
     }
@@ -349,7 +428,7 @@
         let need = false;
         for (const m of muts) {
           m.addedNodes && m.addedNodes.forEach(n => {
-            if (n.nodeType === 1 && (n.matches?.(selector) || n.querySelector?.(selector) || n.matches?.('.split'))) {
+            if (n.nodeType === 1 && (n.matches?.(selector) || n.querySelector?.(selector) || n.matches?.('.split') || n.matches?.('.countdown'))) {
               need = true;
             }
           });
@@ -366,6 +445,53 @@
       if (img.complete) scheduleSync();
       else img.addEventListener('load', scheduleSync, { once: true });
     });
+
+    /* ===== 倒计时逻辑 ===== */
+    const cd = document.getElementById('countdown');
+    if (cd) {
+      const ds = cd.dataset.deadline || '2025-12-10T18:00:00';
+      const target = new Date(ds);
+      const dEl = document.getElementById('cd-days');
+      const hEl = document.getElementById('cd-hours');
+      const mEl = document.getElementById('cd-mins');
+      const sEl = document.getElementById('cd-secs');
+      const dateText = document.getElementById('cd-date-text');
+
+      // 将“目标日期”文案显示成人类可读
+      try {
+        const y = target.getFullYear();
+        const mon = target.getMonth() + 1;
+        const d = target.getDate();
+        if (dateText) dateText.textContent = `${y}年${mon}月${d}日`;
+      } catch (e) {}
+
+      function pad(n){ return n < 10 ? '0' + n : '' + n; }
+
+      function tick() {
+        const now = new Date();
+        let diff = Math.max(0, target - now);
+
+        const days  = Math.floor(diff / (1000*60*60*24));
+        diff -= days * (1000*60*60*24);
+        const hours = Math.floor(diff / (1000*60*60));
+        diff -= hours * (1000*60*60);
+        const mins  = Math.floor(diff / (1000*60));
+        diff -= mins * (1000*60);
+        const secs  = Math.floor(diff / 1000);
+
+        dEl.textContent = pad(days);
+        hEl.textContent = pad(hours);
+        mEl.textContent = pad(mins);
+        sEl.textContent = pad(secs);
+
+        if (target - now <= 0) {
+          clearInterval(timer);
+        }
+      }
+
+      tick();
+      const timer = setInterval(tick, 1000);
+    }
   })();
   </script>
 </body>
