@@ -153,34 +153,114 @@
   <button id="music-toggle" hidden aria-label="播放或暂停音乐">▶ 音乐</button>
 
   <script>
-    (function () {
-      // ===== 背景音乐（自动播放 + 交互解锁） =====
-      const audio = document.getElementById('bgm');
-      const btn   = document.getElementById('music-toggle');
+  (function () {
+    // ===== 背景音乐（自动播放 + 交互解锁）保留不变 =====
+    const audio = document.getElementById('bgm');
+    const btn   = document.getElementById('music-toggle');
 
-      function syncBtn() { btn.textContent = audio.paused ? '▶' : '⏸'; }
-      function showBtn() { if (btn.hidden) btn.hidden = false; syncBtn(); }
+    function syncBtn() { btn.textContent = audio.paused ? '▶' : '⏸'; }
+    function showBtn() { if (btn.hidden) btn.hidden = false; syncBtn(); }
 
-      async function tryAutoplaySilently() {
-        try { audio.muted = true; await audio.play(); showBtn(); }
-        catch (e) { showBtn(); }
-      }
+    async function tryAutoplaySilently() {
+      try { audio.muted = true; await audio.play(); showBtn(); }
+      catch (e) { showBtn(); }
+    }
 
-      let unlocked = false;
-      const unlockEventsWin = ['scroll', 'wheel'];
-      const unlockEventsDoc = ['pointerdown','touchstart','touchend','click','keydown'];
+    let unlocked = false;
+    const unlockEventsWin = ['scroll', 'wheel'];
+    const unlockEventsDoc = ['pointerdown','touchstart','touchend','click','keydown'];
 
-      async function unlockAndPlay() {
-        if (unlocked) return;
-        unlocked = true;
-        try { audio.muted = false; if (audio.paused) await audio.play(); }
-        finally { removeUnlockers(); showBtn(); }
-      }
+    async function unlockAndPlay() {
+      if (unlocked) return;
+      unlocked = true;
+      try { audio.muted = false; if (audio.paused) await audio.play(); }
+      finally { removeUnlockers(); showBtn(); }
+    }
 
-      function addUnlockers() {
-        unlockEventsWin.forEach(t => window.addEventListener(t, unlockAndPlay, { passive: true }));
-        unlockEventsDoc.forEach(t => document.addEventListener(t, unlockAndPlay, { passive: true }));
-      }
-      function removeUnlockers() {
-        unlockEventsWin.forEach(t => window.removeEventListener(t, unlockAndPlay));
-        unlockEventsDoc.forEach(t => document.removeEventListener(t, unlockAnd
+    function addUnlockers() {
+      unlockEventsWin.forEach(t => window.addEventListener(t, unlockAndPlay, { passive: true }));
+      unlockEventsDoc.forEach(t => document.addEventListener(t, unlockAndPlay, { passive: true }));
+    }
+    function removeUnlockers() {
+      unlockEventsWin.forEach(t => window.removeEventListener(t, unlockAndPlay));
+      unlockEventsDoc.forEach(t => document.removeEventListener(t, unlockAndPlay));
+    }
+
+    btn.addEventListener('click', async () => {
+      try { if (audio.paused) { audio.muted = false; await audio.play(); } else { audio.pause(); } }
+      finally { showBtn(); }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      tryAutoplaySilently();
+      addUnlockers();
+    });
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && audio.paused && !unlocked) { tryAutoplaySilently(); }
+    });
+
+    // ===== 关键：让所有 .photo-img 与首图等宽（等比例不变形） =====
+    const heroImg = document.getElementById('heroImg');
+    const selector = '.photo-img';
+
+    // 统一同步宽度
+    function applyWidth(w) {
+      document.querySelectorAll(selector).forEach(img => {
+        // 只影响“非首图”的内容图片
+        img.style.width = w + 'px';
+        img.style.height = 'auto'; // 等比例
+      });
+    }
+
+    // rAF 节流，避免频繁测量
+    let rafId = null;
+    function scheduleSync() {
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = null;
+        const rect = heroImg.getBoundingClientRect();
+        const w = Math.round(rect.width || 0);
+        if (w > 0) applyWidth(w);
+      });
+    }
+
+    // 1) 页面加载/窗口尺寸/方向改变时同步
+    window.addEventListener('load', scheduleSync);
+    window.addEventListener('resize', scheduleSync);
+    window.addEventListener('orientationchange', scheduleSync);
+
+    // 2) 滚动时（移动端地址栏上下滑导致可见宽度改变）也同步一次
+    window.addEventListener('scroll', scheduleSync, { passive: true });
+
+    // 3) 观察“首图”的实际尺寸变化 —— 最稳的方式
+    if ('ResizeObserver' in window) {
+      const ro = new ResizeObserver(scheduleSync);
+      ro.observe(heroImg);
+    }
+
+    // 4) 观察后续新插入的图片（比如你继续追加 .photo-img）
+    if ('MutationObserver' in window) {
+      const mo = new MutationObserver(muts => {
+        let need = false;
+        for (const m of muts) {
+          m.addedNodes && m.addedNodes.forEach(n => {
+            if (n.nodeType === 1 && (n.matches?.(selector) || n.querySelector?.(selector))) {
+              need = true;
+            }
+          });
+        }
+        if (need) scheduleSync();
+      });
+      mo.observe(document.body, { childList: true, subtree: true });
+    }
+
+    // 5) 首图与内容图加载完成时也同步（考虑缓存命中）
+    if (heroImg.complete) scheduleSync();
+    else heroImg.addEventListener('load', scheduleSync, { once: true });
+
+    document.querySelectorAll(selector).forEach(img => {
+      if (img.complete) scheduleSync();
+      else img.addEventListener('load', scheduleSync, { once: true });
+    });
+  })();
+</script>
