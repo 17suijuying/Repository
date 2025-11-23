@@ -62,6 +62,18 @@
       color: var(--text-color);
     }
     .kaipian p { margin: 0.5em 0; }
+    .yaoqing {
+      position: static !important;
+      clear: both;
+      max-width: var(--text-max);
+      margin: 0 auto 48px;
+      padding: 0 16px;
+      text-align: center;
+      line-height: 1.7;
+      font-size: 13px;          /* 桌面端小字号 */
+      color: var(--text-color);
+    }
+    .yaoqing p { margin: 0.5em 0; }
 
     /* 新增图片：默认自适应等比 —— JS 会把它的 width 设为与首图一致 */
     .photo-img {
@@ -77,6 +89,7 @@
     @media (max-width: 768px) {
       .hero-img { max-height: 45svh; }
       .kaipian { font-size: clamp(10px, 2.0vw, 12px); }
+      .yaoqing { font-size: clamp(10px, 2.0vw, 12px); }
     }
 
     /* 背景音乐按钮（自动播放受阻或用于手动控制时可见） */
@@ -116,6 +129,11 @@
     <figure class="photo">
       <img src="images/zhuanjitu.jpg" alt="转纪图" class="photo-img" id="zhuanjiImg" loading="lazy" decoding="async">
     </figure>
+    
+     <section class="yaoqing">
+      <p>“诚挚邀请您来参加婚礼”</p>
+      <p>“见证这场因爱而生的结合”</p>
+    </section>
   </main>
 
   <!-- 背景音乐：预加载与循环；是否能自动播取决于策略 -->
