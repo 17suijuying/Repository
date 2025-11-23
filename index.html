@@ -6,154 +6,223 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <style>
-    :root { --gap: 24px; --text-max: 900px; --text-color: #111; }
-    *{ box-sizing: border-box; }
-    html{ overflow-y:auto; }
-    body{ margin:0; background:#fff; font-family:system-ui,-apple-system,"Segoe UI",Roboto,"PingFang SC","Noto Sans CJK SC","Microsoft YaHei",sans-serif; line-height:1.65; color:var(--text-color); }
-    main.page{ display:flex; flex-direction:column; gap:var(--gap); }
-    figure{ margin:0; }
-    .hero,.photo{ padding:0 16px; position:static!important; }
-    .hero-img{ display:block; position:static!important; width:auto; height:auto; max-width:100%; max-height:50vh; margin:0 auto; object-fit:contain; }
-    .kaipian,.yaoqing,.guanyu,.xianglian,.jiehun,.qingjian{
-      position:static!important; clear:both; max-width:var(--text-max);
-      margin:0 auto 48px; padding:0 16px; text-align:center; line-height:1.7; font-size:13px; color:var(--text-color);
+    :root {
+      --gap: 24px;
+      --text-max: 900px;
+      --text-color: #111;
     }
-    .kaipian p,.yaoqing p,.guanyu p,.xianglian p,.jiehun p,.qingjian p{ margin:.5em 0; }
-    .photo-img{ display:block; width:auto; height:auto; max-width:100%; margin:0 auto; object-fit:contain; }
-
-    /* 左右并排区块 */
-    .split{ position:static!important; clear:both; margin:0 auto 48px; display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:center; }
-    .split-image{ display:flex; justify-content:center; }
-    .split-text{ text-align:center; line-height:1.7; font-size:13px; color:var(--text-color); padding:0 16px; }
-    .split-text p{ margin:.5em 0; }
-    .split-text h3{ margin:0 0 8px; font-weight:600; font-size:12px; opacity:.9; }
-
-    /* 倒计时 */
-    .countdown{
-      position:static!important; clear:both; margin:0 auto 48px; padding:18px 16px 20px; text-align:center; color:#3b2a2d;
-      background:linear-gradient(180deg,#FFEAF1 0%,#FFD9E7 100%); border-radius:16px; box-shadow:0 6px 18px rgba(255,120,160,.12);
+    * { box-sizing: border-box; }
+    html { overflow-y: auto; }
+    body {
+      margin: 0;
+      background: #fff;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "PingFang SC","Noto Sans CJK SC","Microsoft YaHei", sans-serif;
+      line-height: 1.65;
+      color: var(--text-color);
     }
-    .countdown h3{ margin:0 0 10px; font-size:12px; font-weight:600; letter-spacing:.1em; color:#5d3b45; }
-    .cd-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; align-items:end; justify-items:center; margin:6px 0; }
-    .cd-item{ min-width:64px; }
-    .cd-num{ display:block; font-weight:700; font-variant-numeric:tabular-nums; line-height:1.1; font-size:32px; }
-    .cd-lbl{ display:block; margin-top:4px; font-size:12px; opacity:.85; }
+    main.page { display: flex; flex-direction: column; gap: var(--gap); }
+    figure { margin: 0; }
 
-    /* 导航卡片 */
-    .nav-card{ background:#fff; border:1px solid rgba(0,0,0,.06); border-radius:16px; box-shadow:0 6px 18px rgba(0,0,0,.06); padding:20px 16px; min-height:220px; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; }
-    .nav-card h4{ margin:0 0 6px; font-size:14px; font-weight:700; letter-spacing:.02em; }
-    .nav-actions{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
-    .nav-btn,.form-btn,.btn{
-      display:inline-block; text-decoration:none; padding:10px 14px; border-radius:999px; background:#FF7AAE; color:#fff; font-size:14px; box-shadow:0 8px 18px rgba(255,122,174,.25); border:1px solid #FF7AAE; cursor:pointer;
+    .hero, .photo { padding: 0 16px; position: static !important; }
+    .hero-img {
+      display: block; position: static !important; width: auto; height: auto;
+      max-width: 100%; max-height: 50vh; margin: 0 auto; object-fit: contain;
     }
-    .nav-btn:hover,.form-btn:hover,.btn:hover{ filter:brightness(0.98); }
-    .form-btn.outline,.btn.outline{ background:#fff; color:#FF7AAE; border:1px solid #FF7AAE; box-shadow:none; }
 
-    /* 腾讯文档卡片（保留） */
+    .kaipian, .yaoqing, .guanyu, .xianglian, .jiehun, .qingjian {
+      position: static !important; clear: both; max-width: var(--text-max);
+      margin: 0 auto 48px; padding: 0 16px; text-align: center;
+      line-height: 1.7; font-size: 13px; color: var(--text-color);
+    }
+    .kaipian p, .yaoqing p, .guanyu p, .xianglian p, .jiehun p, .qingjian p { margin: 0.5em 0; }
+
+    .photo-img { display: block; width: auto; height: auto; max-width: 100%; margin: 0 auto; object-fit: contain; }
+
+    .split {
+      position: static !important; clear: both; margin: 0 auto 48px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: center;
+    }
+    .split-image { display: flex; justify-content: center; }
+    .split-text { text-align: center; line-height: 1.7; font-size: 13px; color: var(--text-color); padding: 0 16px; }
+    .split-text p { margin: 0.5em 0; }
+    .split-text h3 { margin: 0 0 8px; font-weight: 600; font-size: 12px; opacity: .9; }
+
+    .countdown {
+      position: static !important; clear: both; margin: 0 auto 48px; padding: 18px 16px 20px;
+      text-align: center; color: #3b2a2d;
+      background: linear-gradient(180deg, #FFEAF1 0%, #FFD9E7 100%);
+      border-radius: 16px; box-shadow: 0 6px 18px rgba(255, 120, 160, .12);
+    }
+    .countdown h3 { margin: 0 0 10px; font-size: 12px; font-weight: 600; letter-spacing: .1em; color: #5d3b45; }
+    .cd-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; align-items: end; justify-items: center; margin: 6px 0 6px; }
+    .cd-item { min-width: 64px; }
+    .cd-num { display: block; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.1; font-size: 32px; }
+    .cd-lbl { display: block; margin-top: 4px; font-size: 12px; opacity: .85; }
+    .cd-date { margin: 8px 0 0; font-size: 12px; opacity: .9; }
+
+    .nav-card{
+      background: #fff; border: 1px solid rgba(0,0,0,.06); border-radius: 16px;
+      box-shadow: 0 6px 18px rgba(0,0,0,.06); padding: 20px 16px; min-height: 220px;
+      display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
+    }
+    .nav-card h4{ margin: 0 0 6px; font-size: 14px; font-weight: 700; letter-spacing: .02em; }
+    .nav-actions{ display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+    .nav-btn, .form-btn{
+      display: inline-block; text-decoration: none; padding: 10px 14px; border-radius: 999px;
+      background: #FF7AAE; color: #fff; font-size: 14px; box-shadow: 0 8px 18px rgba(255,122,174,.25);
+      border: 1px solid #FF7AAE; cursor: pointer;
+    }
+    .nav-btn:hover, .form-btn:hover{ filter: brightness(0.98); }
+
+    /* 表单卡片（直填版本） */
     .form-card{
-      position:static!important; clear:both; margin:0 auto 48px; background:#fff; border:1px solid rgba(0,0,0,.06);
-      border-radius:16px; box-shadow:0 6px 18px rgba(0,0,0,.06); padding:18px 16px 16px; text-align:center;
+      position: static !important; clear: both; margin: 0 auto 48px;
+      background: #fff; border: 1px solid rgba(0,0,0,.06); border-radius: 16px;
+      box-shadow: 0 6px 18px rgba(0,0,0,.06); padding: 18px 16px 16px; text-align: center;
     }
-    .form-card h4{ margin:0 0 8px; font-size:14px; font-weight:700; }
-    .form-tip{ margin:0 0 12px; font-size:12px; opacity:.85; }
-    #tencent-embed[hidden]{ display:none; }
-    #tencent-frame{ width:100%; height:720px; border:0; border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,.06); }
-
-    /* —— 新增：原生留言板 —— */
-    .guestbook{ position:static!important; clear:both; margin:0 auto 48px; background:#fff; border:1px solid rgba(0,0,0,.06); border-radius:16px; box-shadow:0 6px 18px rgba(0,0,0,.06); padding:18px 16px 6px; }
-    .guestbook h4{ margin:0 0 8px; font-size:14px; font-weight:700; text-align:center; }
-    .gb-form{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:8px 0 12px; }
-    .gb-form .full{ grid-column:1 / -1; }
-    .input,.textarea{
-      width:100%; padding:10px 12px; border-radius:12px; border:1px solid rgba(0,0,0,.1); outline:none;
-      background:#fff; font-size:14px;
+    .form-card h4{ margin: 0 0 8px; font-size: 14px; font-weight: 700; }
+    .form-tip{ margin: 8px 0 0; font-size: 12px; opacity: .85; }
+    .form-grid{ display: grid; gap: 10px; max-width: 520px; margin: 0 auto; }
+    .input, .textarea{
+      width: 100%; padding: 10px 12px; border-radius: 12px; border: 1px solid rgba(0,0,0,.12);
+      font-size: 14px; outline: none;
     }
-    .textarea{ min-height:96px; resize:vertical; }
-    .gb-actions{ display:flex; gap:10px; justify-content:center; margin:4px 0 10px; }
-    .hint{ text-align:center; font-size:12px; opacity:.7; margin:4px 0 0; }
+    .textarea{ resize: vertical; min-height: 96px; }
 
-    .guest-list{ margin:12px 0 4px; padding-top:8px; border-top:1px dashed rgba(0,0,0,.08); }
-    .msg{ padding:10px 0; border-bottom:1px dashed rgba(0,0,0,.06); }
-    .msg:last-child{ border-bottom:0; }
-    .msg-hd{ display:flex; gap:8px; align-items:center; font-size:13px; }
-    .msg-name{ font-weight:700; }
-    .msg-count{ opacity:.8; }
-    .msg-time{ margin-left:auto; opacity:.6; font-size:12px; }
-    .msg-body{ font-size:13px; margin:6px 0 0; white-space:pre-wrap; word-break:break-word; }
+    /* 管理员查看面板 */
+    .admin-actions{ margin-top: 10px; }
+    #admin-panel[hidden]{ display:none; }
+    .admin-list{ max-width: 900px; margin: 12px auto 0; text-align: left; }
+    .admin-item{
+      border: 1px solid rgba(0,0,0,.08); border-radius: 12px; padding: 12px; margin: 8px 0;
+      box-shadow: 0 4px 12px rgba(0,0,0,.06);
+    }
+    .admin-item h5{ margin: 0 0 6px; font-size: 14px; }
+    .muted{ opacity: .7; font-size: 12px; }
 
-    /* 小屏 */
-    @media (max-width:768px){
-      .hero-img{ max-height:45svh; }
-      .kaipian,.yaoqing,.guanyu,.xianglian{ font-size:clamp(10px,2vw,12px); }
-      .split{ width:100%!important; grid-template-columns:1fr; padding:0 16px; }
-      .split-text{ font-size:clamp(10px,2vw,12px); }
-      .split-text h3{ font-size:clamp(9px,1.8vw,11px); }
-      .split-image .half-img{ width:100%!important; }
-      .cd-num{ font-size:clamp(18px,6vw,28px); }
-      .cd-lbl,.countdown h3{ font-size:clamp(10px,2vw,12px); }
-
-      .form-card,.guestbook{ width:100%!important; }
-      .gb-form{ grid-template-columns:1fr; }
+    @media (max-width: 768px) {
+      .hero-img { max-height: 45svh; }
+      .kaipian, .yaoqing, .guanyu, .xianglian { font-size: clamp(10px, 2.0vw, 12px); }
+      .split { width: 100% !important; grid-template-columns: 1fr; padding: 0 16px; }
+      .split-text h3{ font-size: clamp(9px, 1.8vw, 11px); }
+      .split-image .half-img { width: 100% !important; }
+      .cd-num{ font-size: clamp(18px, 6vw, 28px); }
+      .cd-lbl, .cd-date, .countdown h3{ font-size: clamp(10px, 2vw, 12px); }
+      .form-card{ width: 100% !important; }
     }
 
-    /* 音乐按钮 */
-    #music-toggle{ position:fixed; right:12px; bottom:12px; z-index:9999; padding:10px 12px; border:none; border-radius:999px; background:#fff; box-shadow:0 4px 16px rgba(0,0,0,.15); font-size:14px; cursor:pointer; }
-    #music-toggle[hidden]{ display:none; }
+    #music-toggle {
+      position: fixed; right: 12px; bottom: 12px; z-index: 9999;
+      padding: 10px 12px; border: none; border-radius: 999px;
+      background: #ffffff; box-shadow: 0 4px 16px rgba(0,0,0,.15); font-size: 14px; cursor: pointer;
+    }
+    #music-toggle[hidden] { display: none; }
   </style>
 </head>
 <body>
+
   <main class="page" id="love-page">
-    <figure class="hero"><img src="images/shoutu.jpg" alt="首图" class="hero-img" id="heroImg"></figure>
+    <figure class="hero">
+      <img src="images/shoutu.jpg" alt="首图" class="hero-img" id="heroImg">
+    </figure>
 
     <section class="kaipian">
-      <p>FOR YOU/给我最亲爱的你们</p><p>当你们看到这些文字的时候</p><p>已经被我们郑重加入到我们的 INVITATION LIST</p>
-      <p>如今我们决定以夫妻之名续写未来的人生</p><p>我们相恋在 2018 年的夏末</p><p>一路走来的酸甜苦辣组成了我们的故事</p>
+      <p>FOR YOU/给我最亲爱的你们</p>
+      <p>当你们看到这些文字的时候</p>
+      <p>已经被我们郑重加入到我们的 INVITATION LIST</p>
+      <p>如今我们决定以夫妻之名续写未来的人生</p>
+      <p>我们相恋在 2018 年的夏末</p>
+      <p>一路走来的酸甜苦辣组成了我们的故事</p>
     </section>
 
-    <figure class="photo"><img src="images/zhuanjitu.jpg" alt="转纪图" class="photo-img" loading="lazy" decoding="async"></figure>
-    <section class="yaoqing"><p>“诚挚邀请您来参加婚礼”</p><p>“见证这场因爱而生的结合”</p></section>
-    <figure class="photo"><img src="images/guanyuwomen.jpg" alt="关于我们" class="photo-img" loading="lazy" decoding="async"></figure>
+    <figure class="photo">
+      <img src="images/zhuanjitu.jpg" alt="转纪图" class="photo-img" loading="lazy" decoding="async">
+    </figure>
 
+    <section class="yaoqing">
+      <p>“诚挚邀请您来参加婚礼”</p>
+      <p>“见证这场因爱而生的结合”</p>
+    </section>
+
+    <figure class="photo">
+      <img src="images/guanyuwomen.jpg" alt="关于我们" class="photo-img" loading="lazy" decoding="async">
+    </figure>
+    
     <section class="guanyu">
-      <p>故事开始在2015年的夏天</p><p>高二的我们换到了同一个班级</p><p>同学 是我们之间的第一个身份</p>
-      <p>印象里 他好像有强迫症 作业工工整整 桌面干干净净</p><p>印象里 她勤奋好学 但眼神中又透露着清澈的“天真”</p>
+      <p>故事开始在2015年的夏天</p>
+      <p>高二的我们换到了同一个班级</p>
+      <p>同学 是我们之间的第一个身份</p>
+      <p>印象里 他好像有强迫症 作业工工整整 桌面干干净净</p>
+      <p>印象里 她勤奋好学 但眼神中又透露着清澈的“天真”</p>
     </section>
 
-    <figure class="photo"><img src="images/haimatichenshan.jpg" alt="海马体衬衫" class="photo-img" loading="lazy" decoding="async"></figure>
+    <figure class="photo">
+      <img src="images/haimatichenshan.jpg" alt="海马体衬衫" class="photo-img" loading="lazy" decoding="async">
+    </figure>
 
     <section class="xianglian">
-      <p>起初一人在杭州 一人在上海</p><p>从小和山到野马浜</p><p>厚厚的车票连结起两颗炽热的心</p>
-      <p>在大大的城市里留下了两人的小小足迹</p><p> </p><p>后来</p>
-      <p>一人在杭州念书</p><p>一人回温州工作</p><p>在忙碌的生活中</p>
+      <p>起初一人在杭州 一人在上海</p>
+      <p>从小和山到野马浜</p>
+      <p>厚厚的车票连结起两颗炽热的心</p>
+      <p>在大大的城市里留下了两人的小小足迹</p>
+      <p> </p>
+      <p>后来</p>
+      <p>一人在杭州念书</p>
+      <p>一人回温州工作</p>
+      <p>在忙碌的生活中</p>
       <p>每个周末的短暂相逢承载了简单的幸福与对未来的承诺</p>
     </section>
 
-    <figure class="photo"><img src="images/xiaoqunzihunshazhao.jpg" alt="小裙子婚纱照" class="photo-img" loading="lazy" decoding="async"></figure>
+    <figure class="photo">
+      <img src="images/xiaoqunzihunshazhao.jpg" alt="小裙子婚纱照" class="photo-img" loading="lazy" decoding="async">
+    </figure>
 
     <section class="split">
-      <div class="split-image"><img src="images/dinghunzhao.jpg" alt="订婚照片" class="photo-img half-img" loading="lazy" decoding="async"></div>
+      <div class="split-image">
+        <img src="images/dinghunzhao.jpg" alt="订婚照片" class="photo-img half-img" loading="lazy" decoding="async">
+      </div>
       <div class="split-text">
-        <h3>&lt; 订婚 &gt;</h3><p>2025年2月15日</p><p>我们在双方家人的见证下缔结婚约</p><p>所谓订婚</p><p>是一生相知相守的约定</p><p>愿我们成为彼此余生的依靠</p>
+        <h3>&lt; 订婚 &gt;</h3>
+        <p>2025年2月15日</p>
+        <p>我们在双方家人的见证下缔结婚约</p>
+        <p>所谓订婚</p>
+        <p>是一生相知相守的约定</p>
+        <p>愿我们成为彼此余生的依靠</p>
       </div>
     </section>
 
-    <figure class="photo"><img src="images/hunli.jpg" alt="婚礼" class="photo-img" loading="lazy" decoding="async"></figure>
+    <figure class="photo">
+      <img src="images/hunli.jpg" alt="婚礼" class="photo-img" loading="lazy" decoding="async">
+    </figure>
 
     <section class="jiehun">
-      <p>从“学生证”到“结婚证”</p><p>那个炽热的夏天在今岁初冬迎来续集</p><p>终于在2025年12月10日我们决定举办婚礼</p>
-      <p>16岁认识你，26岁嫁给你</p><p>很幸运可以与你携手度过一个又一个十年</p>
+      <p>从“学生证”到“结婚证”</p>
+      <p>那个炽热的夏天在今岁初冬迎来续集</p>
+      <p>终于在2025年12月10日我们决定举办婚礼</p>
+      <p>16岁认识你，26岁嫁给你</p>
+      <p>很幸运可以与你携手度过一个又一个十年</p>
     </section>
 
-    <figure class="photo"><img src="images/haimati.jpg" alt="海马体" class="photo-img" loading="lazy" decoding="async"></figure>
+    <figure class="photo">
+      <img src="images/haimati.jpg" alt="海马体" class="photo-img" loading="lazy" decoding="async">
+    </figure>
 
     <section class="qingjian">
-      <p>在我们无比重要的一天 携同我们的父母</p><p>诚挚的邀请您出席我们的婚礼</p><p>人生一共三万多天 很荣幸这一天</p><p>您能专程为我们而来 与我们共同分享 见证这美好时刻</p>
+      <p>在我们无比重要的一天 携同我们的父母</p>
+      <p>诚挚的邀请您出席我们的婚礼</p>
+      <p>人生一共三万多天 很荣幸这一天</p>
+      <p>您能专程为我们而来 与我们共同分享 见证这美好时刻</p>
     </section>
 
-    <figure class="photo"><img src="images/zhongshihunshazhao.jpg" alt="中式婚纱照" class="photo-img" loading="lazy" decoding="async"></figure>
-    <section class="qingjian"><p>2025年12月10日 星期三</p><p>农历十月廿一 18:00</p></section>
+    <figure class="photo">
+      <img src="images/zhongshihunshazhao.jpg" alt="中式婚纱照" class="photo-img" loading="lazy" decoding="async">
+    </figure>
 
-    <!-- 倒计时 -->
+    <section class="qingjian">
+      <p>2025年12月10日 星期三</p>
+      <p>农历十月廿一 18:00</p>
+    </section>
+
     <section class="countdown" id="countdown" data-deadline="2025-12-10T18:00:00">
       <div class="cd-grid" aria-live="polite">
         <div class="cd-item"><span class="cd-num" id="cd-days">00</span><span class="cd-lbl">天</span></div>
@@ -163,189 +232,201 @@
       </div>
     </section>
 
-    <!-- 导航 + 时间表 -->
     <section class="split">
       <div class="split-text">
         <div class="nav-card">
           <h4>婚礼酒店导航</h4>
           <div class="nav-actions">
-            <a class="nav-btn" target="_blank" rel="noopener" href="https://uri.amap.com/marker?position=120.6225,27.9637&name=%E5%A9%9A%E7%A4%BC%E9%85%92%E5%BA%97%28%E4%BE%8B%29&callnative=1">查看地图</a>
-            <a class="nav-btn" target="_blank" rel="noopener" href="https://uri.amap.com/navigation?to=120.6225,27.9637,%E5%A9%9A%E7%A4%BC%E9%85%92%E5%BA%97%28%E4%BE%8B%29&mode=car&callnative=1">打开高德导航</a>
+            <a class="nav-btn" target="_blank" rel="noopener"
+               href="https://uri.amap.com/marker?position=120.6225,27.9637&name=%E5%A9%9A%E7%A4%BC%E9%85%92%E5%BA%97%28%E4%BE%8B%29&callnative=1">查看地图</a>
+            <a class="nav-btn" target="_blank" rel="noopener"
+               href="https://uri.amap.com/navigation?to=120.6225,27.9637,%E5%A9%9A%E7%A4%BC%E9%85%92%E5%BA%97%28%E4%BE%8B%29&mode=car&callnative=1">打开高德导航</a>
           </div>
         </div>
       </div>
-      <div class="split-image"><img src="images/hunlishijianbiao.jpg" alt="婚礼时间表" class="photo-img half-img" loading="lazy" decoding="async"></div>
+      <div class="split-image">
+        <img src="images/hunlishijianbiao.jpg" alt="婚礼时间表" class="photo-img half-img" loading="lazy" decoding="async">
+      </div>
     </section>
 
-    <section class="qingjian"><p>温州城中希尔顿酒店 一楼天长地久A+B厅</p><p>温州市瓯海区瓯海大道969号</p></section>
-    <figure class="photo"><img src="images/hunlijian.jpg" alt="婚礼见" class="photo-img" loading="lazy" decoding="async"></figure>
+    <section class="qingjian">
+      <p>温州城中希尔顿酒店 一楼天长地久A+B厅</p>
+      <p>温州市瓯海区瓯海大道969号</p>
+    </section>
 
-    <!-- 腾讯文档按钮/内嵌（保留，可同时用） -->
+    <figure class="photo">
+      <img src="images/hunlijian.jpg" alt="婚礼见" class="photo-img" loading="lazy" decoding="async">
+    </figure>
+
+    <!-- 留言板 · 直填 + 管理员查看 -->
     <section class="form-card" id="rsvp">
-      <h4>留言板 · 腾讯文档收集表</h4>
-      <p class="form-tip">若更习惯腾讯文档，可用下方按钮打开或在本页内嵌填写。</p>
-      <div class="nav-actions">
-        <a class="form-btn" id="open-form" href="#" target="_blank" rel="noopener">打开留言表</a>
-        <button class="form-btn outline" id="embed-open" type="button">页内填写</button>
-        <a class="form-btn outline" id="open-results" href="#" target="_blank" rel="noopener">查看留言（管理员）</a>
-      </div>
-      <div id="tencent-embed" hidden>
-        <iframe id="tencent-frame" title="留言表单（腾讯文档）" loading="lazy" referrerpolicy="no-referrer"></iframe>
-      </div>
-    </section>
-
-    <!-- 原生表单 + 留言列表（新增，可直接显示并自动保存到后端） -->
-    <section class="guestbook" id="guestbook">
-      <h4>留言板 · 直接填写</h4>
-      <form id="gb-form" class="gb-form" autocomplete="on">
-        <input class="input" type="text" id="gb-name" name="name" placeholder="姓名" required>
-        <input class="input" type="number" id="gb-count" name="count" placeholder="人数" min="1" step="1" required>
-        <textarea class="textarea full" id="gb-message" name="message" placeholder="想说的话..." required></textarea>
-        <!-- 蜜罐防机器人（隐藏） -->
-        <input type="text" id="gb-hp" name="hp" style="position:absolute;left:-9999px;top:-9999px;" tabindex="-1" autocomplete="off">
-        <div class="gb-actions full">
-          <button class="btn" type="submit" id="gb-submit">提交留言</button>
-          <button class="btn outline" type="button" id="gb-refresh">刷新列表</button>
+      <h4>留言板 · RSVP</h4>
+      <div class="form-grid">
+        <input id="f-name" class="input" placeholder="姓名">
+        <input id="f-count" class="input" type="number" min="0" max="20" placeholder="人数">
+        <textarea id="f-msg" class="textarea" placeholder="留言"></textarea>
+        <button id="f-submit" class="form-btn" type="button">提交</button>
+        <p id="f-tip" class="form-tip"></p>
+        <div class="admin-actions">
+          <button id="admin-open" class="form-btn outline" type="button">查看留言（管理员）</button>
         </div>
-      </form>
-      <p class="hint">提交后会自动出现在下方列表（也已安全存储在服务器）。</p>
-      <div class="guest-list" id="guest-list" aria-live="polite"></div>
+      </div>
+      <div id="admin-panel" class="admin-list" hidden></div>
     </section>
 
   </main>
 
-  <!-- 背景音乐 -->
   <audio id="bgm" src="music/达尔文.mp3" preload="auto" loop></audio>
   <button id="music-toggle" hidden aria-label="播放或暂停音乐">▶ 音乐</button>
 
   <script>
-  (function(){
-    /* ===== 背景音乐 ===== */
-    const audio=document.getElementById('bgm'); const btn=document.getElementById('music-toggle');
-    function syncBtn(){ btn.textContent=audio.paused?'▶':'⏸'; }
-    function showBtn(){ if(btn.hidden) btn.hidden=false; syncBtn(); }
-    async function tryAutoplaySilently(){ try{ audio.muted=true; await audio.play(); showBtn(); }catch(e){ showBtn(); } }
-    let unlocked=false; const unlockWin=['scroll','wheel']; const unlockDoc=['pointerdown','touchstart','touchend','click','keydown'];
-    async function unlockAndPlay(){ if(unlocked) return; unlocked=true; try{ audio.muted=false; if(audio.paused) await audio.play(); } finally{ removeUnlockers(); showBtn(); } }
-    function addUnlockers(){ unlockWin.forEach(t=>window.addEventListener(t,unlockAndPlay,{passive:true})); unlockDoc.forEach(t=>document.addEventListener(t,unlockAndPlay,{passive:true})); }
-    function removeUnlockers(){ unlockWin.forEach(t=>window.removeEventListener(t,unlockAndPlay)); unlockDoc.forEach(t=>document.removeEventListener(t,unlockAndPlay)); }
-    btn.addEventListener('click', async()=>{ try{ if(audio.paused){ audio.muted=false; await audio.play(); } else { audio.pause(); } } finally{ showBtn(); }});
-    document.addEventListener('DOMContentLoaded',()=>{ tryAutoplaySilently(); addUnlockers(); });
-    document.addEventListener('visibilitychange',()=>{ if(!document.hidden && audio.paused && !unlocked) tryAutoplaySilently(); });
+  (function () {
+    /* ===== 背景音乐（自动播放 + 交互解锁） ===== */
+    const audio = document.getElementById('bgm');
+    const btn   = document.getElementById('music-toggle');
+    function syncBtn() { btn.textContent = audio.paused ? '▶' : '⏸'; }
+    function showBtn() { if (btn.hidden) btn.hidden = false; syncBtn(); }
+    async function tryAutoplaySilently() { try { audio.muted = true; await audio.play(); showBtn(); } catch (e) { showBtn(); } }
+    let unlocked = false;
+    const unlockEventsWin = ['scroll', 'wheel'];
+    const unlockEventsDoc = ['pointerdown','touchstart','touchend','click','keydown'];
+    async function unlockAndPlay() { if (unlocked) return; unlocked = true;
+      try { audio.muted = false; if (audio.paused) await audio.play(); } finally { removeUnlockers(); showBtn(); } }
+    function addUnlockers() { unlockEventsWin.forEach(t => window.addEventListener(t, unlockAndPlay, { passive: true }));
+      unlockEventsDoc.forEach(t => document.addEventListener(t, unlockAndPlay, { passive: true })); }
+    function removeUnlockers() { unlockEventsWin.forEach(t => window.removeEventListener(t, unlockAndPlay));
+      unlockEventsDoc.forEach(t => document.removeEventListener(t, unlockAndPlay)); }
+    btn.addEventListener('click', async () => { try { if (audio.paused) { audio.muted = false; await audio.play(); } else { audio.pause(); } } finally { showBtn(); } });
+    document.addEventListener('DOMContentLoaded', () => { tryAutoplaySilently(); addUnlockers(); });
+    document.addEventListener('visibilitychange', () => { if (!document.hidden && audio.paused && !unlocked) { tryAutoplaySilently(); } });
 
-    /* ===== 与首图等宽（普通图1x、半列图1/2、容器等宽） ===== */
-    const heroImg=document.getElementById('heroImg'); const selector='.photo-img';
-    function cssGap(){ const v=getComputedStyle(document.documentElement).getPropertyValue('--gap').trim(); const n=parseFloat(v); return isNaN(n)?24:n; }
-    function applyWidth(w){
-      const gap=cssGap();
-      document.querySelectorAll(selector).forEach(img=>{ img.style.width=w+'px'; img.style.height='auto'; });
-      const half=Math.max(1, Math.round((w-gap)/2));
-      document.querySelectorAll('.half-img').forEach(img=>{ img.style.width=half+'px'; img.style.height='auto'; });
-      document.querySelectorAll('.split,.countdown,.form-card,.guestbook').forEach(box=>{ box.style.width=w+'px'; });
+    /* ===== 与首图等宽：普通图=1倍，half-img=半列宽，split / countdown / form-card 等宽 ===== */
+    const heroImg  = document.getElementById('heroImg');
+    const selector = '.photo-img';
+    function cssGap() {
+      const v = getComputedStyle(document.documentElement).getPropertyValue('--gap').trim();
+      const n = parseFloat(v); return isNaN(n) ? 24 : n;
     }
-    let rafId=null;
-    function scheduleSync(){ if(rafId) return; rafId=requestAnimationFrame(()=>{ rafId=null; const rect=heroImg.getBoundingClientRect(); const w=Math.round(rect.width||0); if(w>0) applyWidth(w); }); }
-    window.addEventListener('load',scheduleSync); window.addEventListener('resize',scheduleSync); window.addEventListener('orientationchange',scheduleSync);
-    window.addEventListener('scroll',scheduleSync,{passive:true});
-    'ResizeObserver' in window && new ResizeObserver(scheduleSync).observe(heroImg);
-    if(heroImg.complete) scheduleSync(); else heroImg.addEventListener('load',scheduleSync,{once:true});
-    document.querySelectorAll(selector).forEach(img=>{ if(img.complete) scheduleSync(); else img.addEventListener('load',scheduleSync,{once:true}); });
+    function applyWidth(w) {
+      const gap = cssGap();
+      document.querySelectorAll(selector).forEach(img => { img.style.width = w + 'px'; img.style.height = 'auto'; });
+      const half = Math.max(1, Math.round((w - gap) / 2));
+      document.querySelectorAll('.half-img').forEach(img => { img.style.width = half + 'px'; img.style.height = 'auto'; });
+      document.querySelectorAll('.split, .countdown, .form-card').forEach(box => { box.style.width = w + 'px'; });
+    }
+    let rafId = null;
+    function scheduleSync() {
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = null; const rect = heroImg.getBoundingClientRect();
+        const w = Math.round(rect.width || 0); if (w > 0) applyWidth(w);
+      });
+    }
+    window.addEventListener('load', scheduleSync);
+    window.addEventListener('resize', scheduleSync);
+    window.addEventListener('orientationchange', scheduleSync);
+    window.addEventListener('scroll', scheduleSync, { passive: true });
+    if ('ResizeObserver' in window) { const ro = new ResizeObserver(scheduleSync); ro.observe(heroImg); }
+    if ('MutationObserver' in window) {
+      const mo = new MutationObserver(muts => {
+        let need = false;
+        for (const m of muts) {
+          m.addedNodes && m.addedNodes.forEach(n => {
+            if (n.nodeType === 1 && (n.matches?.(selector) || n.querySelector?.(selector) || n.matches?.('.split') || n.matches?.('.countdown') || n.matches?.('.form-card'))) {
+              need = true;
+            }
+          });
+        }
+        if (need) scheduleSync();
+      });
+      mo.observe(document.body, { childList: true, subtree: true });
+    }
+    if (heroImg.complete) scheduleSync(); else heroImg.addEventListener('load', scheduleSync, { once: true });
+    document.querySelectorAll(selector).forEach(img => { if (img.complete) scheduleSync(); else img.addEventListener('load', scheduleSync, { once: true }); });
 
     /* ===== 倒计时 ===== */
-    const cd=document.getElementById('countdown');
-    if(cd){
-      const target=new Date(cd.dataset.deadline||'2025-12-10T18:00:00');
-      const dEl=document.getElementById('cd-days'), hEl=document.getElementById('cd-hours'), mEl=document.getElementById('cd-mins'), sEl=document.getElementById('cd-secs');
-      const pad=n=>n<10?('0'+n):(''+n);
-      function tick(){
-        const now=new Date(); let diff=Math.max(0, target-now);
-        const days=Math.floor(diff/86400000); diff-=days*86400000;
-        const hours=Math.floor(diff/3600000); diff-=hours*3600000;
-        const mins=Math.floor(diff/60000); diff-=mins*60000;
-        const secs=Math.floor(diff/1000);
-        dEl.textContent=pad(days); hEl.textContent=pad(hours); mEl.textContent=pad(mins); sEl.textContent=pad(secs);
+    const cd = document.getElementById('countdown');
+    if (cd) {
+      const ds = cd.dataset.deadline || '2025-12-10T18:00:00';
+      const target = new Date(ds);
+      const dEl = document.getElementById('cd-days');
+      const hEl = document.getElementById('cd-hours');
+      const mEl = document.getElementById('cd-mins');
+      const sEl = document.getElementById('cd-secs');
+      function pad(n){ return n < 10 ? '0' + n : '' + n; }
+      function tick() {
+        const now = new Date(); let diff = Math.max(0, target - now);
+        const days  = Math.floor(diff / (1000*60*60*24)); diff -= days * (1000*60*60*24);
+        const hours = Math.floor(diff / (1000*60*60)); diff -= hours * (1000*60*60);
+        const mins  = Math.floor(diff / (1000*60)); diff -= mins * (1000*60);
+        const secs  = Math.floor(diff / 1000);
+        dEl.textContent = pad(days); hEl.textContent = pad(hours); mEl.textContent = pad(mins); sEl.textContent = pad(secs);
       }
-      tick(); setInterval(tick,1000);
+      tick(); setInterval(tick, 1000);
     }
 
-    /* ===== 腾讯文档链接/内嵌（可选） ===== */
-    const TENCENT_FORM_URL='https://docs.qq.com/form/page/DUU5MWXNuQ1NneG9G#/fill';
-    const RESULTS_URL='https://docs.qq.com/form/page/DUU5MWXNuQ1NneG9G#/result';
-    const openFormA=document.getElementById('open-form'), openResA=document.getElementById('open-results');
-    const embedBtn=document.getElementById('embed-open'), embedBox=document.getElementById('tencent-embed'), iframe=document.getElementById('tencent-frame');
-    if(TENCENT_FORM_URL && openFormA) openFormA.href=TENCENT_FORM_URL; else openFormA?.style && (openFormA.style.display='none');
-    if(RESULTS_URL && openResA) openResA.href=RESULTS_URL; else openResA?.style && (openResA.style.display='none');
-    embedBtn?.addEventListener('click',()=>{ if(!TENCENT_FORM_URL) return alert('请先设置 TENCENT_FORM_URL');
-      const hidden=embedBox.hasAttribute('hidden'); if(hidden && !iframe.src) iframe.src=TENCENT_FORM_URL;
-      hidden ? (embedBox.removeAttribute('hidden'), embedBtn.textContent='收起表单')
-             : (embedBox.setAttribute('hidden',''), embedBtn.textContent='页内填写');
-    });
-
-    /* ===== 原生留言：提交 & 列表 ===== */
-    // 如果你部署在根域，留空即可。若作为子路径部署，可设为绝对地址。
-    const BASE_URL = '';
-
-    const form=document.getElementById('gb-form');
-    const nameI=document.getElementById('gb-name');
-    const countI=document.getElementById('gb-count');
-    const msgI=document.getElementById('gb-message');
-    const hpI=document.getElementById('gb-hp');
-    const btnSubmit=document.getElementById('gb-submit');
-    const btnRefresh=document.getElementById('gb-refresh');
-    const listBox=document.getElementById('guest-list');
-
-    function fmt(ts){
-      const d=new Date(ts); const y=d.getFullYear(), m=(d.getMonth()+1+'').padStart(2,'0'), day=(d.getDate()+'').padStart(2,'0');
-      const hh=(d.getHours()+'').padStart(2,'0'), mm=(d.getMinutes()+'').padStart(2,'0');
-      return `${y}-${m}-${day} ${hh}:${mm}`;
-    }
-
-    async function loadList(){
-      try{
-        const r=await fetch(`${BASE_URL}/api/guestbook`,{cache:'no-store'});
-        const data=await r.json();
-        const arr=(data?.list||[]).slice().reverse(); // 最新在上
-        listBox.innerHTML = arr.map(item=>{
-          const safeName = (item.name||'').replace(/[<>]/g,'');
-          const safeMsg  = (item.message||'').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-          return `<div class="msg">
-            <div class="msg-hd">
-              <span class="msg-name">${safeName}</span>
-              <span class="msg-count">${item.count?` · 人数 ${item.count}`:''}</span>
-              <span class="msg-time">${fmt(item.createdAt)}</span>
-            </div>
-            <div class="msg-body">${safeMsg}</div>
-          </div>`;
-        }).join('') || '<p class="hint">还没有留言，快来第一个写下祝福吧～</p>';
-      }catch(e){
-        listBox.innerHTML='<p class="hint">留言列表加载失败，请稍后再试。</p>';
-      }
-    }
-
-    form.addEventListener('submit', async (ev)=>{
-      ev.preventDefault();
-      if(hpI.value){ return; } // 蜜罐命中，丢弃
-      const payload={ name:nameI.value.trim(), count:Number(countI.value||0), message:msgI.value.trim() };
-      if(!payload.name || !payload.count || !payload.message){ return alert('请完整填写：姓名 / 人数 / 留言'); }
-      btnSubmit.disabled=true; btnSubmit.textContent='提交中…';
-      try{
-        const r=await fetch(`${BASE_URL}/api/guestbook`,{
-          method:'POST', headers:{ 'content-type':'application/json' }, body:JSON.stringify(payload)
-        });
-        const data=await r.json();
-        if(data?.ok){
-          form.reset();
-          await loadList();
-          alert('已提交成功，感谢你的留言！');
-        }else{
-          alert('提交失败，请稍后重试。');
+    /* ===== RSVP 提交到 /api/rsvp ===== */
+    const tip = document.getElementById('f-tip');
+    const submitBtn = document.getElementById('f-submit');
+    if (submitBtn) {
+      submitBtn.addEventListener('click', async () => {
+        const name = document.getElementById('f-name').value.trim();
+        const count = document.getElementById('f-count').value;
+        const message = document.getElementById('f-msg').value.trim();
+        tip.textContent = '提交中…';
+        try {
+          const resp = await fetch('/api/rsvp', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ name, count, message })
+          });
+          const data = await resp.json();
+          if (data.ok) {
+            tip.textContent = '已收到，谢谢！';
+            document.getElementById('f-name').value = '';
+            document.getElementById('f-count').value = '';
+            document.getElementById('f-msg').value = '';
+          } else {
+            tip.textContent = '提交失败：' + (data.error || '未知错误');
+          }
+        } catch (e) {
+          tip.textContent = '网络错误，请稍后再试';
         }
-      }catch(e){ alert('网络异常，请稍后重试。'); }
-      finally{ btnSubmit.disabled=false; btnSubmit.textContent='提交留言'; }
-    });
+      });
+    }
 
-    btnRefresh.addEventListener('click', loadList);
-    loadList();
+    /* ===== 管理员查看（输入 ADMIN_KEY 拉取列表） ===== */
+    const adminBtn = document.getElementById('admin-open');
+    const adminBox = document.getElementById('admin-panel');
+    if (adminBtn) {
+      adminBtn.addEventListener('click', async () => {
+        const prev = sessionStorage.getItem('ADMIN_KEY') || '';
+        const key = prompt('请输入管理员密钥（在 Vercel 的 ADMIN_KEY）：', prev || '');
+        if (!key) return;
+        sessionStorage.setItem('ADMIN_KEY', key);
+        adminBtn.disabled = true; adminBtn.textContent = '加载中…';
+        try {
+          const resp = await fetch('/api/rsvp', { headers: { 'x-admin-key': key } });
+          const data = await resp.json();
+          if (!data.ok) throw new Error(data.error || 'Unauthorized');
+          adminBox.innerHTML = data.data.map((it, idx) => `
+            <div class="admin-item">
+              <h5>#${data.data.length - idx} · ${escapeHtml(it.name)} <span class="muted">（${it.count}人）</span></h5>
+              <div>${escapeHtml(it.message || '')}</div>
+              <div class="muted" style="margin-top:6px;">${new Date(it.time).toLocaleString()} · ${escapeHtml(it.ua || '')}</div>
+            </div>
+          `).join('') || '<div class="muted">暂无留言</div>';
+          adminBox.removeAttribute('hidden');
+          adminBtn.textContent = '刷新留言';
+        } catch (e) {
+          alert('拉取失败：' + (e.message || '未知错误'));
+          adminBtn.textContent = '查看留言（管理员）';
+        } finally {
+          adminBtn.disabled = false;
+        }
+      });
+    }
+    function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
   })();
   </script>
 </body>
