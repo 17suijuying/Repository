@@ -1,41 +1,63 @@
-// api/rsvp/submit.js
-const { kv } = require('@vercel/kv');
-
-module.exports = async (req, res) => {
-  // 简单 CORS，前后端同域其实不需要；为防以后跨域，这里放开来源
+// 保存一条留言：SET rsvp:<id> 以及 ZADD rsvp:index <ts> <key>
+export default async function handler(req, res) {
+  // CORS + no-store
+  res.setHeader('Content-Type', 'application/json; charset=utf-8');
+  res.setHeader('Cache-Control', 'no-store');
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') return res.status(204).end();
-  if (req.method !== 'POST') {
-    res.setHeader('Allow', 'POST, OPTIONS');
-    return res.status(405).end('Method Not Allowed');
+  if (req.method !== 'POST') return res.status(405).json({ ok: false, message: 'Method Not Allowed' });
+
+  const { KV_REST_API_URL, KV_REST_API_TOKEN } = process.env;
+  if (!KV_REST_API_URL || !KV_REST_API_TOKEN) {
+    console.error('KV env missing');
+    return res.status(500).json({ ok: false, message: 'KV env missing' });
   }
 
-  // 兼容 body 可能是字符串
-  const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body || {};
-  const name = (body.name || '').trim();
-  const count = Number(body.count || 0);
-  const message = (body.message || '').trim();
-
-  if (!name || count <= 0) {
-    return res.status(400).json({ ok: false, error: '姓名和人数必填，人数需大于0' });
+  let body = req.body;
+  if (typeof body === 'string') {
+    try { body = JSON.parse(body); } catch { return res.status(400).json({ ok:false, message:'Invalid JSON' }); }
   }
 
-  const row = {
-    name,
-    count,
-    message,
-    ua: req.headers['user-agent'] || '',
-    createdAt: Date.now()
+  const name = String(body?.name || '').trim().slice(0, 50);
+  const count = Math.max(1, parseInt(body?.count, 10) || 1);
+  const message = String(body?.message || '').trim().slice(0, 500);
+  if (!name || !Number.isFinite(count)) {
+    return res.status(400).json({ ok:false, message:'Name and count required' });
+  }
+
+  const ts = Date.now();
+  const id = ts.toString(36) + '-' + Math.random().toString(36).slice(2, 8);
+  const key = `rsvp:${id}`;
+  const doc = {
+    id, name, count, message,
+    createdAt: ts,
+    ip: (req.headers['x-forwarded-for'] || '').split(',')[0] || req.socket?.remoteAddress || ''
   };
 
-  const KEY = 'wedding:guestbook';      // 列表的键名
-  await kv.lpush(KEY, JSON.stringify(row));
-  await kv.ltrim(KEY, 0, 199);           // 只保留最新 200 条
+  try {
+    const r = await fetch(`${KV_REST_API_URL}/pipeline`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${KV_REST_API_TOKEN}`,
+        'Content-Type': 'application/json'
+      },
+      // 一次性执行多条命令：SET + ZADD（做时间倒序索引）
+      body: JSON.stringify([
+        ['SET', key, JSON.stringify(doc)],
+        ['ZADD', 'rsvp:index', ts, key]
+      ])
+    });
 
-  res.setHeader('Content-Type', 'application/json');
-  res.setHeader('Cache-Control', 'no-store');
-  return res.status(200).json({ ok: true });
-};
+    const data = await r.json().catch(() => ({}));
+    if (!r.ok) {
+      console.error('Upstash pipeline error (submit):', data);
+      return res.status(500).json({ ok:false, message:'KV pipeline failed' });
+    }
+    return res.status(200).json({ ok:true, id, createdAt: ts });
+  } catch (err) {
+    console.error('submit fatal:', err);
+    return res.status(500).json({ ok:false, message:'Server error' });
+  }
+}
