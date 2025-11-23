@@ -1,64 +1,67 @@
-// 读取留言列表：按 rsvp:index 倒序取 key，再 MGET 取值
-export default async function handler(req, res) {
-  res.setHeader('Content-Type', 'application/json; charset=utf-8');
-  res.setHeader('Cache-Control', 'no-store');
-  res.setHeader('Access-Control-Allow-Origin', '*');
+// api/rsvp/list.js
+import { kv } from '@vercel/kv';
 
-  const { KV_REST_API_URL, KV_REST_API_TOKEN } = process.env;
-  if (!KV_REST_API_URL || !KV_REST_API_TOKEN) {
-    console.error('KV env missing');
-    return res.status(500).json({ ok:false, message:'KV env missing' });
-  }
-
-  const limit = Math.min(200, Math.max(1, parseInt(req.query?.limit || '50', 10)));
-
+export default async function handler(_req, res) {
   try {
-    // 第一步：拿到最近的 key 列表
-    const r1 = await fetch(`${KV_REST_API_URL}/pipeline`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${KV_REST_API_TOKEN}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify([
-        ['ZREVRANGE', 'rsvp:index', '0', String(limit - 1)]
-      ])
-    });
-    const p1 = await r1.json().catch(() => null);
-    if (!r1.ok || !Array.isArray(p1)) {
-      console.error('Upstash pipeline error (zrevrange):', p1);
-      return res.status(500).json({ ok:false, message:'KV zrevrange failed' });
-    }
-    const keys = p1[0]?.result || [];
-    if (!Array.isArray(keys) || keys.length === 0) {
-      return res.status(200).json([]);
+    let items = [];
+
+    // 优先读“新结构”——ZSET 索引 + 每条记录 hgetall
+    const ids = await kv.zrange('rsvp:index', 0, -1, { rev: true }); // 最新在前
+    if (ids && ids.length) {
+      const pipeline = kv.pipeline();
+      for (const id of ids) pipeline.hgetall(`rsvp:${id}`);
+      const rows = await pipeline.exec();
+
+      items = rows
+        .map(r => r || {})
+        .filter(r => r.name)
+        .map(r => ({
+          id: r.id,
+          name: r.name,
+          count: Number(r.count || 0),
+          message: r.message || '',
+          createdAt: Number(r.createdAt || 0),
+        }));
     }
 
-    // 第二步：一次性把这些 key 的值取出来
-    const r2 = await fetch(`${KV_REST_API_URL}/pipeline`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${KV_REST_API_TOKEN}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify([
-        ['MGET', ...keys]
-      ])
-    });
-    const p2 = await r2.json().catch(() => null);
-    if (!r2.ok || !Array.isArray(p2)) {
-      console.error('Upstash pipeline error (mget):', p2);
-      return res.status(500).json({ ok:false, message:'KV mget failed' });
+    // 若上面为空，再回退读“老结构”：List 里存 JSON 字符串
+    if (!items.length) {
+      const list = await kv.lrange('rsvp:entries', 0, -1);
+      if (list?.length) {
+        items = list.map(v => {
+          const r = typeof v === 'string' ? JSON.parse(v) : v;
+          return {
+            id: r.id,
+            name: r.name,
+            count: Number(r.count || 0),
+            message: r.message || '',
+            createdAt: Number(r.createdAt || 0),
+          };
+        });
+      }
     }
 
-    const raw = p2[0]?.result || [];
-    const items = (raw || [])
-      .map(s => { try { return JSON.parse(s); } catch { return null; } })
-      .filter(Boolean);
+    // 再兜底一次（你早期可能用过的 key）
+    if (!items.length) {
+      const legacy = await kv.lrange('wedding:guestbook', 0, -1);
+      if (legacy?.length) {
+        items = legacy.map(v => (typeof v === 'string' ? JSON.parse(v) : v));
+      }
+    }
+
+    // 时间降序
+    items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+    // 禁止缓存，防止“写了但前端一直旧数据”
+    res.setHeader('Cache-Control', 'no-store, max-age=0');
+    res.setHeader('CDN-Cache-Control', 'no-store');
+    res.setHeader('Vercel-CDN-Cache-Control', 'no-store');
 
     return res.status(200).json(items);
   } catch (err) {
-    console.error('list fatal:', err);
-    return res.status(500).json({ ok:false, message:'Server error' });
+    console.error('list error', err);
+    // 为了前端不报错，这里返回空数组 + no-store
+    res.setHeader('Cache-Control', 'no-store');
+    return res.status(200).json([]);
   }
 }
