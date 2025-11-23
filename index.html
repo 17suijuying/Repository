@@ -66,7 +66,7 @@
     }
     .kaipian p,
     .yaoqing p,
-    .guanyu p{ margin: 0.5em 0; }
+    .guanyu p { margin: 0.5em 0; }
 
     /* 展示图片：默认自适应等比 —— JS 会把它的 width 设为与首图一致 */
     .photo-img {
@@ -129,7 +129,7 @@
       <p>“见证这场因爱而生的结合”</p>
     </section>
 
-    <!-- 新增：第二张内容图（与首图等宽，等比例不变形） -->
+    <!-- 第二张内容图（已存在） -->
     <figure class="photo">
       <img src="images/guanyuwomen.jpg" alt="关于我们" class="photo-img" loading="lazy" decoding="async">
     </figure>
@@ -141,6 +141,11 @@
       <p>印象里 他好像有强迫症 作业工工整整 桌面干干净净</p>
       <p>印象里 她勤奋好学 但眼神中又透露着清澈的“天真”</p>
     </section>
+
+    <!-- 新增：在“guanyu”文字段落下方增加第三张内容图 -->
+    <figure class="photo">
+      <img src="images/haimatichenshan.jpg" alt="海马体衬衫" class="photo-img" loading="lazy" decoding="async">
+    </figure>
   </main>
 
   <!-- 背景音乐：预加载与循环；是否能自动播取决于策略 -->
@@ -178,55 +183,4 @@
       }
       function removeUnlockers() {
         unlockEventsWin.forEach(t => window.removeEventListener(t, unlockAndPlay));
-        unlockEventsDoc.forEach(t => document.removeEventListener(t, unlockAndPlay));
-      }
-
-      btn.addEventListener('click', async () => {
-        try { if (audio.paused) { audio.muted = false; await audio.play(); } else { audio.pause(); } }
-        finally { showBtn(); }
-      });
-
-      document.addEventListener('DOMContentLoaded', () => {
-        tryAutoplaySilently();
-        addUnlockers();
-      });
-      document.addEventListener('visibilitychange', () => {
-        if (!document.hidden && audio.paused && !unlocked) { tryAutoplaySilently(); }
-      });
-
-      // ===== 让所有 .photo-img 与首图等宽（等比例不变形） =====
-      const heroImg = document.getElementById('heroImg');
-      const photoImgs = Array.from(document.querySelectorAll('.photo-img'));
-
-      function syncPhotoWidths() {
-        const w = Math.round(heroImg.getBoundingClientRect().width || 0);
-        if (w > 0) {
-          photoImgs.forEach(img => {
-            img.style.width = w + 'px';
-            img.style.height = 'auto';
-          });
-        }
-      }
-
-      function rafSync() {
-        window.requestAnimationFrame(syncPhotoWidths);
-      }
-
-      // 首图和所有内容图加载后都同步一次（考虑缓存）
-      if (heroImg.complete) rafSync(); else heroImg.addEventListener('load', rafSync, { once: true });
-      photoImgs.forEach(img => {
-        if (img.complete) rafSync();
-        else img.addEventListener('load', rafSync, { once: true });
-      });
-
-      // 视口和方向变化时同步；滚动时在首图可见范围内也同步
-      window.addEventListener('resize', rafSync);
-      window.addEventListener('orientationchange', rafSync);
-      window.addEventListener('scroll', () => {
-        const rect = heroImg.getBoundingClientRect();
-        if (rect.bottom > 0 && rect.top < window.innerHeight) rafSync();
-      }, { passive: true });
-    })();
-  </script>
-</body>
-</html>
+        unlockEventsDoc.forEach(t => document.removeEventListener(t, unlockAnd
