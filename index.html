@@ -9,7 +9,7 @@
     /* 颜色与布局参数 */
     :root {
       --gap: 24px;        /* 图片与文字的间距 */
-      --text-max: 900px;  /* 文字区域最大宽度 */
+      --text-max: 900px;  /* 文字区域最大宽度（仅用于文字） */
       --text-color: #111; /* 接近黑色的深灰 */
     }
 
@@ -31,24 +31,25 @@
 
     figure { margin: 0; }
 
-    .hero {
+    /* 首图外层与下图外层都只做左右内边距，不限制宽度，确保两者基准一致 */
+    .hero,
+    .photo {
       padding: 0 16px;
       position: static !important;
     }
 
-    /* 图片最多半屏高（桌面），等比显示、不变形 */
+    /* 首图：最多半屏高，等比显示、不变形，水平居中 */
     .hero-img {
       display: block;
       position: static !important;
       width: auto;
       height: auto;
       max-width: 100%;
-      max-height: 50vh;   /* 桌面端半屏 */
+      max-height: 50vh;   /* 桌面端：半屏高上限 */
       margin: 0 auto;
       object-fit: contain;
     }
-
-    /* 文字区（桌面端）：小字号 + 深灰色 */
+    /* 文字区（桌面端）：小字号 + 深灰色，仅限制文字最大宽度 */
     .kaipian {
       position: static !important;
       clear: both;
@@ -62,25 +63,19 @@
     }
     .kaipian p { margin: 0.5em 0; }
 
-    /* 新增：下方展示图片的容器与图片样式 */
-    .photo {
-      max-width: var(--text-max);
-      margin: 0 auto 48px;   /* 与文字保持一致的底部间距 */
-      padding: 0 16px;
-      position: static !important;
-    }
+    /* 新增图片：默认自适应等比 —— JS 会把它的 width 设为与首图一致 */
     .photo-img {
       display: block;
-      width: 100%;
-      height: auto;          /* 等比例，不变形 */
+      width: auto;       /* 将由 JS 设置为与首图等宽 */
+      height: auto;      /* 等比例，不变形 */
+      max-width: 100%;   /* 小屏下仍不超过视口 */
       margin: 0 auto;
-      object-fit: contain;   /* 保险：即使被同时设置宽高也不拉伸 */
+      object-fit: contain;
     }
 
-    /* 移动端：更小字号，并把图片高度再保守一点 */
+    /* 移动端：更小字号，并把首图高度更保守 */
     @media (max-width: 768px) {
       .hero-img { max-height: 45svh; }
-      /* 再缩小：最小 10px，最大 12px，自适应 */
       .kaipian { font-size: clamp(10px, 2.0vw, 12px); }
     }
 
@@ -105,7 +100,7 @@
 
   <main class="page" id="love-page">
     <figure class="hero">
-      <img src="images/shoutu.jpg" alt="首图" class="hero-img">
+      <img src="images/shoutu.jpg" alt="首图" class="hero-img" id="heroImg">
     </figure>
 
     <section class="kaipian">
@@ -117,9 +112,9 @@
       <p>一路走来的酸甜苦辣组成了我们的故事</p>
     </section>
 
-    <!-- 新增：下方展示图片框 -->
+    <!-- 新增：下方展示图片框（与首图等宽，JS 同步） -->
     <figure class="photo">
-      <img src="images/zhuanjitu.jpg" alt="专辑图" class="photo-img" loading="lazy" decoding="async">
+      <img src="images/zhuanjitu.jpg" alt="转纪图" class="photo-img" id="zhuanjiImg" loading="lazy" decoding="async">
     </figure>
   </main>
 
@@ -129,32 +124,18 @@
 
   <script>
     (function () {
+      // ===== 背景音乐（自动播放 + 交互解锁） =====
       const audio = document.getElementById('bgm');
       const btn   = document.getElementById('music-toggle');
 
-      // —— 工具方法 ——
-      function syncBtn() {
-        btn.textContent = audio.paused ? '▶' : '⏸';
-      }
-      function showBtn() {
-        if (btn.hidden) btn.hidden = false;
-        syncBtn();
-      }
+      function syncBtn() { btn.textContent = audio.paused ? '▶' : '⏸'; }
+      function showBtn() { if (btn.hidden) btn.hidden = false; syncBtn(); }
 
-      // —— 自动播放尝试（不依赖用户手势）——
       async function tryAutoplaySilently() {
-        try {
-          // 一些浏览器需要 muted 才能自动播放；我们先静音启动，后续再解锁
-        audio.muted = true;
-          await audio.play();
-          showBtn();
-        } catch (e) {
-          // 直接失败也没关系，等待用户交互再播
-          showBtn();
-        }
+        try { audio.muted = true; await audio.play(); showBtn(); }
+        catch (e) { showBtn(); }
       }
 
-      // —— 通过“用户交互”解锁：包含滑动/滚轮/触摸/点击/键盘 —— 
       let unlocked = false;
       const unlockEventsWin = ['scroll', 'wheel'];
       const unlockEventsDoc = ['pointerdown','touchstart','touchend','click','keydown'];
@@ -162,17 +143,8 @@
       async function unlockAndPlay() {
         if (unlocked) return;
         unlocked = true;
-
-        // 尝试取消静音并播放（在同一事件调用栈内完成，满足策略）
-        try {
-          audio.muted = false;
-          if (audio.paused) await audio.play();
-        } catch (e) {
-          // 某些情况下仍可能失败，保留按钮供用户点
-        } finally {
-          removeUnlockers();
-          showBtn();
-        }
+        try { audio.muted = false; if (audio.paused) await audio.play(); }
+        finally { removeUnlockers(); showBtn(); }
       }
 
       function addUnlockers() {
@@ -184,32 +156,50 @@
         unlockEventsDoc.forEach(t => document.removeEventListener(t, unlockAndPlay));
       }
 
-      // —— 手动按钮控制 —— 
       btn.addEventListener('click', async () => {
-        try {
-          if (audio.paused) {
-            audio.muted = false;
-            await audio.play();
-          } else {
-            audio.pause();
-          }
-        } finally {
-          showBtn();
-        }
+        try { if (audio.paused) { audio.muted = false; await audio.play(); } else { audio.pause(); } }
+        finally { showBtn(); }
       });
 
-      // 启动：先静音尝试自动播；不论成功与否，都挂载解锁器以便“滑动/滚动”等交互触发有声播放
       document.addEventListener('DOMContentLoaded', () => {
         tryAutoplaySilently();
         addUnlockers();
       });
-
-      // 从后台回前台时再试一次（有时策略会放宽）
       document.addEventListener('visibilitychange', () => {
-        if (!document.hidden && audio.paused && !unlocked) {
-          tryAutoplaySilently();
-        }
+        if (!document.hidden && audio.paused && !unlocked) { tryAutoplaySilently(); }
       });
+
+      // ===== 新图宽度与首图对齐 =====
+      const heroImg   = document.getElementById('heroImg');
+      const zhuanjiImg = document.getElementById('zhuanjiImg');
+
+      function syncPhotoWidth() {
+        // 读取首图“实际显示宽度”，让新图等宽；高度auto保证等比例不变形
+        const w = Math.round(heroImg.getBoundingClientRect().width || 0);
+        if (w > 0) {
+          zhuanjiImg.style.width = w + 'px';
+          zhuanjiImg.style.height = 'auto';
+        }
+      }
+
+      // 在这些时机同步：首图加载完成、页面加载、窗口尺寸/方向变化、滚动条显示变化等
+      function rafSync() {
+        // 使用 rAF 合批，避免频繁计算
+        window.requestAnimationFrame(syncPhotoWidth);
+      }
+
+      // 首图与新图加载后都同步一次（考虑缓存）
+      if (heroImg.complete) rafSync(); else heroImg.addEventListener('load', rafSync, { once: true });
+      if (zhuanjiImg.complete) rafSync(); else zhuanjiImg.addEventListener('load', rafSync, { once: true });
+
+      window.addEventListener('resize', rafSync);
+      window.addEventListener('orientationchange', rafSync);
+      // 有些浏览器地址栏收起/展开会影响 vh，滚动时也尝试同步一次
+      window.addEventListener('scroll', () => {
+        // 仅在首图可见时同步，避免无谓计算
+        const rect = heroImg.getBoundingClientRect();
+        if (rect.bottom > 0 && rect.top < window.innerHeight) rafSync();
+      }, { passive: true });
     })();
   </script>
 </body>
