@@ -1,0 +1,1 @@
+api/rsvp/list.js
