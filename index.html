@@ -50,7 +50,7 @@
       object-fit: contain;
     }
 
-    /* 文字区（桌面端）：与之前保持一致 */
+    /* 文字区（桌面端） */
     .kaipian,
     .yaoqing,
     .guanyu,
@@ -64,7 +64,7 @@
       padding: 0 16px;
       text-align: center;
       line-height: 1.7;
-      font-size: 13px;          /* 桌面端小字号 */
+      font-size: 13px;
       color: var(--text-color);
     }
     .kaipian p,
@@ -88,7 +88,7 @@
     .split {
       position: static !important;
       clear: both;
-      margin: 0 auto 48px;         /* 与其它区块统一的底部间距 */
+      margin: 0 auto 48px;
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 24px;
@@ -96,7 +96,7 @@
     }
     .split-image { display: flex; justify-content: center; }
     .split-text{
-      text-align: center;          /* 与 .xianglian 一致 */
+      text-align: center;
       line-height: 1.7;
       font-size: 13px;
       color: var(--text-color);
@@ -106,7 +106,7 @@
     .split-text h3{
       margin: 0 0 8px;
       font-weight: 600;
-      font-size: 12px;             /* “< 订婚 >”更小 */
+      font-size: 12px;   /* “< 订婚 >”更小 */
       opacity: .9;
     }
 
@@ -117,14 +117,14 @@
       margin: 0 auto 48px;
       padding: 18px 16px 20px;
       text-align: center;
-      color: #3b2a2d; /* 在浅粉背景上保持可读 */
+      color: #3b2a2d;
       background: linear-gradient(180deg, #FFEAF1 0%, #FFD9E7 100%);
       border-radius: 16px;
       box-shadow: 0 6px 18px rgba(255, 120, 160, .12);
     }
     .countdown h3{
       margin: 0 0 10px;
-      font-size: 12px;   /* 克制的小标题 */
+      font-size: 12px;
       font-weight: 600;
       letter-spacing: .1em;
       color: #5d3b45;
@@ -168,18 +168,13 @@
       font-weight: 700;
       letter-spacing: .02em;
     }
-    .nav-address{
-      font-size: 12px;
-      opacity: .8;
-      margin: 0 0 14px;
-    }
     .nav-actions{
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
       justify-content: center;
     }
-    .nav-btn{
+    .nav-btn, .form-btn{
       display: inline-block;
       text-decoration: none;
       padding: 10px 14px;
@@ -188,8 +183,54 @@
       color: #fff;
       font-size: 14px;
       box-shadow: 0 8px 18px rgba(255,122,174,.25);
+      border: 1px solid #FF7AAE;
+      cursor: pointer;
     }
-    .nav-btn:hover{ filter: brightness(0.98); }
+    .nav-btn:hover, .form-btn:hover{ filter: brightness(0.98); }
+
+    /* —— 新增：留言表单“腾讯文档”卡片 —— */
+    .form-card{
+      position: static !important;
+      clear: both;
+      margin: 0 auto 48px;
+      background: #fff;
+      border: 1px solid rgba(0,0,0,.06);
+      border-radius: 16px;
+      box-shadow: 0 6px 18px rgba(0,0,0,.06);
+      padding: 18px 16px 16px;
+      text-align: center;
+    }
+    .form-card h4{
+      margin: 0 0 8px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .form-tip{
+      margin: 0 0 12px;
+      font-size: 12px;
+      opacity: .85;
+    }
+    .form-actions{
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .form-btn.outline{
+      background: #fff;
+      color: #FF7AAE;
+      border: 1px solid #FF7AAE;
+      box-shadow: none;
+    }
+    #tencent-embed[hidden]{ display: none; }
+    #tencent-frame{
+      width: 100%;
+      height: 720px;
+      border: 0;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0,0,0,.06);
+    }
 
     /* 移动端适配 */
     @media (max-width: 768px) {
@@ -202,14 +243,16 @@
       .split {
         width: 100% !important;           /* 覆盖 JS 设宽 */
         grid-template-columns: 1fr;       /* 改为单列 */
-        padding: 0 16px;                  /* 与其他区块统一边距 */
+        padding: 0 16px;
       }
       .split-text{ font-size: clamp(10px, 2.0vw, 12px); }
       .split-text h3{ font-size: clamp(9px, 1.8vw, 11px); }
-      .split-image .half-img { width: 100% !important; } /* 覆盖内联宽度 */
+      .split-image .half-img { width: 100% !important; }
 
       .cd-num{ font-size: clamp(18px, 6vw, 28px); }
       .cd-lbl, .cd-date, .countdown h3{ font-size: clamp(10px, 2vw, 12px); }
+
+      .form-card{ width: 100% !important; }
     }
 
     /* 背景音乐按钮 */
@@ -289,7 +332,7 @@
       <img src="images/xiaoqunzihunshazhao.jpg" alt="小裙子婚纱照" class="photo-img" loading="lazy" decoding="async">
     </figure>
 
-    <!-- 左图右文（图片=首图宽度的1/2；文字样式与 .xianglian 一致） -->
+    <!-- 左图右文 -->
     <section class="split">
       <div class="split-image">
         <img src="images/dinghunzhao.jpg" alt="订婚照片" class="photo-img half-img" loading="lazy" decoding="async">
@@ -336,7 +379,7 @@
       <p>农历十月廿一 18:00</p>
     </section>
 
-    <!-- 粉色倒计时模块（与首图等宽） -->
+    <!-- 粉色倒计时模块 -->
     <section class="countdown" id="countdown" data-deadline="2025-12-10T18:00:00">
       <div class="cd-grid" aria-live="polite">
         <div class="cd-item">
@@ -358,7 +401,7 @@
       </div>
     </section>
 
-    <!-- 倒计时下方：高德导航 + 时间表 -->
+    <!-- 倒计时下方：左右并排（左=高德导航，右=婚礼时间表图片） -->
     <section class="split">
       <div class="split-text">
         <div class="nav-card">
@@ -389,28 +432,22 @@
       <img src="images/hunlijian.jpg" alt="婚礼见" class="photo-img" loading="lazy" decoding="async">
     </figure>
 
-    <!-- 新增：飞书表单（方案A，零后端） -->
-    <section class="split" id="lark-form-embed">
-      <!-- 左侧：说明 + 新窗口打开按钮 -->
-      <div class="split-text">
-        <div class="nav-card">
-          <h4>在线 RSVP / 留言</h4>
-          <p class="nav-address">提交后将直接写入我们的飞书多维表格</p>
-          <div class="nav-actions">
-            <a id="larkFormLink" class="nav-btn" href="#" target="_blank" rel="noopener">在新窗口打开</a>
-          </div>
-        </div>
+    <!-- ===== 新增：留言板（腾讯文档收集表） ===== -->
+    <section class="form-card" id="rsvp">
+      <h4>留言板 · RSVP</h4>
+      <p class="form-tip">点击下方按钮打开腾讯文档收集表，填写<strong>姓名、人数、留言</strong>进行提交；也可选择在本页内嵌填写。</p>
+      <div class="form-actions">
+        <!-- 将下面链接替换为你的腾讯文档“收集表”公开链接 -->
+        <a class="form-btn" id="open-form" href="#" target="_blank" rel="noopener">打开留言表</a>
+        <button class="form-btn outline" id="embed-open" type="button">页内填写</button>
+        <!-- 如需管理员查看结果，把 RESULTS_URL 填好并保留此按钮；不需要可删除 -->
+        <a class="form-btn outline" id="open-results" href="#" target="_blank" rel="noopener">查看留言（管理员）</a>
       </div>
-      <!-- 右侧：内嵌飞书表单 -->
-      <div class="split-image" style="width:100%">
-        <iframe id="larkFormFrame"
-                title="飞书表单"
-                src=""
-                style="width:100%; height:560px; border:0; border-radius:16px; box-shadow:0 6px 18px rgba(0,0,0,.06);"
-                loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      <div id="tencent-embed" hidden>
+        <iframe id="tencent-frame" title="留言表单（腾讯文档）" loading="lazy" referrerpolicy="no-referrer"></iframe>
       </div>
     </section>
-    
+
   </main>
 
   <!-- 背景音乐 -->
@@ -419,9 +456,6 @@
 
   <script>
   (function () {
-    /* ===== 在这里写入你的飞书表单共享链接（已替换） ===== */
-    const LARK_FORM_URL = 'https://kcn158yc8xa8.feishu.cn/base/Q46DbJD92aU1b8ssFiJcFBeBnBg?table=tblrCquNhkxfMTAW&view=vewRspXYu6';
-
     /* ===== 背景音乐（自动播放 + 交互解锁） ===== */
     const audio = document.getElementById('bgm');
     const btn   = document.getElementById('music-toggle');
@@ -462,32 +496,19 @@
     document.addEventListener('DOMContentLoaded', () => {
       tryAutoplaySilently();
       addUnlockers();
-
-      // 同步飞书表单链接到按钮与 iframe
-      const link = document.getElementById('larkFormLink');
-      const frame = document.getElementById('larkFormFrame');
-      if (LARK_FORM_URL && /^https?:\/\//i.test(LARK_FORM_URL)) {
-        link.href = LARK_FORM_URL;
-        frame.src = LARK_FORM_URL;
-      } else {
-        // 未配置链接时：隐藏 iframe，仅保留按钮（避免空白框）
-        frame.parentElement.style.display = 'none';
-        link.textContent = '打开飞书表单（请先配置链接）';
-      }
     });
-
     document.addEventListener('visibilitychange', () => {
       if (!document.hidden && audio.paused && !unlocked) { tryAutoplaySilently(); }
     });
 
-    /* ===== 与首图等宽：普通图=1倍，half-img=半列宽，split 与 countdown 容器等宽 ===== */
+    /* ===== 与首图等宽：普通图=1倍，half-img=半列宽，split / countdown / form-card 容器等宽 ===== */
     const heroImg  = document.getElementById('heroImg');
     const selector = '.photo-img';
 
     function cssGap() {
       const v = getComputedStyle(document.documentElement).getPropertyValue('--gap').trim();
       const n = parseFloat(v);
-      return isNaN(n) ? 24 : n;  /* 默认 24px */
+      return isNaN(n) ? 24 : n;
     }
 
     function applyWidth(w) {
@@ -506,8 +527,8 @@
         img.style.height = 'auto';
       });
 
-      // 3) 容器：split 和 countdown 与首图等宽并居中
-      document.querySelectorAll('.split, .countdown').forEach(box => {
+      // 3) 容器：split / countdown / form-card 与首图等宽并居中
+      document.querySelectorAll('.split, .countdown, .form-card').forEach(box => {
         box.style.width = w + 'px';
       });
     }
@@ -537,7 +558,13 @@
         let need = false;
         for (const m of muts) {
           m.addedNodes && m.addedNodes.forEach(n => {
-            if (n.nodeType === 1 && (n.matches?.(selector) || n.querySelector?.(selector) || n.matches?.('.split') || n.matches?.('.countdown'))) {
+            if (n.nodeType === 1 && (
+                n.matches?.(selector) ||
+                n.querySelector?.(selector) ||
+                n.matches?.('.split') ||
+                n.matches?.('.countdown') ||
+                n.matches?.('.form-card')
+              )) {
               need = true;
             }
           });
@@ -591,6 +618,45 @@
 
       tick();
       const timer = setInterval(tick, 1000);
+    }
+
+    /* ===== 腾讯文档收集表：链接与内嵌 ===== */
+    // TODO：把下面两个链接换成你的腾讯文档地址
+    const TENCENT_FORM_URL   = 'https://docs.qq.com/form/xxxxxxxxxxxxxxxx'; // 收集表公开链接
+    const RESULTS_URL        = ''; // （可选）管理员结果查看链接；无则留空
+
+    const openFormA = document.getElementById('open-form');
+    const openResA  = document.getElementById('open-results');
+    const embedBtn  = document.getElementById('embed-open');
+    const embedBox  = document.getElementById('tencent-embed');
+    const iframe    = document.getElementById('tencent-frame');
+
+    // 按钮链接赋值（如果没填就隐藏按钮）
+    if (TENCENT_FORM_URL && openFormA) {
+      openFormA.href = TENCENT_FORM_URL;
+    } else if (openFormA) {
+      openFormA.style.display = 'none';
+    }
+    if (RESULTS_URL && openResA) {
+      openResA.href = RESULTS_URL;
+    } else if (openResA) {
+      openResA.style.display = 'none';
+    }
+
+    // 内嵌开关：第一次展开时再设置 iframe.src
+    if (embedBtn) {
+      embedBtn.addEventListener('click', () => {
+        if (!TENCENT_FORM_URL) return alert('请先在代码中设置 TENCENT_FORM_URL');
+        const hidden = embedBox.hasAttribute('hidden');
+        if (hidden && !iframe.src) iframe.src = TENCENT_FORM_URL;
+        if (hidden) {
+          embedBox.removeAttribute('hidden');
+          embedBtn.textContent = '收起表单';
+        } else {
+          embedBox.setAttribute('hidden','');
+          embedBtn.textContent = '页内填写';
+        }
+      });
     }
   })();
   </script>
