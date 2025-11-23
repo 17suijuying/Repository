@@ -6,73 +6,176 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <style>
-    :root { --gap: 24px; --text-max: 900px; --text-color: #111; }
+    :root {
+      --gap: 24px;
+      --text-max: 900px;
+      --text-color: #111;
+      /* 当 JS 还未计算到首图宽度时的兜底：容器最多 100% 视口宽 */
+      --heroW: 100%;
+    }
     * { box-sizing: border-box; }
     html { overflow-y: auto; }
     body {
-      margin: 0; background: #fff;
+      margin: 0;
+      background: #fff;
       font-family: system-ui, -apple-system, "Segoe UI", Roboto, "PingFang SC","Noto Sans CJK SC","Microsoft YaHei", sans-serif;
-      line-height: 1.65; color: var(--text-color);
+      line-height: 1.65;
+      color: var(--text-color);
     }
+
     main.page { display: flex; flex-direction: column; gap: var(--gap); }
     figure { margin: 0; }
 
-    .hero, .photo { padding: 0 16px; position: static !important; }
-    .hero-img {
-      display: block; position: static !important; width: auto; height: auto;
-      max-width: 100%; max-height: 50vh; margin: 0 auto; object-fit: contain;
+    /* 这些区块以首图显示宽度为上限，居中 */
+    .hero, .photo, .split, .countdown, .form-card {
+      padding: 0 16px;
+      position: static !important;
+      max-width: var(--heroW);
+      margin-left: auto;
+      margin-right: auto;
     }
 
+    /* 首图：等比，最高占视口一半高 */
+    .hero-img {
+      display: block;
+      position: static !important;
+      width: 100%;
+      height: auto;
+      max-height: 50vh;
+      margin: 0 auto;
+      object-fit: contain;
+    }
+
+    /* 文字区块样式 */
     .kaipian, .yaoqing, .guanyu, .xianglian, .jiehun, .qingjian {
-      position: static !important; clear: both; max-width: var(--text-max);
-      margin: 0 auto 48px; padding: 0 16px; text-align: center;
-      line-height: 1.7; font-size: 13px; color: var(--text-color);
+      position: static !important;
+      clear: both;
+      max-width: var(--text-max);
+      margin: 0 auto 48px;
+      padding: 0 16px;
+      text-align: center;
+      line-height: 1.7;
+      font-size: 13px;
+      color: var(--text-color);
     }
     .kaipian p, .yaoqing p, .guanyu p, .xianglian p, .jiehun p, .qingjian p { margin: 0.5em 0; }
 
-    .photo-img { display: block; width: auto; height: auto; max-width: 100%; margin: 0 auto; object-fit: contain; }
+    /* 所有内容图：等比缩放、占满各自容器宽度 */
+    .photo-img {
+      display: block;
+      width: 100%;
+      height: auto;
+      margin: 0 auto;
+      object-fit: contain;
+    }
 
+    /* 左右排版（两列） */
     .split {
-      position: static !important; clear: both; margin: 0 auto 48px;
-      display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: center;
+      clear: both;
+      margin: 0 auto 48px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: center;
     }
-    .split-image { display: flex; justify-content: center; }
-    .split-text { text-align: center; line-height: 1.7; font-size: 13px; color: var(--text-color); padding: 0 16px; }
-    .split-text p { margin: 0.5em 0; }
-    .split-text h3 { margin: 0 0 8px; font-weight: 600; font-size: 12px; opacity: .9; }
+    .split-image { display: block; } /* 不再强制 flex，让 img 100% 填满列宽 */
+    .split-text{
+      text-align: center;
+      line-height: 1.7;
+      font-size: 13px;
+      color: var(--text-color);
+      padding: 0 16px;
+    }
+    .split-text p{ margin: 0.5em 0; }
+    .split-text h3{
+      margin: 0 0 8px;
+      font-weight: 600;
+      font-size: 12px;
+      opacity: .9;
+    }
 
+    /* 倒计时样式 */
     .countdown {
-      position: static !important; clear: both; margin: 0 auto 48px; padding: 18px 16px 20px;
-      text-align: center; color: #3b2a2d;
+      clear: both;
+      margin: 0 auto 48px;
+      padding: 18px 16px 20px;
+      text-align: center;
+      color: #3b2a2d;
       background: linear-gradient(180deg, #FFEAF1 0%, #FFD9E7 100%);
-      border-radius: 16px; box-shadow: 0 6px 18px rgba(255, 120, 160, .12);
+      border-radius: 16px;
+      box-shadow: 0 6px 18px rgba(255, 120, 160, .12);
     }
-    .countdown h3 { margin: 0 0 10px; font-size: 12px; font-weight: 600; letter-spacing: .1em; color: #5d3b45; }
-    .cd-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; align-items: end; justify-items: center; margin: 6px 0 6px; }
-    .cd-item { min-width: 64px; }
-    .cd-num { display: block; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.1; font-size: 32px; }
-    .cd-lbl { display: block; margin-top: 4px; font-size: 12px; opacity: .85; }
-    .cd-date { margin: 8px 0 0; font-size: 12px; opacity: .9; }
+    .countdown h3{
+      margin: 0 0 10px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .1em;
+      color: #5d3b45;
+    }
+    .cd-grid{
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      align-items: end;
+      justify-items: center;
+      margin: 6px 0 6px;
+    }
+    .cd-item{ min-width: 64px; }
+    .cd-num{
+      display: block;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.1;
+      font-size: 32px;
+    }
+    .cd-lbl{ display: block; margin-top: 4px; font-size: 12px; opacity: .85; }
+    .cd-date{ margin: 8px 0 0; font-size: 12px; opacity: .9; }
 
+    /* 导航卡片按钮样式复用 */
     .nav-card{
-      background: #fff; border: 1px solid rgba(0,0,0,.06); border-radius: 16px;
-      box-shadow: 0 6px 18px rgba(0,0,0,.06); padding: 20px 16px; min-height: 220px;
-      display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
+      background: #fff;
+      border: 1px solid rgba(0,0,0,.06);
+      border-radius: 16px;
+      box-shadow: 0 6px 18px rgba(0,0,0,.06);
+      padding: 20px 16px;
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
     }
-    .nav-card h4{ margin: 0 0 6px; font-size: 14px; font-weight: 700; letter-spacing: .02em; }
+    .nav-card h4{
+      margin: 0 0 6px;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: .02em;
+    }
     .nav-actions{ display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
     .nav-btn, .form-btn{
-      display: inline-block; text-decoration: none; padding: 10px 14px; border-radius: 999px;
-      background: #FF7AAE; color: #fff; font-size: 14px; box-shadow: 0 8px 18px rgba(255,122,174,.25);
-      border: 1px solid #FF7AAE; cursor: pointer;
+      display: inline-block;
+      text-decoration: none;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: #FF7AAE;
+      color: #fff;
+      font-size: 14px;
+      box-shadow: 0 8px 18px rgba(255,122,174,.25);
+      border: 1px solid #FF7AAE;
+      cursor: pointer;
     }
     .nav-btn:hover, .form-btn:hover{ filter: brightness(0.98); }
 
-    /* 表单卡片（直填版本） */
+    /* 留言表单卡片（直填版本） */
     .form-card{
-      position: static !important; clear: both; margin: 0 auto 48px;
-      background: #fff; border: 1px solid rgba(0,0,0,.06); border-radius: 16px;
-      box-shadow: 0 6px 18px rgba(0,0,0,.06); padding: 18px 16px 16px; text-align: center;
+      clear: both;
+      margin: 0 auto 48px;
+      background: #fff;
+      border: 1px solid rgba(0,0,0,.06);
+      border-radius: 16px;
+      box-shadow: 0 6px 18px rgba(0,0,0,.06);
+      padding: 18px 16px 16px;
+      text-align: center;
     }
     .form-card h4{ margin: 0 0 8px; font-size: 14px; font-weight: 700; }
     .form-tip{ margin: 8px 0 0; font-size: 12px; opacity: .85; }
@@ -80,18 +183,25 @@
     @media (max-width: 768px) {
       .hero-img { max-height: 45svh; }
       .kaipian, .yaoqing, .guanyu, .xianglian { font-size: clamp(10px, 2.0vw, 12px); }
-      .split { width: 100% !important; grid-template-columns: 1fr; padding: 0 16px; }
+      .split { grid-template-columns: 1fr; }
       .split-text h3{ font-size: clamp(9px, 1.8vw, 11px); }
-      .split-image .half-img { width: 100% !important; }
       .cd-num{ font-size: clamp(18px, 6vw, 28px); }
       .cd-lbl, .cd-date, .countdown h3{ font-size: clamp(10px, 2vw, 12px); }
-      .form-card{ width: 100% !important; }
     }
 
+    /* 背景音乐按钮 */
     #music-toggle {
-      position: fixed; right: 12px; bottom: 12px; z-index: 9999;
-      padding: 10px 12px; border: none; border-radius: 999px;
-      background: #ffffff; box-shadow: 0 4px 16px rgba(0,0,0,.15); font-size: 14px; cursor: pointer;
+      position: fixed;
+      right: 12px;
+      bottom: 12px;
+      z-index: 9999;
+      padding: 10px 12px;
+      border: none;
+      border-radius: 999px;
+      background: #ffffff;
+      box-shadow: 0 4px 16px rgba(0,0,0,.15);
+      font-size: 14px;
+      cursor: pointer;
     }
     #music-toggle[hidden] { display: none; }
   </style>
@@ -156,7 +266,7 @@
 
     <section class="split">
       <div class="split-image">
-        <img src="images/dinghunzhao.jpg" alt="订婚照片" class="photo-img half-img" loading="lazy" decoding="async">
+        <img src="images/dinghunzhao.jpg" alt="订婚照片" class="photo-img" loading="lazy" decoding="async">
       </div>
       <div class="split-text">
         <h3>&lt; 订婚 &gt;</h3>
@@ -222,7 +332,7 @@
         </div>
       </div>
       <div class="split-image">
-        <img src="images/hunlishijianbiao.jpg" alt="婚礼时间表" class="photo-img half-img" loading="lazy" decoding="async">
+        <img src="images/hunlishijianbiao.jpg" alt="婚礼时间表" class="photo-img" loading="lazy" decoding="async">
       </div>
     </section>
 
@@ -258,6 +368,7 @@
     </section>
   </main>
 
+  <!-- 背景音乐 -->
   <audio id="bgm" src="music/达尔文.mp3" preload="auto" loop></audio>
   <button id="music-toggle" hidden aria-label="播放或暂停音乐">▶ 音乐</button>
 
@@ -282,46 +393,31 @@
     document.addEventListener('DOMContentLoaded', () => { tryAutoplaySilently(); addUnlockers(); });
     document.addEventListener('visibilitychange', () => { if (!document.hidden && audio.paused && !unlocked) { tryAutoplaySilently(); } });
 
-    /* ===== 与首图等宽：普通图=1倍，half-img=半列宽，split / countdown / form-card 等宽 ===== */
+    /* ===== 让所有区块与首图“等宽”：只写 CSS 变量，不再给图片/容器写死像素宽 ===== */
     const heroImg  = document.getElementById('heroImg');
-    const selector = '.photo-img';
-    function cssGap() { const v = getComputedStyle(document.documentElement).getPropertyValue('--gap').trim(); const n = parseFloat(v); return isNaN(n) ? 24 : n; }
-    function applyWidth(w) {
-      const gap = cssGap();
-      document.querySelectorAll(selector).forEach(img => { img.style.width = w + 'px'; img.style.height = 'auto'; });
-      const half = Math.max(1, Math.round((w - gap) / 2));
-      document.querySelectorAll('.half-img').forEach(img => { img.style.width = half + 'px'; img.style.height = 'auto'; });
-      document.querySelectorAll('.split, .countdown, .form-card').forEach(box => { box.style.width = w + 'px'; });
+
+    function setHeroWidthVar() {
+      // 取“首图图片元素”的实际显示宽度，写到 CSS 变量 --heroW
+      const w = Math.round(heroImg?.getBoundingClientRect().width || 0);
+      if (w > 0) {
+        document.documentElement.style.setProperty('--heroW', w + 'px');
+      }
     }
-    let rafId = null;
-    function scheduleSync() {
-      if (rafId) return;
-      rafId = requestAnimationFrame(() => {
-        rafId = null; const rect = heroImg.getBoundingClientRect();
-        const w = Math.round(rect.width || 0); if (w > 0) applyWidth(w);
-      });
+
+    // 初始 & 尺寸变化都更新
+    window.addEventListener('load', setHeroWidthVar);
+    window.addEventListener('resize', setHeroWidthVar);
+    window.addEventListener('orientationchange', setHeroWidthVar);
+    if ('ResizeObserver' in window && heroImg) {
+      const ro = new ResizeObserver(setHeroWidthVar);
+      ro.observe(heroImg);
     }
-    window.addEventListener('load', scheduleSync);
-    window.addEventListener('resize', scheduleSync);
-    window.addEventListener('orientationchange', scheduleSync);
-    window.addEventListener('scroll', scheduleSync, { passive: true });
-    if ('ResizeObserver' in window) { const ro = new ResizeObserver(scheduleSync); ro.observe(heroImg); }
-    if ('MutationObserver' in window) {
-      const mo = new MutationObserver(muts => {
-        let need = false;
-        for (const m of muts) {
-          m.addedNodes && m.addedNodes.forEach(n => {
-            if (n.nodeType === 1 && (n.matches?.(selector) || n.querySelector?.(selector) || n.matches?.('.split') || n.matches?.('.countdown') || n.matches?.('.form-card'))) {
-              need = true;
-            }
-          });
-        }
-        if (need) scheduleSync();
-      });
-      mo.observe(document.body, { childList: true, subtree: true });
+    // 图片一旦加载完成也更新一次
+    if (heroImg && !heroImg.complete) {
+      heroImg.addEventListener('load', setHeroWidthVar, { once: true });
+    } else {
+      setHeroWidthVar();
     }
-    if (heroImg.complete) scheduleSync(); else heroImg.addEventListener('load', scheduleSync, { once: true });
-    document.querySelectorAll(selector).forEach(img => { if (img.complete) scheduleSync(); else img.addEventListener('load', scheduleSync, { once: true }); });
 
     /* ===== 倒计时 ===== */
     const cd = document.getElementById('countdown');
@@ -344,7 +440,7 @@
       tick(); setInterval(tick, 1000);
     }
 
-    /* ===== 留言板：前端交互（调用 /api/rsvp/* ）===== */
+    /* ===== 留言板前端逻辑 ===== */
     (function(){
       const form = document.getElementById('rsvp-form');
       const nameI = document.getElementById('rsvp-name');
@@ -356,7 +452,7 @@
       function render(arr){
         const listData = Array.isArray(arr) ? arr : [];
         if (!listData.length) {
-          list.innerHTML = '<li style="padding:12px 14px;border:1px solid rgba(0,0,0,.06);border-radius:12px;color:#666;text-align:center;">暂无留言</li>';
+          list.innerHTML = '<li style="padding:12px 14px;border:1px solid rgba(0,0,0,.06);border-radius:12px;color:#666;text-align:center;background:#fff;">暂无留言</li>';
           return;
         }
         list.innerHTML = listData.map(item => {
@@ -378,11 +474,10 @@
           statusEl.textContent = '加载留言中...';
           const res = await fetch('/api/rsvp/list', { cache: 'no-store' });
           const data = await res.json();
-          // ✅ 关键修复：后端返回 { ok, items }，要把 items 取出来
           const items = Array.isArray(data?.items) ? data.items : [];
           render(items);
           statusEl.textContent = '';
-        }catch(e){
+        }catch{
           statusEl.textContent = '加载失败，请稍后重试';
           render([]);
         }
@@ -414,7 +509,7 @@
           } else {
             statusEl.textContent = ret.message || '提交失败，请稍后再试';
           }
-        }catch(e){
+        }catch{
           statusEl.textContent = '网络异常，请稍后再试';
         }
       });
