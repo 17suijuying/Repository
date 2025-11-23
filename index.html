@@ -53,7 +53,8 @@
     /* 文字区（桌面端）：小字号 + 深灰色，仅限制文字最大宽度 */
     .kaipian,
     .yaoqing,
-    .guanyu {
+    .guanyu,
+    .xianglian {
       position: static !important;
       clear: both;
       max-width: var(--text-max);
@@ -66,7 +67,8 @@
     }
     .kaipian p,
     .yaoqing p,
-    .guanyu p { margin: 0.5em 0; }
+    .guanyu p,
+    .xianglian p{ margin: 0.5em 0; }
 
     /* 展示图片：默认自适应等比 —— JS 会把它的 width 设为与首图一致 */
     .photo-img {
@@ -84,6 +86,7 @@
       .kaipian { font-size: clamp(10px, 2.0vw, 12px); }
       .yaoqing { font-size: clamp(10px, 2.0vw, 12px); }
       .guanyu { font-size: clamp(10px, 2.0vw, 12px); }
+      .xianglian { font-size: clamp(10px, 2.0vw, 12px); }
     }
 
     /* 背景音乐按钮（自动播放受阻或用于手动控制时可见） */
@@ -145,6 +148,23 @@
     <!-- 新增：在“guanyu”文字段落下方增加第三张内容图 -->
     <figure class="photo">
       <img src="images/haimatichenshan.jpg" alt="海马体衬衫" class="photo-img" loading="lazy" decoding="async">
+    </figure>
+
+    <section class="xianglian">
+      <p>起初一人在杭州 一人在上海</p>
+      <p>从小和山到野马浜</p>
+      <p>厚厚的车票连结起两颗炽热的心</p>
+      <p>在大大的城市里留下了两人的小小足迹</p>
+      <p> </p>
+      <p>后来</p>
+      <p>一人在杭州念书</p>
+      <p>一人回温州工作</p>
+      <p>在忙碌的生活中</p>
+      <p>每个周末的短暂相逢承载了简单的幸福与对未来的承诺</p>
+    </section>
+
+    <figure class="photo">
+      <img src="images/xiaoqunzihunshazhao.jpg" alt="小裙子婚纱照" class="photo-img" loading="lazy" decoding="async">
     </figure>
   </main>
 
