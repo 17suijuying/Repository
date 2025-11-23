@@ -52,7 +52,8 @@
 
     /* 文字区（桌面端）：小字号 + 深灰色，仅限制文字最大宽度 */
     .kaipian,
-    .yaoqing {
+    .yaoqing,
+    .guanyu {
       position: static !important;
       clear: both;
       max-width: var(--text-max);
@@ -64,7 +65,8 @@
       color: var(--text-color);
     }
     .kaipian p,
-    .yaoqing p { margin: 0.5em 0; }
+    .yaoqing p,
+    .guanyu { margin: 0.5em 0; }
 
     /* 展示图片：默认自适应等比 —— JS 会把它的 width 设为与首图一致 */
     .photo-img {
@@ -81,6 +83,7 @@
       .hero-img { max-height: 45svh; }
       .kaipian { font-size: clamp(10px, 2.0vw, 12px); }
       .yaoqing { font-size: clamp(10px, 2.0vw, 12px); }
+      .guanyu { font-size: clamp(10px, 2.0vw, 12px); }
     }
 
     /* 背景音乐按钮（自动播放受阻或用于手动控制时可见） */
@@ -130,6 +133,14 @@
     <figure class="photo">
       <img src="images/guanyuwomen.jpg" alt="关于我们" class="photo-img" loading="lazy" decoding="async">
     </figure>
+    
+    <section class="guanyu">
+      <p>故事开始在2015年的夏天</p>
+      <p>高二的我们换到了同一个班级</p>
+      <p>同学 是我们之间的第一个身份</p>
+      <p>印象里 他好像有强迫症 作业工工整整 桌面干干净净</p>
+      <p>印象里 她勤奋好学 但眼神中又透露着清澈的“天真”</p>
+    </section>
   </main>
 
   <!-- 背景音乐：预加载与循环；是否能自动播取决于策略 -->
