@@ -148,7 +148,7 @@
     .cd-lbl{ display: block; margin-top: 4px; font-size: 12px; opacity: .85; }
     .cd-date{ margin: 8px 0 0; font-size: 12px; opacity: .9; }
 
-    /* —— 新增：导航卡片样式 —— */
+    /* —— 导航卡片样式（复用） —— */
     .nav-card{
       background: #fff;
       border: 1px solid rgba(0,0,0,.06);
@@ -358,19 +358,16 @@
       </div>
     </section>
 
-    <!-- 新增：倒计时下方 左右并排：左=高德导航，右=婚礼时间表图片 -->
+    <!-- 倒计时下方：高德导航 + 时间表 -->
     <section class="split">
-      <!-- 左：婚礼酒店导航（替换经纬度与名称） -->
       <div class="split-text">
         <div class="nav-card">
           <h4>婚礼酒店导航</h4>
           <div class="nav-actions">
-            <!-- 查看地图：定位标记 -->
             <a class="nav-btn" target="_blank" rel="noopener"
                href="https://uri.amap.com/marker?position=120.6225,27.9637&name=%E5%A9%9A%E7%A4%BC%E9%85%92%E5%BA%97%28%E4%BE%8B%29&callnative=1">
                查看地图
             </a>
-            <!-- 直接导航：驾车到达 -->
             <a class="nav-btn" target="_blank" rel="noopener"
                href="https://uri.amap.com/navigation?to=120.6225,27.9637,%E5%A9%9A%E7%A4%BC%E9%85%92%E5%BA%97%28%E4%BE%8B%29&mode=car&callnative=1">
                打开高德导航
@@ -378,7 +375,6 @@
           </div>
         </div>
       </div>
-      <!-- 右：婚礼时间表图片（半宽、与首图对齐） -->
       <div class="split-image">
         <img src="images/hunlishijianbiao.jpg" alt="婚礼时间表" class="photo-img half-img" loading="lazy" decoding="async">
       </div>
@@ -392,6 +388,28 @@
     <figure class="photo">
       <img src="images/hunlijian.jpg" alt="婚礼见" class="photo-img" loading="lazy" decoding="async">
     </figure>
+
+    <!-- 新增：飞书表单（方案A，零后端） -->
+    <section class="split" id="lark-form-embed">
+      <!-- 左侧：说明 + 新窗口打开按钮 -->
+      <div class="split-text">
+        <div class="nav-card">
+          <h4>在线 RSVP / 留言</h4>
+          <p class="nav-address">提交后将直接写入我们的飞书多维表格</p>
+          <div class="nav-actions">
+            <a id="larkFormLink" class="nav-btn" href="#" target="_blank" rel="noopener">在新窗口打开</a>
+          </div>
+        </div>
+      </div>
+      <!-- 右侧：内嵌飞书表单 -->
+      <div class="split-image" style="width:100%">
+        <iframe id="larkFormFrame"
+                title="飞书表单"
+                src=""
+                style="width:100%; height:560px; border:0; border-radius:16px; box-shadow:0 6px 18px rgba(0,0,0,.06);"
+                loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+    </section>
     
   </main>
 
@@ -401,6 +419,9 @@
 
   <script>
   (function () {
+    /* ===== 在这里写入你的飞书表单共享链接（已替换） ===== */
+    const LARK_FORM_URL = 'https://kcn158yc8xa8.feishu.cn/base/Q46DbJD92aU1b8ssFiJcFBeBnBg?table=tblrCquNhkxfMTAW&view=vewRspXYu6';
+
     /* ===== 背景音乐（自动播放 + 交互解锁） ===== */
     const audio = document.getElementById('bgm');
     const btn   = document.getElementById('music-toggle');
@@ -441,7 +462,20 @@
     document.addEventListener('DOMContentLoaded', () => {
       tryAutoplaySilently();
       addUnlockers();
+
+      // 同步飞书表单链接到按钮与 iframe
+      const link = document.getElementById('larkFormLink');
+      const frame = document.getElementById('larkFormFrame');
+      if (LARK_FORM_URL && /^https?:\/\//i.test(LARK_FORM_URL)) {
+        link.href = LARK_FORM_URL;
+        frame.src = LARK_FORM_URL;
+      } else {
+        // 未配置链接时：隐藏 iframe，仅保留按钮（避免空白框）
+        frame.parentElement.style.display = 'none';
+        link.textContent = '打开飞书表单（请先配置链接）';
+      }
     });
+
     document.addEventListener('visibilitychange', () => {
       if (!document.hidden && audio.paused && !unlocked) { tryAutoplaySilently(); }
     });
