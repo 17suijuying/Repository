@@ -6,19 +6,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <style>
-    :root {
-      --gap: 24px;
-      --text-max: 900px;
-      --text-color: #111;
-    }
+    :root { --gap: 24px; --text-max: 900px; --text-color: #111; }
     * { box-sizing: border-box; }
     html { overflow-y: auto; }
     body {
-      margin: 0;
-      background: #fff;
+      margin: 0; background: #fff;
       font-family: system-ui, -apple-system, "Segoe UI", Roboto, "PingFang SC","Noto Sans CJK SC","Microsoft YaHei", sans-serif;
-      line-height: 1.65;
-      color: var(--text-color);
+      line-height: 1.65; color: var(--text-color);
     }
     main.page { display: flex; flex-direction: column; gap: var(--gap); }
     figure { margin: 0; }
@@ -82,23 +76,6 @@
     }
     .form-card h4{ margin: 0 0 8px; font-size: 14px; font-weight: 700; }
     .form-tip{ margin: 8px 0 0; font-size: 12px; opacity: .85; }
-    .form-grid{ display: grid; gap: 10px; max-width: 520px; margin: 0 auto; }
-    .input, .textarea{
-      width: 100%; padding: 10px 12px; border-radius: 12px; border: 1px solid rgba(0,0,0,.12);
-      font-size: 14px; outline: none;
-    }
-    .textarea{ resize: vertical; min-height: 96px; }
-
-    /* 管理员查看面板 */
-    .admin-actions{ margin-top: 10px; }
-    #admin-panel[hidden]{ display:none; }
-    .admin-list{ max-width: 900px; margin: 12px auto 0; text-align: left; }
-    .admin-item{
-      border: 1px solid rgba(0,0,0,.08); border-radius: 12px; padding: 12px; margin: 8px 0;
-      box-shadow: 0 4px 12px rgba(0,0,0,.06);
-    }
-    .admin-item h5{ margin: 0 0 6px; font-size: 14px; }
-    .muted{ opacity: .7; font-size: 12px; }
 
     @media (max-width: 768px) {
       .hero-img { max-height: 45svh; }
@@ -279,8 +256,6 @@
         <ul id="rsvp-list" style="list-style:none;padding:0;margin:0;display:grid;gap:10px;"></ul>
       </div>
     </section>
-
-
   </main>
 
   <audio id="bgm" src="music/达尔文.mp3" preload="auto" loop></audio>
@@ -293,7 +268,7 @@
     const btn   = document.getElementById('music-toggle');
     function syncBtn() { btn.textContent = audio.paused ? '▶' : '⏸'; }
     function showBtn() { if (btn.hidden) btn.hidden = false; syncBtn(); }
-    async function tryAutoplaySilently() { try { audio.muted = true; await audio.play(); showBtn(); } catch (e) { showBtn(); } }
+    async function tryAutoplaySilently() { try { audio.muted = true; await audio.play(); showBtn(); } catch { showBtn(); } }
     let unlocked = false;
     const unlockEventsWin = ['scroll', 'wheel'];
     const unlockEventsDoc = ['pointerdown','touchstart','touchend','click','keydown'];
@@ -310,10 +285,7 @@
     /* ===== 与首图等宽：普通图=1倍，half-img=半列宽，split / countdown / form-card 等宽 ===== */
     const heroImg  = document.getElementById('heroImg');
     const selector = '.photo-img';
-    function cssGap() {
-      const v = getComputedStyle(document.documentElement).getPropertyValue('--gap').trim();
-      const n = parseFloat(v); return isNaN(n) ? 24 : n;
-    }
+    function cssGap() { const v = getComputedStyle(document.documentElement).getPropertyValue('--gap').trim(); const n = parseFloat(v); return isNaN(n) ? 24 : n; }
     function applyWidth(w) {
       const gap = cssGap();
       document.querySelectorAll(selector).forEach(img => { img.style.width = w + 'px'; img.style.height = 'auto'; });
@@ -381,8 +353,9 @@
       const list = document.getElementById('rsvp-list');
       const statusEl = document.getElementById('rsvp-status');
 
-      function render(listData){
-        if (!Array.isArray(listData) || !listData.length) {
+      function render(arr){
+        const listData = Array.isArray(arr) ? arr : [];
+        if (!listData.length) {
           list.innerHTML = '<li style="padding:12px 14px;border:1px solid rgba(0,0,0,.06);border-radius:12px;color:#666;text-align:center;">暂无留言</li>';
           return;
         }
@@ -405,10 +378,13 @@
           statusEl.textContent = '加载留言中...';
           const res = await fetch('/api/rsvp/list', { cache: 'no-store' });
           const data = await res.json();
-          render(data);
+          // ✅ 关键修复：后端返回 { ok, items }，要把 items 取出来
+          const items = Array.isArray(data?.items) ? data.items : [];
+          render(items);
           statusEl.textContent = '';
         }catch(e){
           statusEl.textContent = '加载失败，请稍后重试';
+          render([]);
         }
       }
 
@@ -436,7 +412,7 @@
             form.reset();
             await loadList();
           } else {
-            statusEl.textContent = '提交失败，请稍后再试';
+            statusEl.textContent = ret.message || '提交失败，请稍后再试';
           }
         }catch(e){
           statusEl.textContent = '网络异常，请稍后再试';
@@ -445,7 +421,8 @@
 
       loadList();
     })();
-    </script>
+  })();
+  </script>
 
 </body>
 </html>
