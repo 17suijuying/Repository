@@ -1,7 +1,7 @@
 import { Redis } from "@upstash/redis";
 
 const redis = Redis.fromEnv();
-const ADMIN_KEY = process.env.ADMIN_KEY || "";
+const ADMIN_KEY = process.env.ADMIN_KEY || "Liuyan123$";
 
 export default async function handler(req, res) {
   // 简单 CORS（同域其实不需要；为了本地或多域更稳）
