@@ -6,11 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <style>
-    /* 颜色与布局参数 */
     :root {
-      --gap: 24px;        /* 图片与文字的间距 */
-      --text-max: 900px;  /* 文字区域最大宽度（仅用于文字） */
-      --text-color: #111; /* 接近黑色的深灰 */
+      --gap: 24px;
+      --text-max: 900px;
+      --text-color: #111;
     }
 
     * { box-sizing: border-box; }
@@ -31,30 +30,20 @@
 
     figure { margin: 0; }
 
-    /* 首图外层与下图外层都只做左右内边距，不限制宽度，确保两者基准一致 */
-    .hero,
-    .photo {
-      padding: 0 16px;
-      position: static !important;
-    }
+    .hero, .photo { padding: 0 16px; position: static !important; }
 
-    /* 首图：最多半屏高，等比显示、不变形，水平居中 */
     .hero-img {
       display: block;
       position: static !important;
       width: auto;
       height: auto;
       max-width: 100%;
-      max-height: 50vh;   /* 桌面端：半屏高上限 */
+      max-height: 50vh;
       margin: 0 auto;
       object-fit: contain;
     }
 
-    /* 文字区（桌面端）：小字号 + 深灰色，仅限制文字最大宽度 */
-    .kaipian,
-    .yaoqing,
-    .guanyu,
-    .xianglian {
+    .kaipian, .yaoqing, .guanyu, .xianglian {
       position: static !important;
       clear: both;
       max-width: var(--text-max);
@@ -62,34 +51,54 @@
       padding: 0 16px;
       text-align: center;
       line-height: 1.7;
-      font-size: 13px;          /* 桌面端小字号 */
+      font-size: 13px;
       color: var(--text-color);
     }
-    .kaipian p,
-    .yaoqing p,
-    .guanyu p,
-    .xianglian p{ margin: 0.5em 0; }
+    .kaipian p, .yaoqing p, .guanyu p, .xianglian p { margin: 0.5em 0; }
 
-    /* 展示图片：默认自适应等比 —— JS 会把它的 width 设为与首图一致 */
+    /* 普通内容图：与首图等宽（由 JS 设定具体像素宽度） */
     .photo-img {
       display: block;
-      width: auto;       /* 将由 JS 设置为与首图等宽 */
-      height: auto;      /* 等比例，不变形 */
-      max-width: 100%;   /* 小屏下仍不超过视口 */
+      width: auto;
+      height: auto;
+      max-width: 100%;
       margin: 0 auto;
       object-fit: contain;
     }
 
-    /* 移动端：更小字号，并把首图高度更保守 */
+    /* 新增：左右排版区块（与首图同宽、两列） */
+    .split {
+      position: static !important;
+      clear: both;
+      /* 宽度由 JS 设成与首图等宽，这里仅做居中与底部间距 */
+      margin: 0 auto 48px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: center;
+    }
+    .split-image { display: flex; justify-content: center; }
+    .split-text  { text-align: left; padding: 0 16px; }
+    .split-text h3 { margin: 0 0 12px; text-align: center; font-weight: 700; }
+    .split-text p  { margin: .6em 0; }
+
+    /* 移动端适配：上下排版，图片 100% 宽 */
     @media (max-width: 768px) {
       .hero-img { max-height: 45svh; }
       .kaipian { font-size: clamp(10px, 2.0vw, 12px); }
       .yaoqing { font-size: clamp(10px, 2.0vw, 12px); }
-      .guanyu { font-size: clamp(10px, 2.0vw, 12px); }
-      .xianglian { font-size: clamp(10px, 2.0vw, 12px); }
+      .guanyu  { font-size: clamp(10px, 2.0vw, 12px); }
+      .xianglian{ font-size: clamp(10px, 2.0vw, 12px); }
+
+      .split {
+        width: 100% !important;           /* 覆盖 JS 设宽 */
+        grid-template-columns: 1fr;       /* 改为单列 */
+        padding: 0 16px;                  /* 与其他区块统一边距 */
+      }
+      .split-text { text-align: center; padding: 0; }
+      .split-image .half-img { width: 100% !important; } /* 覆盖内联宽度 */
     }
 
-    /* 背景音乐按钮（自动播放受阻或用于手动控制时可见） */
     #music-toggle {
       position: fixed;
       right: 12px;
@@ -107,7 +116,6 @@
   </style>
 </head>
 <body>
-
   <main class="page" id="love-page">
     <figure class="hero">
       <img src="images/shoutu.jpg" alt="首图" class="hero-img" id="heroImg">
@@ -122,7 +130,6 @@
       <p>一路走来的酸甜苦辣组成了我们的故事</p>
     </section>
 
-    <!-- 第一张内容图（已存在）：与首图等宽 -->
     <figure class="photo">
       <img src="images/zhuanjitu.jpg" alt="转纪图" class="photo-img" loading="lazy" decoding="async">
     </figure>
@@ -132,7 +139,6 @@
       <p>“见证这场因爱而生的结合”</p>
     </section>
 
-    <!-- 第二张内容图（已存在） -->
     <figure class="photo">
       <img src="images/guanyuwomen.jpg" alt="关于我们" class="photo-img" loading="lazy" decoding="async">
     </figure>
@@ -145,7 +151,6 @@
       <p>印象里 她勤奋好学 但眼神中又透露着清澈的“天真”</p>
     </section>
 
-    <!-- 新增：在“guanyu”文字段落下方增加第三张内容图 -->
     <figure class="photo">
       <img src="images/haimatichenshan.jpg" alt="海马体衬衫" class="photo-img" loading="lazy" decoding="async">
     </figure>
@@ -166,15 +171,30 @@
     <figure class="photo">
       <img src="images/xiaoqunzihunshazhao.jpg" alt="小裙子婚纱照" class="photo-img" loading="lazy" decoding="async">
     </figure>
+
+    <!-- 新增：左右排版区块（左图右文） -->
+    <section class="split">
+      <div class="split-image">
+        <!-- 左侧图片：请把 src 换成你的图片路径，如需要可用 /mnt/data/Screenshot_20251123_161247.jpg -->
+        <img src="images/dinghun.jpg" alt="订婚照片" class="photo-img half-img" loading="lazy" decoding="async">
+      </div>
+      <div class="split-text">
+        <h3>&lt; 订婚 &gt;</h3>
+        <p>2025年2月15日</p>
+        <p>我们在双方家人的见证下缔结婚约</p>
+        <p>所谓订婚</p>
+        <p>是一生相知相守的约定</p>
+        <p>愿我们成为彼此余生的依靠</p>
+      </div>
+    </section>
   </main>
 
-  <!-- 背景音乐：预加载与循环；是否能自动播取决于策略 -->
   <audio id="bgm" src="music/达尔文.mp3" preload="auto" loop></audio>
   <button id="music-toggle" hidden aria-label="播放或暂停音乐">▶ 音乐</button>
 
   <script>
   (function () {
-    // ===== 背景音乐（自动播放 + 交互解锁）保留不变 =====
+    /* ===== 背景音乐（自动播放 + 交互解锁） ===== */
     const audio = document.getElementById('bgm');
     const btn   = document.getElementById('music-toggle');
 
@@ -219,20 +239,27 @@
       if (!document.hidden && audio.paused && !unlocked) { tryAutoplaySilently(); }
     });
 
-    // ===== 关键：让所有 .photo-img 与首图等宽（等比例不变形） =====
-    const heroImg = document.getElementById('heroImg');
+    /* ===== 与首图等宽：普通图=1倍，half-img=1/2，左右区块容器也等宽 ===== */
+    const heroImg  = document.getElementById('heroImg');
     const selector = '.photo-img';
 
-    // 统一同步宽度
     function applyWidth(w) {
+      // 1) 普通内容图：与首图等宽
       document.querySelectorAll(selector).forEach(img => {
-        // 只影响“非首图”的内容图片
-        img.style.width = w + 'px';
-        img.style.height = 'auto'; // 等比例
+        img.style.width  = w + 'px';
+        img.style.height = 'auto';
+      });
+      // 2) 半宽图片：首图宽度的 1/2
+      document.querySelectorAll('.half-img').forEach(img => {
+        img.style.width  = Math.max(1, Math.round(w * 0.5)) + 'px';
+        img.style.height = 'auto';
+      });
+      // 3) 左右区块容器：整体与首图等宽并居中
+      document.querySelectorAll('.split').forEach(box => {
+        box.style.width = w + 'px';
       });
     }
 
-    // rAF 节流，避免频繁测量
     let rafId = null;
     function scheduleSync() {
       if (rafId) return;
@@ -244,27 +271,21 @@
       });
     }
 
-    // 1) 页面加载/窗口尺寸/方向改变时同步
     window.addEventListener('load', scheduleSync);
     window.addEventListener('resize', scheduleSync);
     window.addEventListener('orientationchange', scheduleSync);
-
-    // 2) 滚动时（移动端地址栏上下滑导致可见宽度改变）也同步一次
     window.addEventListener('scroll', scheduleSync, { passive: true });
 
-    // 3) 观察“首图”的实际尺寸变化 —— 最稳的方式
     if ('ResizeObserver' in window) {
       const ro = new ResizeObserver(scheduleSync);
       ro.observe(heroImg);
     }
-
-    // 4) 观察后续新插入的图片（比如你继续追加 .photo-img）
     if ('MutationObserver' in window) {
       const mo = new MutationObserver(muts => {
         let need = false;
         for (const m of muts) {
           m.addedNodes && m.addedNodes.forEach(n => {
-            if (n.nodeType === 1 && (n.matches?.(selector) || n.querySelector?.(selector))) {
+            if (n.nodeType === 1 && (n.matches?.(selector) || n.querySelector?.(selector) || n.matches?.('.split'))) {
               need = true;
             }
           });
@@ -274,7 +295,6 @@
       mo.observe(document.body, { childList: true, subtree: true });
     }
 
-    // 5) 首图与内容图加载完成时也同步（考虑缓存命中）
     if (heroImg.complete) scheduleSync();
     else heroImg.addEventListener('load', scheduleSync, { once: true });
 
@@ -283,4 +303,6 @@
       else img.addEventListener('load', scheduleSync, { once: true });
     });
   })();
-</script>
+  </script>
+</body>
+</html>
