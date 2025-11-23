@@ -1,9 +1,0 @@
-{
-  "name": "love-rsvp",
-  "version": "1.0.0",
-  "private": true,
-  "type": "module",
-  "dependencies": {
-    "@vercel/kv": "^0.2.6"
-  }
-}
