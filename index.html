@@ -210,6 +210,57 @@
       .cd-num{ font-size:22px; }
       .cd-lbl{ font-size:11px; }
     }
+
+    /* ===== 放大首图：增加可见高度（桌面/移动） ===== */
+    :root{
+      /* 原来无此变量时可新增 */
+      --hero-max-h-desktop: 65vh; /* 原50vh → 65vh 更醒目 */
+      --hero-max-h-mobile: 56svh; /* 原45svh → 56svh 更高 */
+    }
+
+    /* 替换原来的 .hero-img 里 max-height 那一行 */
+    .hero-img{
+      width:100%;
+      height:auto;
+      max-height: var(--hero-max-h-desktop);  /* ← 用变量控制 */
+      object-fit: contain;
+      margin: 0 auto;
+    }
+
+    /* （可选）如果你希望首图在桌面比其他内容略宽一点，解开下面注释：
+    .hero.block{ width: min(100%, calc(var(--content-max) + 120px)); padding: 0 8px; }
+    */
+
+    /* ===== 手机端细化：缩小“订婚”分列、同时增高首图 ===== */
+    @media (max-width: 768px){
+      .hero-img{ max-height: var(--hero-max-h-mobile); }
+
+      /* 分栏整体更紧凑 */
+      .split{ grid-template-columns: 1fr; gap: 12px; }
+
+      /* 订婚图片再小一些（原 82% → 70%） */
+      .split-image .half-img{ max-width: 70%; margin: 0 auto; }
+
+      /* 文字再小一点点，避免显得比其它段落大 */
+      .split-text{ font-size: clamp(10px, 2.2vw, 11px); }
+      .split-text h3{ font-size: clamp(9px, 2vw, 10px); }
+
+      /* 倒计时保持稳定（防“秒”溢出） */
+      .cd-grid{ gap: 10px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .cd-item{ min-width: 48px; }
+      .cd-num{ font-size: clamp(18px, 6vw, 26px); }
+      .cd-lbl, .cd-date, .countdown h3{ font-size: clamp(10px, 2.8vw, 12px); }
+    }
+
+    /* 超小屏再收一点（例如部分微信WebView） */
+    @media (max-width: 380px){
+      .split-image .half-img{ max-width: 66%; }     /* 原78%→66%，更稳 */
+      .cd-grid{ gap: 8px; }
+      .cd-item{ min-width: 44px; }
+      .cd-num{ font-size: 22px; }
+      .cd-lbl{ font-size: 11px; }
+    }
+    
   </style>
 </head>
 <body>
