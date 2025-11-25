@@ -194,6 +194,49 @@
       .cd-lbl,.cd-date,.countdown h3{ font-size: clamp(10px,2vw,12px); }
       .form-card{ width:100% !important; }
     }
+    /* === 防横向溢出与统一宽度 === */
+    :root { --hero-w: 100%; } /* 将由 JS 写入实际像素值 */
+
+    html, body {
+      max-width: 100%;
+      overflow-x: hidden;           /* 彻底禁止横向滚动条 */
+    }
+
+    /* 所有需要与首图等宽的“容器” */
+    .hero, .photo, .split, .countdown, .form-card {
+      width: 100%;
+      max-width: var(--hero-w, 100%);
+      margin-left: auto;
+      margin-right: auto;
+      /* 你原本就有的 padding: 0 16px; 如果某些块没有，可在这里统一加 */
+      padding-left: 16px;
+      padding-right: 16px;
+      box-sizing: border-box;       /* 避免 width + padding 造成超宽 */
+    }
+
+    /* 所有需要跟随“容器宽度”的图片 */
+    .hero-img, .photo-img {
+      display: block;
+      width: 100%;                  /* 永远占满容器 */
+      max-width: var(--hero-w, 100%);
+      height: auto;                 /* 等比例缩放 */
+      margin: 0 auto;
+      object-fit: contain;
+    }
+
+    /* 半宽图片（左右两列用）：
+       用 CSS 计算：容器宽度 - 列间距（你的 .split gap=24px），再除 2 */
+    .half-img {
+      width: calc((min(var(--hero-w, 100vw), 100vw) - 24px) / 2);
+      max-width: 100%;
+      height: auto;
+    }
+
+    @media (max-width: 768px) {
+      /* 移动端下，左右改为单列时，这里让半宽图变成 100% */
+      .half-img { width: 100% !important; }
+    }
+
   </style>
 </head>
 <body>
@@ -368,7 +411,7 @@
   <button id="danmaku-toggle" type="button" aria-pressed="true">弹幕：开</button>
 
   <!-- ===== 背景音乐 + 图标按钮（▶/⏸） ===== -->
-  <audio id="bgm" src="music/达尔文.mp3" preload="auto" loop></audio>
+  <audio id="bgm" src="music/达尔文.mp3" preload="auto" loop muted autoplay playsinline></audio>
   <button id="music-toggle" hidden aria-label="播放/暂停音乐" title="播放/暂停" data-state="play"></button>
 
   <script>
