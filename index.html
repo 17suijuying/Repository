@@ -495,10 +495,6 @@
       const base = pool.length ? pool.slice(-10) : [];
       // 只显示留言内容，不带姓名
       const texts = base.map(x => (x.message||'').trim()).filter(Boolean);
-      if (!texts.length){
-        // 兜底几句，避免一开始空屏
-        texts.push('见证我们的幸福~','期待与你相见','一路有你，真好','欢迎来喝喜酒！');
-      }
       return texts;
     }
 
