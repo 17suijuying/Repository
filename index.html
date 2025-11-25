@@ -100,15 +100,17 @@
       background:linear-gradient(180deg, #FFEAF1 0%, #FFD9E7 100%);
       border-radius:16px;
       box-shadow:0 6px 18px rgba(255,120,160,.12);
+      overflow:hidden;             /* 防溢出保底 */
     }
     .countdown h3{
       margin:0 0 10px; font-size:12px; font-weight:600; letter-spacing:.1em; color:#5d3b45;
     }
     .cd-grid{
-      display:grid; grid-template-columns:repeat(4,1fr);
+      display:grid; 
+      grid-template-columns:repeat(4, minmax(0,1fr));  /* 防列宽撑破 */
       gap:12px; align-items:end; justify-items:center; margin:6px 0;
     }
-    .cd-item{ min-width:56px; }
+    .cd-item{ min-width:52px; }    /* 适度的最小值，后续在超小屏再降 */
     .cd-num{ font-weight:700; font-variant-numeric:tabular-nums; line-height:1.1; font-size:32px; }
     .cd-lbl{ margin-top:4px; font-size:12px; opacity:.85; display:block; }
     .cd-date{ margin-top:8px; font-size:12px; opacity:.9; }
@@ -182,15 +184,31 @@
       font-size:16px; line-height:1; cursor:pointer;
     }
 
-    /* 移动端适配 */
+    /* ========= 移动端优化 ========= */
     @media (max-width:768px){
       .hero-img{ max-height:45svh; }
-      .kaipian, .yaoqing, .guanyu, .xianglian{ font-size:clamp(10px, 2vw, 12px); }
-      .split{ grid-template-columns:1fr; }              /* 单列 */
-      .split-text h3{ font-size:clamp(10px, 1.8vw, 12px); }
-      .cd-num{ font-size:clamp(18px, 6vw, 28px); }
-      .cd-item{ min-width:48px; }                      /* 更窄也不挤出粉色块 */
+
+      /* 订婚分列：缩图、减间距、降字体，避免显得更大 */
+      .split{ grid-template-columns:1fr; gap:16px; }
+      .split-image .half-img{ max-width:82%; margin:0 auto; }
+      .split-text{ font-size:clamp(10px, 2.6vw, 12px); }
+      .split-text h3{ font-size:clamp(10px, 2.2vw, 11px); }
+
+      /* 倒计时：收紧列宽与字号，确保不溢出粉色底块 */
+      .cd-grid{ gap:10px; grid-template-columns:repeat(4, minmax(0,1fr)); }
+      .cd-item{ min-width:48px; }
+      .cd-num{ font-size:clamp(18px, 6vw, 26px); }
+      .cd-lbl, .cd-date, .countdown h3{ font-size:clamp(10px, 2.8vw, 12px); }
       .form-card{ width:min(100%, var(--content-max)); }
+    }
+
+    /* 超小屏（例如部分微信WebView机型）进一步收紧 */
+    @media (max-width:380px){
+      .split-image .half-img{ max-width:78%; }
+      .cd-grid{ gap:8px; }
+      .cd-item{ min-width:44px; }
+      .cd-num{ font-size:22px; }
+      .cd-lbl{ font-size:11px; }
     }
   </style>
 </head>
