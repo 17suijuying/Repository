@@ -7,25 +7,24 @@
 
   <style>
     :root{
-      /* 全站统一内容宽度：首图与所有区块同宽 */
-      --content-max: 900px;     /* 电脑端上限 */
-      --side-pad: 16px;         /* 两侧留白 */
+      --content-max: 900px;     /* 桌面端内容最大宽度（首图=所有区块） */
+      --side-pad: 16px;         /* 两侧内边距 */
       --text-color: #111;
       --gap: 24px;
       --pink: #FF7AAE;
     }
 
-    *{ box-sizing: border-box; }
+    *{ box-sizing:border-box; }
     html{ overflow-y:auto; }
     body{
       margin:0;
       background:#fff;
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "PingFang SC","Noto Sans CJK SC","Microsoft YaHei", sans-serif;
+      font-family: system-ui,-apple-system,"Segoe UI",Roboto,"PingFang SC","Noto Sans CJK SC","Microsoft YaHei",sans-serif;
       line-height:1.65;
       color:var(--text-color);
     }
 
-    /* —— 统一的“内容容器”，所有区块都套这个宽度 —— */
+    /* 统一容器：首图与所有内容同宽 */
     .container{
       width:100%;
       max-width: calc(var(--content-max) + var(--side-pad)*2);
@@ -36,189 +35,107 @@
     main.page{ display:flex; flex-direction:column; gap:var(--gap); }
     figure{ margin:0; }
 
-    /* 首图与普通图片：等比铺满容器宽度 */
-    .hero, .photo{ }
-    .hero-img, .photo-img{
-      display:block;
-      width:100%;         /* 不再用 JS，同步到容器宽度 */
-      height:auto;        /* 等比缩放 */
-    }
+    /* 图片等比：首图/普通图 */
+    .hero-img,.photo-img{ display:block; width:100%; height:auto; }
 
     /* 文案区块 */
-    .kaipian, .yaoqing, .guanyu, .xianglian, .jiehun, .qingjian{
-      text-align:center;
-      line-height:1.7;
-      font-size:13px;
-      color:var(--text-color);
+    .kaipian,.yaoqing,.guanyu,.xianglian,.jiehun,.qingjian{
+      text-align:center; line-height:1.7; font-size:13px; color:var(--text-color);
     }
-    .kaipian p, .yaoqing p, .guanyu p, .xianglian p, .jiehun p, .qingjian p{ margin: .5em 0; }
+    .kaipian p,.yaoqing p,.guanyu p,.xianglian p,.jiehun p,.qingjian p{ margin:.5em 0; }
 
     /* 左右排版 */
     .split{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:24px;
-      align-items:center;
+      display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:center;
     }
     .split-image{ display:flex; justify-content:center; }
-    .split-text{
-      text-align:center;
-      line-height:1.7;
-      font-size:13px;
-      color:var(--text-color);
-      padding: 0 4px;
-    }
-    .split-text h3{ margin:0 0 8px; font-weight:600; font-size:12px; opacity:.9; }
     .split-image img{ width:100%; height:auto; display:block; }
+    .split-text{ text-align:center; line-height:1.7; font-size:13px; color:var(--text-color); padding:0 4px; }
+    .split-text h3{ margin:0 0 8px; font-weight:600; font-size:12px; opacity:.9; }
 
-    /* 倒计时卡片 */
+    /* 倒计时 */
     .countdown{
-      text-align:center;
-      color:#3b2a2d;
-      background: linear-gradient(180deg, #FFEAF1 0%, #FFD9E7 100%);
-      border-radius:16px;
-      box-shadow:0 6px 18px rgba(255,120,160,.12);
-      padding:18px 16px 20px;
-      overflow:hidden; /* 防止小屏溢出 */
+      text-align:center; color:#3b2a2d;
+      background: linear-gradient(180deg,#FFEAF1 0%,#FFD9E7 100%);
+      border-radius:16px; box-shadow:0 6px 18px rgba(255,120,160,.12);
+      padding:18px 16px 20px; overflow:hidden;
     }
-    .countdown h3{
-      margin:0 0 10px;
-      font-size:12px;
-      font-weight:600;
-      letter-spacing:.1em;
-      color:#5d3b45;
-    }
-    .cd-grid{
-      display:grid;
-      grid-template-columns: repeat(4, minmax(64px, 1fr));
-      gap:12px;
-      align-items:end;
-      justify-items:center;
-    }
+    .countdown h3{ margin:0 0 10px; font-size:12px; font-weight:600; letter-spacing:.1em; color:#5d3b45; }
+    .cd-grid{ display:grid; grid-template-columns:repeat(4,minmax(64px,1fr)); gap:12px; align-items:end; justify-items:center; }
     .cd-item{ min-width:64px; }
-    .cd-num{
-      display:block;
-      font-weight:700;
-      font-variant-numeric: tabular-nums;
-      line-height:1.1;
-      font-size:32px;
-    }
+    .cd-num{ display:block; font-weight:700; font-variant-numeric:tabular-nums; line-height:1.1; font-size:32px; }
     .cd-lbl{ display:block; margin-top:4px; font-size:12px; opacity:.85; }
     .cd-date{ margin:8px 0 0; font-size:12px; opacity:.9; }
 
     /* 导航卡片 */
     .nav-card{
-      background:#fff;
-      border:1px solid rgba(0,0,0,.06);
-      border-radius:16px;
+      background:#fff; border:1px solid rgba(0,0,0,.06); border-radius:16px;
       box-shadow:0 6px 18px rgba(0,0,0,.06);
-      padding:20px 16px;
-      min-height:220px;
-      display:flex; flex-direction:column; justify-content:center; align-items:center;
-      text-align:center;
+      padding:20px 16px; min-height:220px;
+      display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;
     }
     .nav-card h4{ margin:0 0 6px; font-size:14px; font-weight:700; letter-spacing:.02em; }
     .nav-actions{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
-    .nav-btn, .form-btn{
+    .nav-btn,.form-btn{
       display:inline-block; text-decoration:none; padding:10px 14px; border-radius:999px;
-      background:var(--pink); color:#fff; font-size:14px;
-      border:1px solid var(--pink);
-      box-shadow:0 8px 18px rgba(255,122,174,.25);
-      cursor:pointer;
+      background:var(--pink); color:#fff; font-size:14px; border:1px solid var(--pink);
+      box-shadow:0 8px 18px rgba(255,122,174,.25); cursor:pointer;
     }
-    .nav-btn:hover, .form-btn:hover{ filter:brightness(.98); }
+    .nav-btn:hover,.form-btn:hover{ filter:brightness(.98); }
 
     /* 留言板 */
     .form-card{
-      background:#fff;
-      border:1px solid rgba(0,0,0,.06);
-      border-radius:16px;
+      background:#fff; border:1px solid rgba(0,0,0,.06); border-radius:16px;
       box-shadow:0 6px 18px rgba(0,0,0,.06);
-      padding:18px 16px 16px;
-      text-align:center;
+      padding:18px 16px 16px; text-align:center;
     }
     .form-card h4{ margin:0 0 8px; font-size:14px; font-weight:700; }
     .form-tip{ margin:8px 0 12px; font-size:12px; opacity:.85; }
-    .input, .textarea{
-      width:100%; padding:10px 12px; border-radius:12px; border:1px solid rgba(0,0,0,.12);
-      font-size:14px; outline:none;
-    }
+    .input,.textarea{ width:100%; padding:10px 12px; border-radius:12px; border:1px solid rgba(0,0,0,.12); font-size:14px; outline:none; }
     .textarea{ resize:vertical; min-height:96px; }
-
     .list-wrap{ max-width:720px; margin:16px auto 0; }
-    .r-item{
-      border:1px solid rgba(0,0,0,.08);
-      border-radius:12px;
-      padding:10px 12px;
-      box-shadow:0 4px 12px rgba(0,0,0,.06);
-      background:#fff;
-    }
+    .r-item{ border:1px solid rgba(0,0,0,.08); border-radius:12px; padding:10px 12px; box-shadow:0 4px 12px rgba(0,0,0,.06); background:#fff; }
     .r-title{ font-size:13px; opacity:.85; }
     .r-msg{ margin-top:4px; font-size:13px; }
     .r-time{ margin-top:6px; font-size:12px; opacity:.6; }
 
-    /* 弹幕按钮（右下角） */
-    .float-btn{
-      position: fixed;
-      right: 12px;
-      bottom: 12px;
-      z-index: 9999;
-      display:flex;
-      flex-direction: column;
-      gap:8px;
-    }
-    .tiny-btn{
-      padding: 10px 12px;
-      border: none;
-      border-radius: 999px;
-      background: #ffffff;
-      box-shadow: 0 4px 16px rgba(0,0,0,.15);
-      font-size: 14px;
-      cursor: pointer;
-    }
+    /* 弹幕层（粉色文字，无黑底） */
+    .danmaku{ position:fixed; left:0; right:0; top:0; height:38%; pointer-events:none; z-index:9000; overflow:hidden; }
+    .dm{ position:absolute; white-space:nowrap; font-size:14px; font-weight:700; color:var(--pink); text-shadow:none;
+         transform:translateX(100vw); will-change:transform; animation: fly linear var(--dur,9s); }
+    @keyframes fly{ to{ transform:translateX(-120%); } }
 
-    /* 弹幕：只显示留言、粉色文字、无黑底 */
-    .danmaku{
-      position: fixed;
-      left:0; right:0;
-      top:0; height: 38%;
-      pointer-events:none;
-      z-index: 9000;
-      overflow:hidden;
+    /* —— 右下角按钮：恢复你原来的音乐按钮样式 —— */
+    #music-toggle{
+      position:fixed; right:12px; bottom:12px; z-index:9999;
+      padding:10px 12px; border:none; border-radius:999px;
+      background:#fff; box-shadow:0 4px 16px rgba(0,0,0,.15);
+      font-size:14px; cursor:pointer;
     }
-    .dm{
-      position:absolute;
-      white-space:nowrap;
-      font-size: 14px;
-      font-weight:700;
-      color: var(--pink);      /* 粉色文字 */
-      text-shadow: none;       /* 无描边、无底框 */
-      transform: translateX(100vw);
-      will-change: transform;
-      animation: fly linear var(--dur, 9s);
-    }
-    @keyframes fly{ to{ transform: translateX(-120%); } }
+    #music-toggle[hidden]{ display:none; }
 
-    /* 音乐按钮 */
-    #music-toggle{ /* 放到右下角按钮容器里同样视觉 */
-      display:none; /* 已换成 tiny-btn 版本 */
+    /* 弹幕开关按钮，放在音乐按钮上方，不改变你的音乐按钮 */
+    #dm-toggle{
+      position:fixed; right:12px; bottom:60px; z-index:9999;
+      padding:10px 12px; border:none; border-radius:999px;
+      background:#fff; box-shadow:0 4px 16px rgba(0,0,0,.15);
+      font-size:14px; cursor:pointer;
     }
 
     /* 移动端适配 */
-    @media (max-width: 768px){
-      .kaipian, .yaoqing, .guanyu, .xianglian{ font-size: clamp(10px, 2.0vw, 12px); }
+    @media (max-width:768px){
+      .kaipian,.yaoqing,.guanyu,.xianglian{ font-size:clamp(10px,2vw,12px); }
       .split{ grid-template-columns:1fr; }
-      .split-text h3{ font-size: clamp(9px, 1.8vw, 11px); }
-      .cd-num{ font-size: clamp(20px, 6vw, 28px); }
-      .cd-lbl, .cd-date, .countdown h3{ font-size: clamp(10px, 2vw, 12px); }
+      .split-text h3{ font-size:clamp(9px,1.8vw,11px); }
+      .cd-num{ font-size:clamp(20px,6vw,28px); }
+      .cd-lbl,.cd-date,.countdown h3{ font-size:clamp(10px,2vw,12px); }
     }
   </style>
 </head>
 <body>
 
   <main class="page" id="love-page">
-
-    <!-- 首图（决定全站内容视觉宽度，所有后续容器与之同宽） -->
+    <!-- 首图 -->
     <figure class="hero container">
       <img src="images/shoutu.jpg" alt="首图" class="hero-img" id="heroImg" />
     </figure>
@@ -274,7 +191,6 @@
       <img class="photo-img" src="images/xiaoqunzihunshazhao.jpg" alt="小裙子婚纱照" loading="lazy" decoding="async" />
     </figure>
 
-    <!-- 左图右文（与首图同宽） -->
     <section class="split container">
       <div class="split-image">
         <img src="images/dinghunzhao.jpg" alt="订婚照片" loading="lazy" decoding="async" />
@@ -321,7 +237,7 @@
       <p>农历十月廿一 18:00</p>
     </section>
 
-    <!-- 倒计时（与首图同宽） -->
+    <!-- 倒计时 -->
     <section class="countdown container" id="countdown" data-deadline="2025-12-10T18:00:00">
       <div class="cd-grid" aria-live="polite">
         <div class="cd-item"><span class="cd-num" id="cd-days">00</span><span class="cd-lbl">天</span></div>
@@ -358,7 +274,7 @@
       <img class="photo-img" src="images/hunlijian.jpg" alt="婚礼见" loading="lazy" decoding="async" />
     </figure>
 
-    <!-- ===== 留言板（表单+显示列表） ===== -->
+    <!-- 留言板 -->
     <section class="form-card container" id="rsvp">
       <h4>留言板 · RSVP</h4>
       <p class="form-tip">请填写 <strong>姓名 / 人数 / 留言</strong> 并提交。提交后会在下方显示。</p>
@@ -376,42 +292,60 @@
         <ul id="rsvp-list" style="list-style:none;padding:0;margin:0;display:grid;gap:10px;"></ul>
       </div>
     </section>
-
   </main>
 
   <!-- 弹幕层 -->
   <div class="danmaku" id="danmaku"></div>
 
-  <!-- 右下角按钮：弹幕开关/音乐 -->
-  <div class="float-btn">
-    <button id="dm-toggle" class="tiny-btn" type="button">弹幕：关</button>
-    <button id="music-btn" class="tiny-btn" type="button">音乐</button>
-  </div>
+  <!-- 恢复你的音乐按钮（原样式与文案） -->
+  <button id="music-toggle" hidden aria-label="播放或暂停音乐">▶ 音乐</button>
+  <!-- 弹幕开关按钮（放在音乐按钮上方） -->
+  <button id="dm-toggle" type="button">弹幕：关</button>
 
   <!-- 背景音乐 -->
   <audio id="bgm" src="music/达尔文.mp3" preload="auto" loop></audio>
 
   <script>
   (function(){
-    /* ===== 音乐开关（用户交互后播放） ===== */
+    /* ===== 音乐：恢复你之前的解锁与按钮逻辑 ===== */
     const audio = document.getElementById('bgm');
-    const musicBtn = document.getElementById('music-btn');
+    const btn   = document.getElementById('music-toggle');
 
-    function setMusicBtn(){
-      musicBtn.textContent = audio.paused ? '音乐' : '暂停音乐';
+    function syncBtn(){ btn.textContent = (audio.paused ? '▶' : '⏸') + ' 音乐'; }
+    function showBtn(){ if(btn.hidden) btn.hidden = false; syncBtn(); }
+
+    async function tryAutoplaySilently(){
+      try { audio.muted = true; await audio.play(); audio.pause(); audio.currentTime = 0; audio.muted = false; }
+      catch(e){} finally { showBtn(); }
     }
-    async function tryAuto(){
-      try{ audio.muted = true; await audio.play(); audio.pause(); audio.muted=false; }
-      catch(e){}
-      setMusicBtn();
+
+    let unlocked = false;
+    const unlockEventsWin = ['scroll','wheel'];
+    const unlockEventsDoc = ['pointerdown','touchstart','touchend','click','keydown'];
+
+    async function unlockAndPlay(){
+      if(unlocked) return;
+      unlocked = true;
+      try { audio.muted = false; if(audio.paused) await audio.play(); }
+      catch(e){} finally {
+        unlockEventsWin.forEach(t => window.removeEventListener(t, unlockAndPlay));
+        unlockEventsDoc.forEach(t => document.removeEventListener(t, unlockAndPlay));
+        showBtn();
+      }
     }
-    musicBtn.addEventListener('click', async ()=>{
-      try{
-        if(audio.paused){ await audio.play(); } else { audio.pause(); }
-      }catch(e){}
-      setMusicBtn();
+
+    unlockEventsWin.forEach(t => window.addEventListener(t, unlockAndPlay, { passive:true }));
+    unlockEventsDoc.forEach(t => document.addEventListener(t, unlockAndPlay, { passive:true }));
+
+    btn.addEventListener('click', async ()=>{
+      try{ if(audio.paused){ await audio.play(); } else { audio.pause(); } }
+      catch(e){} finally { showBtn(); }
     });
-    document.addEventListener('DOMContentLoaded', tryAuto);
+
+    document.addEventListener('DOMContentLoaded', tryAutoplaySilently);
+    document.addEventListener('visibilitychange', ()=>{
+      if(!document.hidden && audio.paused && !unlocked){ tryAutoplaySilently(); }
+    });
 
     /* ===== 倒计时 ===== */
     const cd = document.getElementById('countdown');
@@ -435,22 +369,22 @@
         mEl.textContent = pad(mins);
         sEl.textContent = pad(secs);
       }
-      tick(); setInterval(tick, 1000);
+      tick(); setInterval(tick,1000);
     }
 
-    /* ===== 留言板：加载与提交（你的 API 路径不变） ===== */
+    /* ===== 留言：载入与提交 ===== */
     async function loadList(){
       const statusEl = document.getElementById('rsvp-status');
-      const list = document.getElementById('rsvp-list');
+      const listEl = document.getElementById('rsvp-list');
       try{
         statusEl.textContent = '加载留言中...';
         const res = await fetch('/api/rsvp/list', { cache:'no-store' });
         const data = await res.json();
         const items = Array.isArray(data) ? data : [];
         if(!items.length){
-          list.innerHTML = '<li class="r-item" style="text-align:center;color:#666;">暂无留言</li>';
+          listEl.innerHTML = '<li class="r-item" style="text-align:center;color:#666;">暂无留言</li>';
         }else{
-          list.innerHTML = items.map(it=>{
+          listEl.innerHTML = items.map(it=>{
             const t = new Date(it.createdAt || Date.now());
             const d = `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')} ${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}`;
             const msg = (it.message || '').replace(/</g,'&lt;').replace(/>/g,'&gt;');
@@ -462,8 +396,8 @@
           }).join('');
         }
         statusEl.textContent = '';
-        // 也喂给弹幕队列（只显示留言）
-        window.__DM_CACHE__ = (items || []).map(i => (i.message||'').trim()).filter(Boolean);
+        // 喂给弹幕缓存（只保留留言）
+        window.__DM_CACHE__ = (items||[]).map(i => (i.message||'').trim()).filter(Boolean);
       }catch(e){
         statusEl.textContent = '加载失败，请稍后重试';
       }
@@ -478,76 +412,49 @@
       const message = document.getElementById('rsvp-msg').value.trim();
       if(!name || !count){ statusEl.textContent='请填写姓名和人数'; return; }
       try{
-        statusEl.textContent = '提交中...';
-        const ret = await (await fetch('/api/rsvp/submit', {
-          method:'POST',
-          headers:{'Content-Type':'application/json'},
+        statusEl.textContent='提交中...';
+        const ret = await (await fetch('/api/rsvp/submit',{
+          method:'POST', headers:{'Content-Type':'application/json'},
           body: JSON.stringify({ name, count, message })
         })).json();
         if(ret.ok){
-          statusEl.textContent = '提交成功，已更新列表';
+          statusEl.textContent='提交成功，已更新列表';
           form.reset();
           await loadList();
-          // 新留言也推到弹幕缓存（只取 message）
           if(message){ (window.__DM_CACHE__ ||= []).push(message); }
         }else{
-          statusEl.textContent = '提交失败，请稍后再试';
+          statusEl.textContent='提交失败，请稍后再试';
         }
-      }catch(err){
-        statusEl.textContent = '网络异常，请稍后再试';
+      }catch(e){
+        statusEl.textContent='网络异常，请稍后再试';
       }
     });
 
-    /* 首次加载留言 */
     loadList();
 
-    /* ===== 弹幕：只显示留言，粉色，无底框 ===== */
+    /* ===== 弹幕：粉色，仅留言 ===== */
     const dmBox = document.getElementById('danmaku');
     const dmBtn = document.getElementById('dm-toggle');
-    let dmOn = false;
-    let timer = null;
+    let dmOn = false, timer=null;
     function setDmBtn(){ dmBtn.textContent = dmOn ? '弹幕：开' : '弹幕：关'; }
-
     function launchOne(text){
       if(!text) return;
       const el = document.createElement('div');
-      el.className = 'dm';
-      el.textContent = text;
-      // 随机轨道：顶部 0%~80% 之间
-      const top = Math.floor(Math.random()*80);
-      el.style.top = top + '%';
-      el.style.setProperty('--dur', (8 + Math.random()*4) + 's');
+      el.className='dm'; el.textContent = text;
+      el.style.top = Math.floor(Math.random()*80)+'%';
+      el.style.setProperty('--dur', (8+Math.random()*4)+'s');
       dmBox.appendChild(el);
       const remove = ()=> el.remove();
       el.addEventListener('animationend', remove);
-      // 保险清理
-      setTimeout(remove, 15000);
+      setTimeout(remove,15000);
     }
-
-    function feedFromCache(){
-      const pool = (window.__DM_CACHE__ ||= []);
-      if(!pool.length) return;
-      // 一次取 1~2 条
-      const n = 1 + Math.floor(Math.random()*2);
-      for(let i=0;i<n;i++){
-        const msg = pool[Math.floor(Math.random()*pool.length)];
-        if(msg) launchOne(msg);
-      }
+    function feed(){ const pool=(window.__DM_CACHE__ ||= []); if(!pool.length) return;
+      const n=1+Math.floor(Math.random()*2);
+      for(let i=0;i<n;i++){ launchOne(pool[Math.floor(Math.random()*pool.length)]); }
     }
-
-    function startDm(){
-      if(timer) return;
-      timer = setInterval(()=>{ feedFromCache(); }, 1200);
-    }
-    function stopDm(){
-      if(timer){ clearInterval(timer); timer=null; }
-    }
-
-    dmBtn.addEventListener('click', ()=>{
-      dmOn = !dmOn;
-      setDmBtn();
-      if(dmOn){ startDm(); } else { stopDm(); }
-    });
+    function start(){ if(!timer) timer = setInterval(feed, 1200); }
+    function stop(){ if(timer){ clearInterval(timer); timer=null; } }
+    dmBtn.addEventListener('click', ()=>{ dmOn=!dmOn; setDmBtn(); dmOn?start():stop(); });
     setDmBtn();
   })();
   </script>
