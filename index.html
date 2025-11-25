@@ -524,6 +524,14 @@
           statusEl.textContent='提交成功，已更新列表';
           form.reset();
           await loadList();
+
+          // 新增：把本次留言加入弹幕池（仅留言文本）
+          if (payload.message && payload.message.trim()) {
+            const m = payload.message.trim();
+            dmMsgs.push(m.length > 60 ? (m.slice(0,60) + '…') : m);
+          }
+
+          
         }else{
           statusEl.textContent='提交失败，请稍后再试';
         }
@@ -532,48 +540,61 @@
       }
     });
 
-    /* ===== 弹幕（默认开启、仅显示留言，粉色文字、频率与数量收敛） ===== */
+        /* ===== 弹幕（允许重复：随机循环取消息） ===== */
     const layer = document.getElementById('danmaku-layer');
     const dmBtn = document.getElementById('danmaku-toggle');
-    let dmOn = true;                // 默认开启
-    let pool = [];                  // 仅留言文本
-    let laneCount = 5;              // 同时最多 5 条轨道
-    let active = 0;                 // 当前在屏上的数量
-    let maxActive = 8;              // 同屏最多 8 条
-    let spawnMs = 1400;             // 发射间隔
+
+    let dmOn = true;          // 默认开启
+    let dmMsgs = [];          // 仅存“留言”文本
+    let lastIdx = -1;         // 避免连续两条完全相同
+    let laneCount = 5;        // 轨道数量
+    let active = 0;           // 当前在屏数量
+    let maxActive = 8;        // 同屏最多
+    let spawnMs = 1400;       // 发射间隔
     let dmTimer = null;
 
     function shoot(msg){
-      if (!dmOn) return;
-      if (!msg) return;
-      const lineH = 24; // 行高控制轨道高度
-      const lane = Math.floor(Math.random()*laneCount);
-      const top = Math.max(8, 12 + lane*lineH);
+      if (!dmOn || !msg) return;
+      const lineH = 24;
+      const lane = Math.floor(Math.random() * laneCount);
+      const top = Math.max(8, 12 + lane * lineH);
+
       const el = document.createElement('div');
-      el.className='danmaku-bullet';
-      el.style.top = top+'px';
+      el.className = 'danmaku-bullet';
+      el.style.top = top + 'px';
       el.style.fontSize = '14px';
       el.textContent = msg;
+
       layer.appendChild(el);
       active++;
-      el.addEventListener('animationend', ()=>{ el.remove(); active=Math.max(0,active-1); });
+      el.addEventListener('animationend', () => {
+        el.remove();
+        active = Math.max(0, active - 1);
+      });
     }
+
     function loop(){
-      if (!dmOn){ return; }
+      if (!dmOn || !dmMsgs.length) return;
       if (active < maxActive){
-        const m = pool.length ? pool.shift() : '';
-        if (m) shoot(m);
+        // 随机循环取一条（与上一条不同）
+        let idx = Math.floor(Math.random() * dmMsgs.length);
+        if (dmMsgs.length > 1 && idx === lastIdx) idx = (idx + 1) % dmMsgs.length;
+        lastIdx = idx;
+        shoot(dmMsgs[idx]);
       }
     }
+
     function startDM(){
       if (dmTimer) clearInterval(dmTimer);
       dmTimer = setInterval(loop, spawnMs);
-      dmBtn.textContent='弹幕：开'; dmBtn.setAttribute('aria-pressed','true');
+      dmBtn.textContent = '弹幕：开';
+      dmBtn.setAttribute('aria-pressed', 'true');
     }
     function stopDM(){
       if (dmTimer) clearInterval(dmTimer);
-      dmTimer=null;
-      dmBtn.textContent='弹幕：关'; dmBtn.setAttribute('aria-pressed','false');
+      dmTimer = null;
+      dmBtn.textContent = '弹幕：关';
+      dmBtn.setAttribute('aria-pressed', 'false');
     }
     dmBtn.addEventListener('click', ()=>{
       dmOn = !dmOn;
@@ -583,20 +604,25 @@
     async function initDM(){
       try{
         const res = await fetch('/api/rsvp/list',{cache:'no-store'});
-        const data = await res.json();
-        // 只取非空留言，截断长度避免过长
-        pool = (Array.isArray(data)?data:[])
-          .map(x=> (x.message||'').trim())
+        const raw = await res.json();
+        dmMsgs = (Array.isArray(raw)?raw:[])
+          .map(x => (x.message || '').trim())
           .filter(Boolean)
-          .map(s => s.length>60 ? (s.slice(0,60)+'…') : s);
-        // 限制初始池大小，避免太多
-        if (pool.length>40) pool = pool.slice(-40);
+          .map(s => s.length > 60 ? (s.slice(0,60) + '…') : s);
+
+        // 去重，避免同一条瞬间连刷；仍然会“重复出现”，因为 loop 每次随机取
+        dmMsgs = Array.from(new Set(dmMsgs));
+
+        // 想让初期更“热闹”，可以复制几遍（可选）：
+        // while (dmMsgs.length && dmMsgs.length < 20) dmMsgs = dmMsgs.concat(dmMsgs);
+
       }catch(_){
-        pool = [];
+        dmMsgs = [];
       }finally{
         if (dmOn) startDM();
       }
     }
+
 
     // ===== 页面启动顺序 =====
     document.addEventListener('DOMContentLoaded', ()=>{
