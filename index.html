@@ -137,15 +137,19 @@
       overflow:hidden; z-index: 9;
     }
     .danmu{
-      position:absolute; white-space:nowrap; font-weight:600;
+      position:absolute;
+      left: 100vw;                 /* 从屏幕右边界之外起步 */
+      white-space:nowrap;
+      font-weight:600;
       text-shadow:0 0 10px rgba(255,90,161,.35), 0 0 4px rgba(255,90,161,.35);
       color: var(--danmu-color);
       will-change: transform;
-      animation: fly linear both;
+      animation: fly linear forwards;   /* 用 JS 动态设置 duration */
     }
-    @keyframes fly {
-      from { transform: translateX(100%); }
-      to   { transform: translateX(-100%); }
+    
+   @keyframes fly {
+      from { transform: translateX(0); }
+      to   { transform: translateX(calc(-100vw - 100%)); } /* 穿过整个屏幕再带出自身宽度 */
     }
     .dm-toggle{
       position: fixed; right: 12px; bottom: 70px; z-index: 20;
