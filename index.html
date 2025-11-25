@@ -211,10 +211,10 @@
 
   <script>
   (function(){
-    /* ===== 音乐按钮（保持你的原样式与逻辑） ===== */ 
+    /* ===== 音乐按钮（保持你的原样式与逻辑） ===== */
     const audio = document.getElementById('bgm');
     const btn   = document.getElementById('music-toggle');
-    function syncBtn(){ btn.textContent = (audio.paused ? '▶' : '⏸'); }
+    function syncBtn(){ btn.textContent = (audio.paused ? '▶音乐' : '⏸音乐'); }
     function showBtn(){ if(btn.hidden) btn.hidden = false; syncBtn(); }
     async function tryAutoplaySilently(){ try{ audio.muted=true; await audio.play(); audio.pause(); audio.currentTime=0; audio.muted=false; }catch(e){} finally{ showBtn(); } }
     let unlocked=false;
