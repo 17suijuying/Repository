@@ -614,7 +614,7 @@
         dmMsgs = Array.from(new Set(dmMsgs));
 
         // 想让初期更“热闹”，可以复制几遍（可选）：
-        // while (dmMsgs.length && dmMsgs.length < 20) dmMsgs = dmMsgs.concat(dmMsgs);
+        while (dmMsgs.length && dmMsgs.length < 20) dmMsgs = dmMsgs.concat(dmMsgs);
 
       }catch(_){
         dmMsgs = [];
