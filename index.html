@@ -6,173 +6,200 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <style>
-    :root {
+    :root{
       --gap: 24px;
       --text-max: 900px;
-      --text-color: #111;
-      --pink: #FF7AAE;
+      --content-max: 980px;         /* 统一内容最大宽度（桌面） */
+      --text-color:#111;
+      --pink:#FF7AAE;
     }
-    * { box-sizing: border-box; }
-    html { overflow-y: auto; }
-    body {
-      margin: 0;
-      background: #fff;
+
+    *{ box-sizing: border-box; }
+    html{ overflow-y:auto; -webkit-text-size-adjust:100%; }
+    body{
+      margin:0; background:#fff; color:var(--text-color);
       font-family: system-ui, -apple-system, "Segoe UI", Roboto, "PingFang SC","Noto Sans CJK SC","Microsoft YaHei", sans-serif;
-      line-height: 1.65;
-      color: var(--text-color);
+      line-height:1.65;
+      overflow-x:hidden;           /* 防横向滚动 */
     }
 
-    main.page { display: flex; flex-direction: column; gap: var(--gap); }
-    figure { margin: 0; }
+    main.page{ display:flex; flex-direction:column; gap:var(--gap); }
 
-    /* 只做左右内边距，所有图片区块同一基准 */
-    .hero, .photo { padding: 0 16px; position: static !important; }
+    /* 统一的内容容器：居中 + 侧边距 */
+    .block{
+      width:min(100%, var(--content-max));
+      margin:0 auto;
+      padding:0 16px;              /* 与你之前一致的左右内边距 */
+    }
 
-    /* 首图：尽量占宽、限制高度，保持不变形 */
-    .hero-img {
-      display: block; position: static !important; width: auto; height: auto;
-      max-width: 100%; max-height: 50vh; margin: 0 auto; object-fit: contain;
+    figure{ margin:0; }
+
+    /* 图片容器都套上 .block，图片100%等比 */
+    .hero.block, .photo.block, .split.block, .countdown.block, .form-card.block{ }
+
+    img{ display:block; max-width:100%; height:auto; }
+
+    /* 首图：高度克制，仍然等比；不再决定其他内容宽度 */
+    .hero-img{
+      width:100%;
+      height:auto;
+      max-height:50vh;             /* 控高避免首屏太压 */
+      object-fit:contain;
+      margin:0 auto;
     }
 
     /* 文案区块 */
-    .kaipian, .yaoqing, .guanyu, .xianglian, .jiehun, .qingjian {
-      position: static !important; clear: both; max-width: var(--text-max);
-      margin: 0 auto 48px; padding: 0 16px; text-align: center;
-      line-height: 1.7; font-size: 13px; color: var(--text-color);
+    .kaipian, .yaoqing, .guanyu, .xianglian, .jiehun, .qingjian{
+      width:min(100%, var(--text-max));
+      margin:0 auto 48px;
+      padding:0 16px;
+      text-align:center;
+      font-size:13px;
+      line-height:1.7;
     }
-    .kaipian p, .yaoqing p, .guanyu p, .xianglian p, .jiehun p, .qingjian p { margin: 0.5em 0; }
+    .kaipian p, .yaoqing p, .guanyu p, .xianglian p, .jiehun p, .qingjian p{ margin:.5em 0; }
 
-    /* 展示图片：由 JS 设宽与首图一致 */
-    .photo-img { display: block; width: auto; height: auto; max-width: 100%; margin: 0 auto; object-fit: contain; }
+    /* 展示图片（非首图） */
+    .photo-img{
+      width:100%;
+      height:auto;
+      object-fit:contain;
+      margin:0 auto;
+    }
 
     /* 左右分栏 */
-    .split {
-      position: static !important; clear: both; margin: 0 auto 48px;
-      display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: center;
+    .split{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:24px;
+      align-items:center;
+      margin-bottom:48px;
     }
-    .split-image { display: flex; justify-content: center; }
-    .split-text { text-align: center; line-height: 1.7; font-size: 13px; color: var(--text-color); padding: 0 16px; }
-    .split-text p { margin: 0.5em 0; }
-    .split-text h3 { margin: 0 0 8px; font-weight: 600; font-size: 12px; opacity: .9; }
+    .split-image{ display:flex; justify-content:center; }
+    .split-text{
+      text-align:center;
+      line-height:1.7;
+      font-size:13px;
+      color:var(--text-color);
+      padding:0 8px;
+    }
+    .split-text h3{
+      margin:0 0 8px;
+      font-weight:600;
+      font-size:12px;              /* “订婚”小标题 */
+      opacity:.9;
+    }
+    .half-img{ width:100%; height:auto; }
 
     /* 倒计时 */
-    .countdown {
-      position: static !important; clear: both; margin: 0 auto 48px; padding: 18px 16px 20px;
-      text-align: center; color: #3b2a2d;
-      background: linear-gradient(180deg, #FFEAF1 0%, #FFD9E7 100%);
-      border-radius: 16px; box-shadow: 0 6px 18px rgba(255, 120, 160, .12);
+    .countdown{
+      margin:0 auto 48px;
+      padding:18px 16px 20px;
+      text-align:center;
+      color:#3b2a2d;
+      background:linear-gradient(180deg, #FFEAF1 0%, #FFD9E7 100%);
+      border-radius:16px;
+      box-shadow:0 6px 18px rgba(255,120,160,.12);
     }
-    .countdown h3 { margin: 0 0 10px; font-size: 12px; font-weight: 600; letter-spacing: .1em; color: #5d3b45; }
-    .cd-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; align-items: end; justify-items: center; margin: 6px 0 6px; }
-    .cd-item { min-width: 64px; }
-    .cd-num { display: block; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.1; font-size: 32px; }
-    .cd-lbl { display: block; margin-top: 4px; font-size: 12px; opacity: .85; }
-    .cd-date { margin: 8px 0 0; font-size: 12px; opacity: .9; }
+    .countdown h3{
+      margin:0 0 10px; font-size:12px; font-weight:600; letter-spacing:.1em; color:#5d3b45;
+    }
+    .cd-grid{
+      display:grid; grid-template-columns:repeat(4,1fr);
+      gap:12px; align-items:end; justify-items:center; margin:6px 0;
+    }
+    .cd-item{ min-width:56px; }
+    .cd-num{ font-weight:700; font-variant-numeric:tabular-nums; line-height:1.1; font-size:32px; }
+    .cd-lbl{ margin-top:4px; font-size:12px; opacity:.85; display:block; }
+    .cd-date{ margin-top:8px; font-size:12px; opacity:.9; }
 
     /* 导航卡片 */
     .nav-card{
-      background: #fff; border: 1px solid rgba(0,0,0,.06); border-radius: 16px;
-      box-shadow: 0 6px 18px rgba(0,0,0,.06); padding: 20px 16px; min-height: 220px;
-      display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
+      background:#fff; border:1px solid rgba(0,0,0,.06); border-radius:16px;
+      box-shadow:0 6px 18px rgba(0,0,0,.06);
+      padding:20px 16px; min-height:220px;
+      display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;
     }
-    .nav-card h4{ margin: 0 0 6px; font-size: 14px; font-weight: 700; letter-spacing: .02em; }
-    .nav-actions{ display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+    .nav-card h4{ margin:0 0 6px; font-size:14px; font-weight:700; letter-spacing:.02em; }
+    .nav-actions{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
     .nav-btn, .form-btn{
-      display: inline-block; text-decoration: none; padding: 10px 14px; border-radius: 999px;
-      background: var(--pink); color: #fff; font-size: 14px; box-shadow: 0 8px 18px rgba(255,122,174,.25);
-      border: 1px solid var(--pink); cursor: pointer;
+      display:inline-block; text-decoration:none; padding:10px 14px; border-radius:999px;
+      background:var(--pink); color:#fff; font-size:14px; box-shadow:0 8px 18px rgba(255,122,174,.25);
+      border:1px solid var(--pink); cursor:pointer;
     }
-    .nav-btn:hover, .form-btn:hover{ filter: brightness(0.98); }
+    .nav-btn:hover, .form-btn:hover{ filter:brightness(.98); }
 
     /* 留言卡片 */
     .form-card{
-      position: static !important; clear: both; margin: 0 auto 48px;
-      background: #fff; border: 1px solid rgba(0,0,0,.06); border-radius: 16px;
-      box-shadow: 0 6px 18px rgba(0,0,0,.06); padding: 18px 16px 16px; text-align: center;
+      background:#fff; border:1px solid rgba(0,0,0,.06); border-radius:16px;
+      box-shadow:0 6px 18px rgba(0,0,0,.06); padding:18px 16px 16px; text-align:center; margin-bottom:48px;
     }
-    .form-card h4{ margin: 0 0 8px; font-size: 14px; font-weight: 700; }
-    .form-tip{ margin: 8px 0 0; font-size: 12px; opacity: .85; }
-    .form-grid{ display: grid; gap: 10px; max-width: 520px; margin: 0 auto; }
+    .form-card h4{ margin:0 0 8px; font-size:14px; font-weight:700; }
+    .form-tip{ margin:8px 0 0; font-size:12px; opacity:.85; }
     .input, .textarea{
-      width: 100%; padding: 10px 12px; border-radius: 12px; border: 1px solid rgba(0,0,0,.12);
-      font-size: 14px; outline: none;
+      width:100%; padding:10px 12px; border-radius:12px; border:1px solid rgba(0,0,0,.12);
+      font-size:14px; outline:none;
     }
-    .textarea{ resize: vertical; min-height: 96px; }
+    .textarea{ resize:vertical; min-height:96px; }
 
     /* 管理员查看面板（列表样式） */
-    .admin-actions{ margin-top: 10px; }
-    #admin-panel[hidden]{ display:none; }
-    .admin-list{ max-width: 900px; margin: 12px auto 0; text-align: left; }
+    .admin-list{ max-width:900px; margin:12px auto 0; text-align:left; }
     .admin-item{
-      border: 1px solid rgba(0,0,0,.08); border-radius: 12px; padding: 12px; margin: 8px 0;
-      box-shadow: 0 4px 12px rgba(0,0,0,.06);
+      border:1px solid rgba(0,0,0,.08); border-radius:12px; padding:12px; margin:8px 0;
+      box-shadow:0 4px 12px rgba(0,0,0,.06);
     }
-    .admin-item h5{ margin: 0 0 6px; font-size: 14px; }
-    .muted{ opacity: .7; font-size: 12px; }
+    .admin-item h5{ margin:0 0 6px; font-size:14px; }
+    .muted{ opacity:.7; font-size:12px; }
 
-    @media (max-width: 768px) {
-      .hero-img { max-height: 45svh; }
-      .kaipian, .yaoqing, .guanyu, .xianglian { font-size: clamp(10px, 2.0vw, 12px); }
-      .split { width: 100% !important; grid-template-columns: 1fr; padding: 0 16px; }
-      .split-text h3{ font-size: clamp(9px, 1.8vw, 11px); }
-      .split-image .half-img { width: 100% !important; }
-      .cd-num{ font-size: clamp(18px, 6vw, 28px); }
-      .cd-lbl, .cd-date, .countdown h3{ font-size: clamp(10px, 2vw, 12px); }
-      .form-card{ width: 100% !important; }
+    /* 音乐按钮（图标） */
+    #music-toggle{
+      position:fixed; right:12px; bottom:12px; z-index:9999;
+      width:44px; height:44px; display:grid; place-items:center;
+      padding:0; border:0; border-radius:999px; background:#fff; box-shadow:0 4px 16px rgba(0,0,0,.15);
+      font-size:16px; line-height:1; cursor:pointer;
     }
+    #music-toggle[hidden]{ display:none; }
 
-    /* 音乐按钮：只显示图标 */
-    #music-toggle {
-      position: fixed; right: 12px; bottom: 12px; z-index: 9999;
-      padding: 10px 12px; border: none; border-radius: 999px;
-      background: #ffffff; box-shadow: 0 4px 16px rgba(0,0,0,.15); font-size: 16px; cursor: pointer;
-      line-height: 1; width: 44px; height: 44px; display: grid; place-items: center;
-    }
-    #music-toggle[hidden] { display: none; }
-
-    /* ========= 弹幕层 ========= */
+    /* ========= 弹幕 ========= */
     #danmu-layer{
-      position: fixed; left: 0; top: 12vh; width: 100vw; height: 36vh;
-      pointer-events: none; overflow: hidden; z-index: 999;
+      position:fixed; left:0; top:12vh; width:100vw; height:36vh;
+      pointer-events:none; overflow:hidden; z-index:999;
     }
     .dm{
-      position: absolute; left: 100vw;
-      white-space: nowrap;
-      color: var(--pink);
-      font-weight: 600;
-      font-size: 14px;
-      line-height: 1.2;
-      text-shadow: 0 1px 2px rgba(0,0,0,.06);
-      /* 无底色、无描边 */
-      background: transparent;
-      padding: 0;
-      border: 0;
-      filter: none;
-      will-change: transform;
-      animation-name: dm-move;
-      animation-timing-function: linear;
-      animation-iteration-count: 1;
+      position:absolute; left:100vw; white-space:nowrap; color:var(--pink);
+      font-weight:600; font-size:14px; line-height:1.2; text-shadow:0 1px 2px rgba(0,0,0,.06);
+      background:transparent; padding:0; border:0; filter:none; will-change:transform;
+      animation-name:dm-move; animation-timing-function:linear; animation-iteration-count:1;
     }
-    @keyframes dm-move {
-      0%   { transform: translateX(0); }
-      100% { transform: translateX(-120vw); }
+    @keyframes dm-move{
+      0%{ transform:translateX(0); }
+      100%{ transform:translateX(-120vw); }
+    }
+    #dm-toggle{
+      position:fixed; right:64px; bottom:12px; z-index:9999;
+      width:44px; height:44px; display:grid; place-items:center;
+      padding:0; border:0; border-radius:999px; background:#fff; box-shadow:0 4px 16px rgba(0,0,0,.15);
+      font-size:16px; line-height:1; cursor:pointer;
     }
 
-    /* 弹幕按钮（右下角，音乐按钮左侧一点） */
-    #dm-toggle{
-      position: fixed; right: 64px; bottom: 12px; z-index: 9999;
-      padding: 10px 12px; border: none; border-radius: 999px;
-      background: #ffffff; box-shadow: 0 4px 16px rgba(0,0,0,.15); font-size: 16px; cursor: pointer;
-      line-height: 1; width: 44px; height: 44px; display: grid; place-items: center;
+    /* 移动端适配 */
+    @media (max-width:768px){
+      .hero-img{ max-height:45svh; }
+      .kaipian, .yaoqing, .guanyu, .xianglian{ font-size:clamp(10px, 2vw, 12px); }
+      .split{ grid-template-columns:1fr; }              /* 单列 */
+      .split-text h3{ font-size:clamp(10px, 1.8vw, 12px); }
+      .cd-num{ font-size:clamp(18px, 6vw, 28px); }
+      .cd-item{ min-width:48px; }                      /* 更窄也不挤出粉色块 */
+      .form-card{ width:min(100%, var(--content-max)); }
     }
   </style>
 </head>
 <body>
 
   <main class="page" id="love-page">
-    <figure class="hero">
-      <!-- 首图走多CDN回退 -->
-      <img class="hero-img photo-img" id="heroImg" data-cdn-path="/images/shoutu.jpg" alt="首图">
+    <!-- 首图 -->
+    <figure class="hero block">
+      <img class="hero-img" id="heroImg" data-cdn-path="/images/shoutu.jpg" alt="首图">
     </figure>
 
     <section class="kaipian">
@@ -184,7 +211,8 @@
       <p>一路走来的酸甜苦辣组成了我们的故事</p>
     </section>
 
-    <figure class="photo">
+    <!-- 图片与文案 -->
+    <figure class="photo block">
       <img class="photo-img" data-cdn-path="/images/zhuanjitu.jpg" alt="转纪图" loading="lazy" decoding="async">
     </figure>
 
@@ -193,10 +221,10 @@
       <p>“见证这场因爱而生的结合”</p>
     </section>
 
-    <figure class="photo">
+    <figure class="photo block">
       <img class="photo-img" data-cdn-path="/images/guanyuwomen.jpg" alt="关于我们" loading="lazy" decoding="async">
     </figure>
-    
+
     <section class="guanyu">
       <p>故事开始在2015年的夏天</p>
       <p>高二的我们换到了同一个班级</p>
@@ -205,7 +233,7 @@
       <p>印象里 她勤奋好学 但眼神中又透露着清澈的“天真”</p>
     </section>
 
-    <figure class="photo">
+    <figure class="photo block">
       <img class="photo-img" data-cdn-path="/images/haimatichenshan.jpg" alt="海马体衬衫" loading="lazy" decoding="async">
     </figure>
 
@@ -222,14 +250,14 @@
       <p>每个周末的短暂相逢承载了简单的幸福与对未来的承诺</p>
     </section>
 
-    <figure class="photo">
+    <figure class="photo block">
       <img class="photo-img" data-cdn-path="/images/xiaoqunzihunshazhao.jpg" alt="小裙子婚纱照" loading="lazy" decoding="async">
     </figure>
 
     <!-- 左图右文 -->
-    <section class="split">
+    <section class="split block">
       <div class="split-image">
-        <img class="photo-img half-img" data-cdn-path="/images/dinghunzhao.jpg" alt="订婚照片" loading="lazy" decoding="async">
+        <img class="half-img" data-cdn-path="/images/dinghunzhao.jpg" alt="订婚照片" loading="lazy" decoding="async">
       </div>
       <div class="split-text">
         <h3>&lt; 订婚 &gt;</h3>
@@ -241,7 +269,7 @@
       </div>
     </section>
 
-    <figure class="photo">
+    <figure class="photo block">
       <img class="photo-img" data-cdn-path="/images/hunli.jpg" alt="婚礼" loading="lazy" decoding="async">
     </figure>
 
@@ -253,7 +281,7 @@
       <p>很幸运可以与你携手度过一个又一个十年</p>
     </section>
 
-    <figure class="photo">
+    <figure class="photo block">
       <img class="photo-img" data-cdn-path="/images/haimati.jpg" alt="海马体" loading="lazy" decoding="async">
     </figure>
 
@@ -264,7 +292,7 @@
       <p>您能专程为我们而来 与我们共同分享 见证这美好时刻</p>
     </section>
 
-    <figure class="photo">
+    <figure class="photo block">
       <img class="photo-img" data-cdn-path="/images/zhongshihunshazhao.jpg" alt="中式婚纱照" loading="lazy" decoding="async">
     </figure>
 
@@ -274,7 +302,7 @@
     </section>
 
     <!-- 倒计时 -->
-    <section class="countdown" id="countdown" data-deadline="2025-12-10T18:00:00">
+    <section class="countdown block" id="countdown" data-deadline="2025-12-10T18:00:00">
       <div class="cd-grid" aria-live="polite">
         <div class="cd-item"><span class="cd-num" id="cd-days">00</span><span class="cd-lbl">天</span></div>
         <div class="cd-item"><span class="cd-num" id="cd-hours">00</span><span class="cd-lbl">小时</span></div>
@@ -284,7 +312,7 @@
     </section>
 
     <!-- 导航 + 时间表 -->
-    <section class="split">
+    <section class="split block">
       <div class="split-text">
         <div class="nav-card">
           <h4>婚礼酒店导航</h4>
@@ -297,7 +325,7 @@
         </div>
       </div>
       <div class="split-image">
-        <img class="photo-img half-img" data-cdn-path="/images/hunlishijianbiao.jpg" alt="婚礼时间表" loading="lazy" decoding="async">
+        <img class="half-img" data-cdn-path="/images/hunlishijianbiao.jpg" alt="婚礼时间表" loading="lazy" decoding="async">
       </div>
     </section>
 
@@ -306,23 +334,22 @@
       <p>温州市瓯海区瓯海大道969号</p>
     </section>
 
-    <figure class="photo">
+    <figure class="photo block">
       <img class="photo-img" data-cdn-path="/images/hunlijian.jpg" alt="婚礼见" loading="lazy" decoding="async">
     </figure>
 
-    <!-- 留言板（直连你自己的后端 /api/rsvp/* ） -->
-    <section class="form-card" id="rsvp">
+    <!-- 留言板（直连你的后端 /api/rsvp/* ） -->
+    <section class="form-card block" id="rsvp">
       <h4>留言板 · RSVP</h4>
       <p class="form-tip">请填写 <strong>姓名 / 人数 / 留言</strong> 并提交。提交后会在下方显示。</p>
 
       <form id="rsvp-form" style="max-width:600px;margin:0 auto;display:grid;grid-template-columns:1fr 120px;gap:10px;">
         <input id="rsvp-name" type="text" placeholder="姓名（必填）" required
-               style="grid-column:1 / span 2;padding:10px 12px;border:1px solid rgba(0,0,0,.12);border-radius:10px;">
+               class="input" style="grid-column:1 / span 2;">
         <input id="rsvp-count" type="number" min="1" step="1" placeholder="人数（必填）" required
-               style="padding:10px 12px;border:1px solid rgba(0,0,0,.12);border-radius:10px;">
+               class="input">
         <button class="form-btn" type="submit" style="height:42px;">提交</button>
-        <textarea id="rsvp-msg" rows="3" placeholder="留言（可选）"
-                  style="grid-column:1 / span 2;padding:10px 12px;border:1px solid rgba(0,0,0,.12);border-radius:10px;"></textarea>
+        <textarea id="rsvp-msg" rows="3" placeholder="留言（可选）" class="textarea" style="grid-column:1 / span 2;"></textarea>
       </form>
 
       <div id="rsvp-status" style="margin-top:10px;font-size:12px;opacity:.85;"></div>
@@ -337,240 +364,117 @@
   <div id="danmu-layer" aria-hidden="true"></div>
   <button id="dm-toggle" aria-label="弹幕开关">💬</button>
 
-  <!-- 背景音乐（建议把 mp3 放到你自己的稳定源） -->
+  <!-- 背景音乐 -->
   <audio id="bgm" src="music/达尔文.mp3" preload="auto" loop></audio>
   <button id="music-toggle" hidden aria-label="播放或暂停">▶</button>
 
   <script>
   (function () {
-    /* ========= 1) 多 CDN 回退加载 GitHub 图片 ========= */
-    const GH_USER   = "17suijuying";
-    const GH_REPO   = "Repository";
-    const GH_BRANCH = "main";
-    const CDN_HOSTS = [
+    /* ========= CDN回退加载 GitHub 图片 ========= */
+    const GH_USER="17suijuying";
+    const GH_REPO="Repository";
+    const GH_BRANCH="main";
+    const CDN_HOSTS=[
       `https://cdn.jsdelivr.net/gh/${GH_USER}/${GH_REPO}@${GH_BRANCH}`,
       `https://fastly.jsdelivr.net/gh/${GH_USER}/${GH_REPO}@${GH_BRANCH}`,
       `https://gcore.jsdelivr.net/gh/${GH_USER}/${GH_REPO}@${GH_BRANCH}`,
     ];
-
-    function attachImgFallback(img, path) {
-      let i = 0;
-      const tryNext = () => { if (i >= CDN_HOSTS.length) return; img.src = CDN_HOSTS[i++] + path; };
-      img.addEventListener('error', tryNext, { once: false });
+    function attachImgFallback(img, path){
+      let i=0;
+      const tryNext=()=>{ if(i>=CDN_HOSTS.length) return; img.src=CDN_HOSTS[i++]+path; };
+      img.addEventListener('error', tryNext, {once:false});
       tryNext();
     }
-    document.querySelectorAll('img[data-cdn-path]').forEach(img => {
-      const p = img.getAttribute('data-cdn-path'); if (p) attachImgFallback(img, p);
+    document.querySelectorAll('img[data-cdn-path]').forEach(img=>{
+      const p=img.getAttribute('data-cdn-path'); if(p) attachImgFallback(img,p);
     });
 
-    /* ========= 2) 音乐播放（含微信环境解锁） ========= */
-    const audio = document.getElementById('bgm');
-    const musicBtn   = document.getElementById('music-toggle');
+    /* ========= 音乐播放（含微信环境解锁） ========= */
+    const audio=document.getElementById('bgm');
+    const musicBtn=document.getElementById('music-toggle');
+    function syncMusicBtn(){ musicBtn.textContent = audio.paused ? '▶' : '⏸'; }
+    function showMusicBtn(){ if(musicBtn.hidden) musicBtn.hidden=false; syncMusicBtn(); }
+    async function tryAutoplaySilently(){ try{ audio.muted=true; await audio.play(); showMusicBtn(); } catch(e){ showMusicBtn(); } }
+    document.addEventListener('WeixinJSBridgeReady', function(){ try{ audio.muted=false; audio.play(); }catch(e){} showMusicBtn(); }, false);
+    let unlocked=false;
+    const unlockWin=['scroll','wheel'];
+    const unlockDoc=['pointerdown','touchstart','touchend','click','keydown'];
+    async function unlockAndPlay(){ if(unlocked) return; unlocked=true; try{ audio.muted=false; if(audio.paused) await audio.play(); } finally{ removeUnlockers(); showMusicBtn(); } }
+    function addUnlockers(){ unlockWin.forEach(t=>window.addEventListener(t,unlockAndPlay,{passive:true})); unlockDoc.forEach(t=>document.addEventListener(t,unlockAndPlay,{passive:true})); }
+    function removeUnlockers(){ unlockWin.forEach(t=>window.removeEventListener(t,unlockAndPlay)); unlockDoc.forEach(t=>document.removeEventListener(t,unlockAndPlay)); }
+    musicBtn.addEventListener('click', async ()=>{ try{ if(audio.paused){ audio.muted=false; await audio.play(); } else { audio.pause(); } } finally{ showMusicBtn(); } });
+    document.addEventListener('DOMContentLoaded', ()=>{ tryAutoplaySilently(); addUnlockers(); });
+    document.addEventListener('visibilitychange', ()=>{ if(!document.hidden && audio.paused && !unlocked){ tryAutoplaySilently(); } });
 
-    function syncMusicBtn() { musicBtn.textContent = audio.paused ? '▶' : '⏸'; }
-    function showMusicBtn() { if (musicBtn.hidden) musicBtn.hidden = false; syncMusicBtn(); }
-
-    async function tryAutoplaySilently() {
-      try { audio.muted = true; await audio.play(); showMusicBtn(); }
-      catch (e) { showMusicBtn(); }
-    }
-    document.addEventListener('WeixinJSBridgeReady', function () {
-      try { audio.muted = false; audio.play(); } catch (e) {}
-      showMusicBtn();
-    }, false);
-
-    let unlocked = false;
-    const unlockEventsWin = ['scroll', 'wheel'];
-    const unlockEventsDoc = ['pointerdown','touchstart','touchend','click','keydown'];
-
-    async function unlockAndPlay() {
-      if (unlocked) return;
-      unlocked = true;
-      try { audio.muted = false; if (audio.paused) await audio.play(); }
-      finally { removeUnlockers(); showMusicBtn(); }
-    }
-    function addUnlockers() {
-      unlockEventsWin.forEach(t => window.addEventListener(t, unlockAndPlay, { passive: true }));
-      unlockEventsDoc.forEach(t => document.addEventListener(t, unlockAndPlay, { passive: true }));
-    }
-    function removeUnlockers() {
-      unlockEventsWin.forEach(t => window.removeEventListener(t, unlockAndPlay));
-      unlockEventsDoc.forEach(t => document.removeEventListener(t, unlockAndPlay));
-    }
-    musicBtn.addEventListener('click', async () => {
-      try { if (audio.paused) { audio.muted = false; await audio.play(); } else { audio.pause(); } }
-      finally { showMusicBtn(); }
-    });
-    document.addEventListener('DOMContentLoaded', () => { tryAutoplaySilently(); addUnlockers(); });
-    document.addEventListener('visibilitychange', () => {
-      if (!document.hidden && audio.paused && !unlocked) { tryAutoplaySilently(); }
-    });
-
-    /* ========= 3) 与首图等宽（容器与图片同步） ========= */
-    const heroImg  = document.getElementById('heroImg');
-    const selector = '.photo-img';
-    function cssGap() {
-      const v = getComputedStyle(document.documentElement).getPropertyValue('--gap').trim();
-      const n = parseFloat(v); return isNaN(n) ? 24 : n;
-    }
-    function applyWidth(w) {
-      const gap = cssGap();
-      // 所有图片与首图同宽
-      document.querySelectorAll(selector).forEach(img => {
-        img.style.width = w + 'px';
-        img.style.height = 'auto';
-      });
-      // 半宽图：列宽 ≈ (容器宽 - gap)/2
-      const half = Math.max(1, Math.round((w - gap) / 2));
-      document.querySelectorAll('.half-img').forEach(img => {
-        img.style.width = half + 'px';
-        img.style.height = 'auto';
-      });
-      // 容器：split / countdown / form-card 与首图等宽
-      document.querySelectorAll('.split, .countdown, .form-card').forEach(box => {
-        box.style.width = w + 'px';
-      });
-    }
-    let rafId = null;
-    function scheduleSync() {
-      if (rafId) return;
-      rafId = requestAnimationFrame(() => {
-        rafId = null;
-        const rect = heroImg.getBoundingClientRect();
-        const w = Math.round(rect.width || 0);
-        if (w > 0) applyWidth(w);
-      });
-    }
-    window.addEventListener('load', scheduleSync);
-    window.addEventListener('resize', scheduleSync);
-    window.addEventListener('orientationchange', scheduleSync);
-    window.addEventListener('scroll', scheduleSync, { passive: true });
-    if ('ResizeObserver' in window) { const ro = new ResizeObserver(scheduleSync); ro.observe(heroImg); }
-    if ('MutationObserver' in window) {
-      const mo = new MutationObserver(muts => {
-        let need = false;
-        for (const m of muts) {
-          m.addedNodes && m.addedNodes.forEach(n => {
-            if (n.nodeType === 1 && (n.matches?.(selector) || n.querySelector?.(selector) || n.matches?.('.split') || n.matches?.('.countdown') || n.matches?.('.form-card'))) {
-              need = true;
-            }
-          });
-        }
-        if (need) scheduleSync();
-      });
-      mo.observe(document.body, { childList: true, subtree: true });
-    }
-    document.querySelectorAll(selector).forEach(img => {
-      if (img.complete) scheduleSync();
-      else img.addEventListener('load', scheduleSync, { once: true });
-    });
-
-    /* ========= 4) 倒计时 ========= */
-    const cd = document.getElementById('countdown');
-    if (cd) {
-      const ds = cd.dataset.deadline || '2025-12-10T18:00:00';
-      const target = new Date(ds);
-      const dEl = document.getElementById('cd-days');
-      const hEl = document.getElementById('cd-hours');
-      const mEl = document.getElementById('cd-mins');
-      const sEl = document.getElementById('cd-secs');
-      function pad(n){ return n < 10 ? '0' + n : '' + n; }
-      function tick() {
-        const now = new Date(); let diff = Math.max(0, target - now);
-        const days  = Math.floor(diff / (1000*60*60*24)); diff -= days * (1000*60*60*24);
-        const hours = Math.floor(diff / (1000*60*60)); diff -= hours * (1000*60*60);
-        const mins  = Math.floor(diff / (1000*60)); diff -= mins * (1000*60);
-        const secs  = Math.floor(diff / 1000);
-        dEl.textContent = pad(days); hEl.textContent = pad(hours); mEl.textContent = pad(mins); sEl.textContent = pad(secs);
+    /* ========= 倒计时 ========= */
+    const cd=document.getElementById('countdown');
+    if(cd){
+      const ds=cd.dataset.deadline||'2025-12-10T18:00:00';
+      const target=new Date(ds);
+      const dEl=document.getElementById('cd-days');
+      const hEl=document.getElementById('cd-hours');
+      const mEl=document.getElementById('cd-mins');
+      const sEl=document.getElementById('cd-secs');
+      const pad=n=>n<10?('0'+n):(''+n);
+      function tick(){
+        const now=new Date(); let diff=Math.max(0, target-now);
+        const days=Math.floor(diff/86400000); diff-=days*86400000;
+        const hours=Math.floor(diff/3600000); diff-=hours*3600000;
+        const mins=Math.floor(diff/60000); diff-=mins*60000;
+        const secs=Math.floor(diff/1000);
+        dEl.textContent=pad(days); hEl.textContent=pad(hours); mEl.textContent=pad(mins); sEl.textContent=pad(secs);
       }
-      tick(); setInterval(tick, 1000);
+      tick(); setInterval(tick,1000);
     }
 
-    /* ========= 5) 留言板前端（你的后端 /api/rsvp/*）+ 弹幕 ========= */
-    const dmLayer = document.getElementById('danmu-layer');
-    const dmBtn   = document.getElementById('dm-toggle');
-
-    const danmu = {
-      enabled: true,          // 默认开启
-      queue: [],
-      idx: 0,
-      timer: null,
-      intervalMs: 1600,       // 频率：每 1.6s 发一条
-      trackH: 28,
-      get trackCount(){ return window.innerWidth < 768 ? 4 : 6; },
-      start(){
-        if (this.timer || !this.queue.length) return;
-        this.timer = setInterval(()=>this.fire(), this.intervalMs);
-        dmBtn.textContent = '💬';
-      },
-      stop(){
-        if (this.timer){ clearInterval(this.timer); this.timer = null; }
-        dmBtn.textContent = '🚫';
-      },
-      setEnabled(v){
-        this.enabled = v;
-        if (v) this.start(); else this.stop();
-      },
-      setMessages(msgs){
-        // 仅保留非空留言；不加兜底
-        this.queue = Array.isArray(msgs) ? msgs.filter(s => !!s && s.trim().length > 0) : [];
-        this.idx = 0;
-        if (this.enabled && this.queue.length) this.start();
-      },
-      nextMsg(){
-        if (!this.queue.length) return '';
-        const msg = this.queue[this.idx % this.queue.length];
-        this.idx++;
-        return msg;
-      },
+    /* ========= 留言板 + 弹幕 ========= */
+    const dmLayer=document.getElementById('danmu-layer');
+    const dmBtn=document.getElementById('dm-toggle');
+    const danmu={
+      enabled:true, queue:[], idx:0, timer:null,
+      intervalMs:1600, trackH:28,
+      get trackCount(){ return window.innerWidth<768?4:6; },
+      start(){ if(this.timer||!this.queue.length) return; this.timer=setInterval(()=>this.fire(), this.intervalMs); dmBtn.textContent='💬'; },
+      stop(){ if(this.timer){ clearInterval(this.timer); this.timer=null; } dmBtn.textContent='🚫'; },
+      setEnabled(v){ this.enabled=v; if(v) this.start(); else this.stop(); },
+      setMessages(msgs){ this.queue=(Array.isArray(msgs)?msgs:[]).filter(s=>s&&s.trim().length>0); this.idx=0; if(this.enabled&&this.queue.length) this.start(); },
+      nextMsg(){ if(!this.queue.length) return ''; const t=this.queue[this.idx%this.queue.length]; this.idx++; return t; },
       fire(){
-        if (!this.enabled || !this.queue.length) return;
-        const text = this.nextMsg();
-        if (!text) return;
-        const el = document.createElement('span');
-        el.className = 'dm';
-        el.textContent = text;
-
-        // 随机轨道
-        const track = Math.floor(Math.random() * this.trackCount);
-        const top = Math.round(track * this.trackH + (this.trackH/4));
-        el.style.top = top + 'px';
-
-        // 根据字数调整速度（更长更慢一点），同时保持整体不“很慢”
-        const base = window.innerWidth < 768 ? 10 : 12; // 秒
-        const dur  = Math.max(8, Math.min(16, base + Math.min(text.length, 40) * 0.15));
+        if(!this.enabled||!this.queue.length) return;
+        const text=this.nextMsg(); if(!text) return;
+        const el=document.createElement('span'); el.className='dm'; el.textContent=text;
+        const track=Math.floor(Math.random()*this.trackCount);
+        el.style.top = Math.round(track*this.trackH + (this.trackH/4)) + 'px';
+        const base = window.innerWidth<768 ? 10 : 12;
+        const dur  = Math.max(8, Math.min(16, base + Math.min(text.length, 40)*0.15));
         el.style.animationDuration = dur + 's';
-
-        el.addEventListener('animationend', ()=> el.remove());
+        el.addEventListener('animationend', ()=>el.remove());
         dmLayer.appendChild(el);
       }
     };
-
-    dmBtn.addEventListener('click', ()=>{
-      danmu.setEnabled(!danmu.enabled);
-    });
+    dmBtn.addEventListener('click', ()=> danmu.setEnabled(!danmu.enabled) );
 
     (function(){
-      const form    = document.getElementById('rsvp-form');
-      const nameI   = document.getElementById('rsvp-name');
-      const countI  = document.getElementById('rsvp-count');
-      const msgI    = document.getElementById('rsvp-msg');
-      const listEl  = document.getElementById('rsvp-list');
-      const statusEl= document.getElementById('rsvp-status');
+      const form   = document.getElementById('rsvp-form');
+      const nameI  = document.getElementById('rsvp-name');
+      const countI = document.getElementById('rsvp-count');
+      const msgI   = document.getElementById('rsvp-msg');
+      const listEl = document.getElementById('rsvp-list');
+      const statusEl = document.getElementById('rsvp-status');
 
       function render(listData){
-        if (!Array.isArray(listData) || !listData.length) {
+        if(!Array.isArray(listData)||!listData.length){
           listEl.innerHTML = '<li style="padding:12px 14px;border:1px solid rgba(0,0,0,.06);border-radius:12px;color:#666;text-align:center;">暂无留言</li>';
           return;
         }
-        listEl.innerHTML = listData.map(item => {
-          const t = new Date(item.createdAt || Date.now());
-          const d = `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')} ${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}`;
-          const msg = (item.message || '').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        listEl.innerHTML = listData.map(item=>{
+          const t=new Date(item.createdAt||Date.now());
+          const d=`${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')} ${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}`;
+          const msg=(item.message||'').replace(/</g,'&lt;').replace(/>/g,'&gt;');
           return `
             <li style="padding:12px 14px;border:1px solid rgba(0,0,0,.06);border-radius:12px;background:#fff;">
               <div style="font-weight:700;">${item.name} <span style="font-weight:400;opacity:.7;">（${item.count}人）</span></div>
-              ${msg ? `<div style="margin-top:4px;">${msg}</div>` : ''}
+              ${msg?`<div style="margin-top:4px;">${msg}</div>`:''}
               <div style="margin-top:6px;font-size:12px;opacity:.6;">${d}</div>
             </li>`;
         }).join('');
@@ -578,50 +482,48 @@
 
       async function loadList(){
         try{
-          const res = await fetch('/api/rsvp/list', { cache: 'no-store' });
+          const res = await fetch('/api/rsvp/list', { cache:'no-store' });
           const data = await res.json();
           render(data);
-          // 仅使用“留言内容”作为弹幕文本（不含姓名）
-          const msgs = Array.isArray(data) ? data.map(x => (x.message || '').trim()).filter(s=>s.length>0) : [];
-          danmu.setMessages(msgs); // 自动开始 & 循环播放
-          statusEl.textContent = '';
+          const msgs = Array.isArray(data) ? data.map(x=>(x.message||'').trim()).filter(Boolean) : [];
+          danmu.setMessages(msgs);     // 默认开启 + 循环播放
+          statusEl.textContent='';
         }catch(e){
-          statusEl.textContent = '加载失败，请稍后重试';
+          statusEl.textContent='加载失败，请稍后重试';
         }
       }
 
       form?.addEventListener('submit', async (e)=>{
         e.preventDefault();
-        const payload = {
-          name: nameI.value.trim(),
-          count: Number(countI.value || 0),
-          message: msgI.value.trim()
+        const payload={
+          name:nameI.value.trim(),
+          count:Number(countI.value||0),
+          message:msgI.value.trim()
         };
-        if (!payload.name || !payload.count) {
-          statusEl.textContent = '请填写姓名和人数';
+        if(!payload.name || !payload.count){
+          statusEl.textContent='请填写姓名和人数';
           return;
         }
         try{
-          statusEl.textContent = '提交中...';
-          const res = await fetch('/api/rsvp/submit', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
+          statusEl.textContent='提交中...';
+          const res=await fetch('/api/rsvp/submit', {
+            method:'POST',
+            headers:{ 'Content-Type':'application/json' },
+            body:JSON.stringify(payload)
           });
-          const ret = await res.json();
-          if (ret.ok) {
-            statusEl.textContent = '提交成功，已更新列表';
+          const ret=await res.json();
+          if(ret.ok){
+            statusEl.textContent='提交成功，已更新列表';
             form.reset();
             await loadList();
-          } else {
-            statusEl.textContent = '提交失败，请稍后再试';
+          }else{
+            statusEl.textContent='提交失败，请稍后再试';
           }
         }catch(e){
-          statusEl.textContent = '网络异常，请稍后再试';
+          statusEl.textContent='网络异常，请稍后再试';
         }
       });
 
-      // 初始加载留言（拉起弹幕）
       loadList();
     })();
   })();
