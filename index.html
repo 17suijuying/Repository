@@ -1,186 +1,189 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8">
   <title>Love . 翁晨博&胡琼雅</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <style>
     :root{
+      /* 统一内容宽度（PC 不超过 900，移动端自适应） */
+      --wrap-max: 900px;
+      --wrap-pad: 16px;
       --gap: 24px;
-      --text-max: 900px;
-      --text-color: #111;
-      /* 由 JS 写入首图实际像素宽，作为全站宽度基准 */
-      --hero-w: 100%;
+      --text-color:#111;
+
+      /* 弹幕 */
+      --danmu-color: #ff5aa1;  /* 粉色 */
+      --danmu-speed: 12;       /* 秒，越小越快 */
+      --danmu-tracks: 4;       /* 轨道数（行数） */
+
+      /* 卡片阴影/圆角 */
+      --card-radius: 16px;
+      --card-shadow: 0 6px 18px rgba(0,0,0,.06);
     }
 
-    /* 基础与防溢出 */
-    *{ box-sizing: border-box; }
-    html, body{ max-width: 100%; overflow-x: hidden; }
+    *{ box-sizing:border-box; }
+    html{ overflow-y:auto; }
     body{
-      margin: 0;
-      background: #fff;
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "PingFang SC","Noto Sans CJK SC","Microsoft YaHei", sans-serif;
-      line-height: 1.65;
-      color: var(--text-color);
+      margin:0; background:#fff; color:var(--text-color);
+      font-family: system-ui,-apple-system,"Segoe UI",Roboto,"PingFang SC","Noto Sans CJK SC","Microsoft YaHei",sans-serif;
+      line-height:1.65;
     }
 
-    main.page{ display: flex; flex-direction: column; gap: var(--gap); }
-    figure{ margin: 0; }
-
-    /* 与首图等宽的所有大块：首图容器、普通图片容器、左右区块、倒计时、留言板 */
-    .hero, .photo, .split, .countdown, .form-card{
-      width: 100%;
-      max-width: var(--hero-w, 100%);
-      margin-left: auto; margin-right: auto;
-      padding-left: 16px; padding-right: 16px;
-    }
-
-    /* 首图与普通图片：永远占满“容器”宽度，等比缩放 */
-    .hero-img, .photo-img{
-      display: block;
-      width: 100%;
-      max-width: var(--hero-w, 100%);
-      height: auto;
+    /* 统一宽度容器：所有主要区块都放到 .wrap 里 */
+    .wrap{
+      width: min(100%, var(--wrap-max));
       margin: 0 auto;
-      object-fit: contain;
+      padding: 0 var(--wrap-pad);
     }
 
-    /* 首图容器与普通图片容器 */
-    .hero, .photo{ position: static !important; }
+    main.page{ display:flex; flex-direction:column; gap:var(--gap); }
 
-    /* 文字区（桌面端） */
-    .kaipian, .yaoqing, .guanyu, .xianglian, .jiehun, .qingjian{
-      position: static !important; clear: both;
-      max-width: var(--text-max);
-      margin: 0 auto 48px; padding: 0 16px;
-      text-align: center; line-height: 1.7; font-size: 13px; color: var(--text-color);
-    }
-    .kaipian p, .yaoqing p, .guanyu p, .xianglian p, .jiehun p, .qingjian p{ margin: .5em 0; }
+    figure{ margin:0; }
+    /* 所有图片等比不变形、占满容器宽度 */
+    img{ display:block; width:100%; height:auto; object-fit:contain; }
 
-    /* 左右区块 */
-    .split{
-      position: static !important; clear: both; margin: 0 auto 48px;
-      display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: center;
+    /* 首图 */
+    .hero{ }
+    .hero-img{ max-height: 50vh; margin: 0 auto; }
+
+    /* 段落区 */
+    .section{
+      text-align:center; font-size:13px; line-height:1.7;
     }
-    .split-image{ display: flex; justify-content: center; }
-    /* 半宽图片：列宽 = (容器宽 - 列间距 24px)/2；小屏自动 100% */
-    .half-img{
-      width: calc((min(var(--hero-w, 100vw), 100vw) - 24px)/2);
-      max-width: 100%;
-      height: auto;
+    .section p{ margin:.5em 0; }
+
+    /* 两列区 */
+    .split .grid{
+      display:grid;
+      grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+      gap:24px; align-items:center;
     }
-    .split-text{
-      text-align: center; line-height: 1.7; font-size: 13px; color: var(--text-color); padding: 0 16px;
+    .split h3{ margin:0 0 8px; font-weight:600; font-size:12px; opacity:.9; }
+    @media (max-width: 768px){
+      .split .grid{ grid-template-columns: 1fr; }
     }
-    .split-text p{ margin: .5em 0; }
-    .split-text h3{ margin: 0 0 8px; font-weight: 600; font-size: 12px; opacity: .9; }
 
     /* 倒计时 */
-    .countdown{
-      position: static !important; clear: both; margin: 0 auto 48px;
-      padding: 18px 16px 20px; text-align: center; color: #3b2a2d;
-      background: linear-gradient(180deg, #FFEAF1 0%, #FFD9E7 100%);
-      border-radius: 16px; box-shadow: 0 6px 18px rgba(255,120,160,.12);
+    .countdown-card{
+      background: linear-gradient(180deg,#FFEAF1 0%, #FFD9E7 100%);
+      border-radius: var(--card-radius);
+      box-shadow: var(--card-shadow);
+      color:#3b2a2d; text-align:center;
+      padding:18px 16px 20px;
     }
-    .countdown h3{ margin: 0 0 10px; font-size: 12px; font-weight: 600; letter-spacing: .1em; color: #5d3b45; }
+    .countdown-card h3{
+      margin:0 0 10px; font-size:12px; font-weight:600; letter-spacing:.1em; color:#5d3b45;
+    }
     .cd-grid{
-      display: grid; grid-template-columns: repeat(4, 1fr);
-      gap: 12px; align-items: end; justify-items: center; margin: 6px 0 6px;
+      display:grid; grid-template-columns: repeat(4,1fr);
+      gap:12px; align-items:end; justify-items:center; margin: 6px 0;
     }
-    .cd-item{ min-width: 64px; }
-    .cd-num{ display: block; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.1; font-size: 32px; }
-    .cd-lbl{ display: block; margin-top: 4px; font-size: 12px; opacity: .85; }
-    .cd-date{ margin: 8px 0 0; font-size: 12px; opacity: .9; }
+    .cd-item{ min-width:64px; }
+    .cd-num{
+      font-weight:700; font-variant-numeric: tabular-nums;
+      line-height:1.1; font-size:32px;
+    }
+    .cd-lbl{ margin-top:4px; font-size:12px; opacity:.85; line-height:1.2; }
+    .cd-date{ margin-top:8px; font-size:12px; opacity:.9; }
+    @media (max-width:768px){
+      .cd-num{ font-size: clamp(18px, 6vw, 28px); }
+      .cd-lbl,.cd-date,.countdown-card h3{ font-size: clamp(10px, 2vw, 12px); }
+    }
 
-    /* 导航卡片 */
+    /* 导航卡片（高德） */
     .nav-card{
-      background: #fff; border: 1px solid rgba(0,0,0,.06); border-radius: 16px;
-      box-shadow: 0 6px 18px rgba(0,0,0,.06); padding: 20px 16px; min-height: 220px;
-      display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
+      background:#fff; border:1px solid rgba(0,0,0,.06); border-radius:var(--card-radius);
+      box-shadow: var(--card-shadow); padding:20px 16px; text-align:center;
     }
-    .nav-card h4{ margin: 0 0 6px; font-size: 14px; font-weight: 700; letter-spacing: .02em; }
-    .nav-actions{ display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
-    .nav-btn, .form-btn{
-      display: inline-block; text-decoration: none; padding: 10px 14px; border-radius: 999px;
-      background: #FF7AAE; color: #fff; font-size: 14px; box-shadow: 0 8px 18px rgba(255,122,174,.25);
-      border: 1px solid #FF7AAE; cursor: pointer;
+    .nav-actions{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+    .btn{
+      appearance:none; border:1px solid #FF7AAE; background:#FF7AAE; color:#fff;
+      border-radius:999px; padding:10px 14px; font-size:14px; cursor:pointer;
+      box-shadow: 0 8px 18px rgba(255,122,174,.25);
     }
-    .nav-btn:hover, .form-btn:hover{ filter: brightness(0.98); }
+    .btn.ghost{ background:#fff; color:#FF7AAE; }
 
-    /* ===== 留言板（修复溢出） ===== */
+    /* 留言板 */
     .form-card{
-      position: static !important; clear: both; margin: 0 auto 48px;
-      background: #fff; border: 1px solid rgba(0,0,0,.06); border-radius: 16px;
-      box-shadow: 0 6px 18px rgba(0,0,0,.06); padding: 18px 16px 16px; text-align: center;
+      background:#fff; border:1px solid rgba(0,0,0,.06); border-radius:var(--card-radius);
+      box-shadow:var(--card-shadow); padding:18px 16px 16px;
     }
-    .form-card h4{ margin: 0 0 8px; font-size: 14px; font-weight: 700; }
-    .form-tip{ margin: 8px 0 0; font-size: 12px; opacity: .85; }
-
-    /* 表单网格：二列布局在小屏自动切一列；允许收缩（minmax(0,...)) 防止溢出 */
-    .form-grid{
-      display: grid; gap: 10px; max-width: 600px; margin: 0 auto;
-      grid-template-columns: minmax(0,1fr) minmax(0,120px);
+    .form-card h4{ margin:0 0 8px; font-size:14px; font-weight:700; text-align:center; }
+    .form-tip{ margin:0 0 12px; font-size:12px; opacity:.85; text-align:center; }
+    .rsvp-form{
+      display:grid; grid-template-columns: 1fr 120px; gap:10px; max-width:600px; margin:0 auto;
     }
-    .input, .textarea{
-      width: 100%;
-      min-width: 0;                 /* 关键：允许在小容器中收缩 */
-      padding: 10px 12px;
-      border-radius: 12px; border: 1px solid rgba(0,0,0,.12);
-      font-size: 14px; outline: none;
+    .input,.textarea{
+      width:100%; padding:10px 12px; border:1px solid rgba(0,0,0,.12);
+      border-radius:12px; font-size:14px; outline:none;
     }
-    .textarea{ resize: vertical; min-height: 96px; }
-
-    /* 提交状态 */
-    #rsvp-status{ margin-top: 10px; font-size: 12px; opacity: .85; }
-
-    /* 留言列表：对长单词/长链接强制换行，防溢出；宽度跟随首图 */
-    .rsvp-wrap{
-      width: 100%; max-width: var(--hero-w, 100%); margin: 16px auto 0; padding: 0 4px;
-    }
-    #rsvp-list{
-      list-style: none; padding: 0; margin: 0;
-      display: grid; gap: 10px;
+    .textarea{ resize:vertical; min-height:96px; grid-column:1 / span 2; }
+    .rsvp-status{ margin-top:10px; font-size:12px; opacity:.85; text-align:center; }
+    .rsvp-list{
+      list-style:none; padding:0; margin:16px auto 0; display:grid; gap:10px;
+      max-width: min(720px, 100%);
     }
     .rsvp-item{
-      padding: 12px 14px; border: 1px solid rgba(0,0,0,.06); border-radius: 12px; background: #fff;
-      word-break: break-word; overflow-wrap: anywhere; /* 关键：避免长内容撑破 */
+      border:1px solid rgba(0,0,0,.06); border-radius:12px; background:#fff;
+      padding:12px 14px;
     }
-    .rsvp-head{ font-weight: 700; }
-    .rsvp-meta{ margin-top: 6px; font-size: 12px; opacity: .6; }
+    .rsvp-header{ font-weight:700; }
+    .rsvp-meta{ margin-top:6px; font-size:12px; opacity:.6; }
 
-    /* 手机端自适配 */
-    @media (max-width: 768px){
-      .kaipian, .yaoqing, .guanyu, .xianglian{ font-size: clamp(10px, 2vw, 12px); }
-      .split{ width: 100% !important; grid-template-columns: 1fr; padding: 0 16px; }
-      .split-text h3{ font-size: clamp(9px, 1.8vw, 11px); }
-      .half-img{ width: 100% !important; }
-      .cd-num{ font-size: clamp(18px, 6vw, 28px); }
-      .cd-lbl, .cd-date, .countdown h3{ font-size: clamp(10px, 2vw, 12px); }
-      .form-card{ width: 100% !important; }
-      .form-grid{ grid-template-columns: 1fr; } /* 小屏单列，彻底杜绝溢出 */
+    /* 弹幕 */
+    .danmu-stage{
+      position: fixed; left:0; right:0; top:0; height: 40vh; pointer-events:none;
+      overflow:hidden; z-index: 9;
+    }
+    .danmu{
+      position:absolute; white-space:nowrap; font-weight:600;
+      text-shadow:0 0 10px rgba(255,90,161,.35), 0 0 4px rgba(255,90,161,.35);
+      color: var(--danmu-color);
+      will-change: transform;
+      animation: fly linear both;
+    }
+    @keyframes fly {
+      from { transform: translateX(100%); }
+      to   { transform: translateX(-100%); }
+    }
+    .dm-toggle{
+      position: fixed; right: 12px; bottom: 70px; z-index: 20;
+      padding: 8px 12px; border-radius:999px; border:1px solid #FF7AAE;
+      background:#fff; color:#FF7AAE; font-size:14px; box-shadow:var(--card-shadow);
     }
 
-    /* 右下角音乐按钮（仅图标） */
+    /* 音乐按钮（图标） */
     #music-toggle{
-      position: fixed; right: 12px; bottom: 12px; z-index: 9999;
-      width: 42px; height: 42px;
-      display: grid; place-items: center;
-      border: none; border-radius: 50%;
-      background: #ffffff; box-shadow: 0 4px 16px rgba(0,0,0,.15);
-      font-size: 16px; cursor: pointer;
+      position: fixed; right: 12px; bottom: 12px; z-index: 20;
+      width:44px; height:44px; border:none; border-radius:999px;
+      background:#ffffff; box-shadow: 0 4px 16px rgba(0,0,0,.15);
+      font-size: 18px; cursor:pointer; display:flex; align-items:center; justify-content:center;
     }
-    #music-toggle[hidden]{ display: none; }
+    #music-toggle[hidden]{ display:none; }
+
+    /* 保底：任何超出视口的容器都限制在 wrap 宽度内，避免越界 */
+    .wrap > .countdown-card,
+    .wrap > .nav-card,
+    .wrap > .form-card{ max-width: 100%; }
+
   </style>
 </head>
 <body>
 
-  <main class="page" id="love-page">
-    <figure class="hero">
+  <!-- 弹幕舞台（默认开启） -->
+  <div class="danmu-stage" id="dmStage" aria-hidden="true"></div>
+  <button class="dm-toggle" id="dmToggle" type="button">弹幕：开</button>
+
+  <main class="page">
+
+    <!-- 首图 -->
+    <figure class="hero wrap">
       <img src="images/shoutu.jpg" alt="首图" class="hero-img" id="heroImg">
     </figure>
 
-    <section class="kaipian">
+    <!-- 文案段落 -->
+    <section class="section wrap">
       <p>FOR YOU/给我最亲爱的你们</p>
       <p>当你们看到这些文字的时候</p>
       <p>已经被我们郑重加入到我们的 INVITATION LIST</p>
@@ -189,20 +192,16 @@
       <p>一路走来的酸甜苦辣组成了我们的故事</p>
     </section>
 
-    <figure class="photo">
-      <img src="images/zhuanjitu.jpg" alt="转纪图" class="photo-img" loading="lazy" decoding="async">
-    </figure>
+    <figure class="wrap"><img src="images/zhuanjitu.jpg" alt="转纪图" loading="lazy" decoding="async"></figure>
 
-    <section class="yaoqing">
+    <section class="section wrap">
       <p>“诚挚邀请您来参加婚礼”</p>
       <p>“见证这场因爱而生的结合”</p>
     </section>
 
-    <figure class="photo">
-      <img src="images/guanyuwomen.jpg" alt="关于我们" class="photo-img" loading="lazy" decoding="async">
-    </figure>
+    <figure class="wrap"><img src="images/guanyuwomen.jpg" alt="关于我们" loading="lazy" decoding="async"></figure>
 
-    <section class="guanyu">
+    <section class="section wrap">
       <p>故事开始在2015年的夏天</p>
       <p>高二的我们换到了同一个班级</p>
       <p>同学 是我们之间的第一个身份</p>
@@ -210,11 +209,9 @@
       <p>印象里 她勤奋好学 但眼神中又透露着清澈的“天真”</p>
     </section>
 
-    <figure class="photo">
-      <img src="images/haimatichenshan.jpg" alt="海马体衬衫" class="photo-img" loading="lazy" decoding="async">
-    </figure>
+    <figure class="wrap"><img src="images/haimatichenshan.jpg" alt="海马体衬衫" loading="lazy" decoding="async"></figure>
 
-    <section class="xianglian">
+    <section class="section wrap">
       <p>起初一人在杭州 一人在上海</p>
       <p>从小和山到野马浜</p>
       <p>厚厚的车票连结起两颗炽热的心</p>
@@ -227,30 +224,26 @@
       <p>每个周末的短暂相逢承载了简单的幸福与对未来的承诺</p>
     </section>
 
-    <figure class="photo">
-      <img src="images/xiaoqunzihunshazhao.jpg" alt="小裙子婚纱照" class="photo-img" loading="lazy" decoding="async">
-    </figure>
+    <figure class="wrap"><img src="images/xiaoqunzihunshazhao.jpg" alt="小裙子婚纱照" loading="lazy" decoding="async"></figure>
 
-    <!-- 左图右文 -->
-    <section class="split">
-      <div class="split-image">
-        <img src="images/dinghunzhao.jpg" alt="订婚照片" class="photo-img half-img" loading="lazy" decoding="async">
-      </div>
-      <div class="split-text">
-        <h3>&lt; 订婚 &gt;</h3>
-        <p>2025年2月15日</p>
-        <p>我们在双方家人的见证下缔结婚约</p>
-        <p>所谓订婚</p>
-        <p>是一生相知相守的约定</p>
-        <p>愿我们成为彼此余生的依靠</p>
+    <!-- 订婚：左右分栏 -->
+    <section class="split wrap">
+      <div class="grid">
+        <div><img src="images/dinghunzhao.jpg" alt="订婚照片" loading="lazy" decoding="async"></div>
+        <div class="section">
+          <h3>&lt; 订婚 &gt;</h3>
+          <p>2025年2月15日</p>
+          <p>我们在双方家人的见证下缔结婚约</p>
+          <p>所谓订婚</p>
+          <p>是一生相知相守的约定</p>
+          <p>愿我们成为彼此余生的依靠</p>
+        </div>
       </div>
     </section>
 
-    <figure class="photo">
-      <img src="images/hunli.jpg" alt="婚礼" class="photo-img" loading="lazy" decoding="async">
-    </figure>
+    <figure class="wrap"><img src="images/hunli.jpg" alt="婚礼" loading="lazy" decoding="async"></figure>
 
-    <section class="jiehun">
+    <section class="section wrap">
       <p>从“学生证”到“结婚证”</p>
       <p>那个炽热的夏天在今岁初冬迎来续集</p>
       <p>终于在2025年12月10日我们决定举办婚礼</p>
@@ -258,238 +251,281 @@
       <p>很幸运可以与你携手度过一个又一个十年</p>
     </section>
 
-    <figure class="photo">
-      <img src="images/haimati.jpg" alt="海马体" class="photo-img" loading="lazy" decoding="async">
-    </figure>
+    <figure class="wrap"><img src="images/haimati.jpg" alt="海马体" loading="lazy" decoding="async"></figure>
 
-    <section class="qingjian">
+    <section class="section wrap">
       <p>在我们无比重要的一天 携同我们的父母</p>
       <p>诚挚的邀请您出席我们的婚礼</p>
       <p>人生一共三万多天 很荣幸这一天</p>
       <p>您能专程为我们而来 与我们共同分享 见证这美好时刻</p>
     </section>
 
-    <figure class="photo">
-      <img src="images/zhongshihunshazhao.jpg" alt="中式婚纱照" class="photo-img" loading="lazy" decoding="async">
-    </figure>
+    <figure class="wrap"><img src="images/zhongshihunshazhao.jpg" alt="中式婚纱照" loading="lazy" decoding="async"></figure>
 
-    <section class="qingjian">
+    <section class="section wrap">
       <p>2025年12月10日 星期三</p>
       <p>农历十月廿一 18:00</p>
     </section>
 
     <!-- 倒计时 -->
-    <section class="countdown" id="countdown" data-deadline="2025-12-10T18:00:00">
-      <div class="cd-grid" aria-live="polite">
-        <div class="cd-item"><span class="cd-num" id="cd-days">00</span><span class="cd-lbl">天</span></div>
-        <div class="cd-item"><span class="cd-num" id="cd-hours">00</span><span class="cd-lbl">小时</span></div>
-        <div class="cd-item"><span class="cd-num" id="cd-mins">00</span><span class="cd-lbl">分钟</span></div>
-        <div class="cd-item"><span class="cd-num" id="cd-secs">00</span><span class="cd-lbl">秒</span></div>
+    <section class="wrap">
+      <div class="countdown-card" id="countdown" data-deadline="2025-12-10T18:00:00">
+        <h3>婚礼倒计时</h3>
+        <div class="cd-grid" aria-live="polite">
+          <div class="cd-item"><div class="cd-num" id="cd-days">00</div><div class="cd-lbl">天</div></div>
+          <div class="cd-item"><div class="cd-num" id="cd-hours">00</div><div class="cd-lbl">小时</div></div>
+          <div class="cd-item"><div class="cd-num" id="cd-mins">00</div><div class="cd-lbl">分钟</div></div>
+          <div class="cd-item"><div class="cd-num" id="cd-secs">00</div><div class="cd-lbl">秒</div></div>
+        </div>
+        <div class="cd-date">期待与你相见</div>
       </div>
     </section>
 
-    <!-- 导航 + 时间表 -->
-    <section class="split">
-      <div class="split-text">
-        <div class="nav-card">
-          <h4>婚礼酒店导航</h4>
-          <div class="nav-actions">
-            <a class="nav-btn" target="_blank" rel="noopener"
-               href="https://uri.amap.com/marker?position=120.6225,27.9637&name=%E5%A9%9A%E7%A4%BC%E9%85%92%E5%BA%97%28%E4%BE%8B%29&callnative=1">查看地图</a>
-            <a class="nav-btn" target="_blank" rel="noopener"
-               href="https://uri.amap.com/navigation?to=120.6225,27.9637,%E5%A9%9A%E7%A4%BC%E9%85%92%E5%BA%97%28%E4%BE%8B%29&mode=car&callnative=1">打开高德导航</a>
+    <!-- 导航 + 时间表图 -->
+    <section class="split wrap">
+      <div class="grid">
+        <div>
+          <div class="nav-card">
+            <h4>婚礼酒店导航</h4>
+            <div class="nav-actions">
+              <a class="btn" target="_blank" rel="noopener"
+                href="https://uri.amap.com/marker?position=120.6225,27.9637&name=%E5%A9%9A%E7%A4%BC%E9%85%92%E5%BA%97%28%E4%BE%8B%29&callnative=1">查看地图</a>
+              <a class="btn ghost" target="_blank" rel="noopener"
+                href="https://uri.amap.com/navigation?to=120.6225,27.9637,%E5%A9%9A%E7%A4%BC%E9%85%92%E5%BA%97%28%E4%BE%8B%29&mode=car&callnative=1">打开高德导航</a>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="split-image">
-        <img src="images/hunlishijianbiao.jpg" alt="婚礼时间表" class="photo-img half-img" loading="lazy" decoding="async">
+        <div><img src="images/hunlishijianbiao.jpg" alt="婚礼时间表" loading="lazy" decoding="async"></div>
       </div>
     </section>
 
-    <section class="qingjian">
+    <section class="section wrap">
       <p>温州城中希尔顿酒店 一楼天长地久A+B厅</p>
       <p>温州市瓯海区瓯海大道969号</p>
     </section>
 
-    <figure class="photo">
-      <img src="images/hunlijian.jpg" alt="婚礼见" class="photo-img" loading="lazy" decoding="async">
-    </figure>
+    <figure class="wrap"><img src="images/hunlijian.jpg" alt="婚礼见" loading="lazy" decoding="async"></figure>
 
     <!-- 留言板 -->
-    <section class="form-card" id="rsvp">
-      <h4>留言板 · RSVP</h4>
-      <p class="form-tip">请填写 <strong>姓名 / 人数 / 留言</strong> 并提交。提交后会在下方显示。</p>
-
-      <form id="rsvp-form" class="form-grid">
-        <input id="rsvp-name" class="input" type="text" placeholder="姓名（必填）" required style="grid-column: 1 / span 2;">
-        <input id="rsvp-count" class="input" type="number" min="1" step="1" placeholder="人数（必填）" required>
-        <button class="form-btn" type="submit" style="height:42px;">提交</button>
-        <textarea id="rsvp-msg" class="textarea" rows="3" placeholder="留言（可选）" style="grid-column: 1 / span 2;"></textarea>
-      </form>
-
-      <div id="rsvp-status"></div>
-
-      <div class="rsvp-wrap">
-        <ul id="rsvp-list"></ul>
+    <section class="wrap">
+      <div class="form-card" id="rsvp">
+        <h4>留言板 · RSVP</h4>
+        <p class="form-tip">请填写 <strong>姓名 / 人数 / 留言</strong> 并提交。提交后会在下方显示。</p>
+        <form id="rsvp-form" class="rsvp-form">
+          <input id="rsvp-name" class="input" type="text" placeholder="姓名（必填）" required>
+          <input id="rsvp-count" class="input" type="number" min="1" step="1" placeholder="人数（必填）" required>
+          <button class="btn" type="submit" style="height:42px;">提交</button>
+          <textarea id="rsvp-msg" class="textarea" rows="3" placeholder="留言（可选）"></textarea>
+        </form>
+        <div id="rsvp-status" class="rsvp-status"></div>
+        <ul id="rsvp-list" class="rsvp-list"></ul>
       </div>
     </section>
+
   </main>
 
-  <!-- 音乐（建议同时提供 m4a 与 mp3；若没有 m4a，可只保留 mp3） -->
-  <audio id="bgm" preload="auto" loop muted autoplay playsinline>
-    <!-- <source src="music/darwin.m4a" type="audio/mp4" /> -->
-    <source src="music/达尔文.mp3" type="audio/mpeg" />
-  </audio>
-  <button id="music-toggle" aria-label="播放或暂停音乐">▶</button>
+  <!-- 背景音乐（图标按钮控制；仍然需要一次交互解锁） -->
+  <audio id="bgm" src="music/达尔文.mp3" preload="auto" loop></audio>
+  <button id="music-toggle" hidden aria-label="播放或暂停音乐">▶</button>
 
   <script>
   (function(){
-    /* ========== 1) 用“首图实际宽度”统一全站宽度基准 ========== */
-    const heroImg = document.getElementById('heroImg');
-    function writeHeroWidthVar(){
-      if (!heroImg) return;
-      const rect = heroImg.getBoundingClientRect();
-      const w = Math.round(rect.width || 0);
-      if (w > 0) document.documentElement.style.setProperty('--hero-w', w + 'px');
-    }
-    let rafId = null;
-    function schedule(){ if (rafId) return; rafId = requestAnimationFrame(()=>{ rafId=null; writeHeroWidthVar(); }); }
-    ['load','resize','orientationchange'].forEach(ev => window.addEventListener(ev, schedule));
-    window.addEventListener('scroll', schedule, { passive: true });
-    if ('ResizeObserver' in window && heroImg) new ResizeObserver(schedule).observe(heroImg);
-    if (heroImg?.complete) schedule(); else heroImg?.addEventListener('load', schedule, { once: true });
+    /* ================= 音乐：自动播放尝试 + 交互解锁（图标按钮） ================= */
+    const audio = document.getElementById('bgm');
+    const musicBtn = document.getElementById('music-toggle');
+    function syncIcon(){ musicBtn.textContent = audio.paused ? '▶' : '⏸'; }
+    function showBtn(){ if (musicBtn.hidden) musicBtn.hidden = false; syncIcon(); }
 
-    /* ========== 2) 倒计时 ========== */
+    async function tryAutoplaySilently(){
+      try{ audio.muted = true; await audio.play(); showBtn(); }
+      catch(e){ showBtn(); }
+    }
+    let unlocked = false;
+    const unlock = async () => {
+      if (unlocked) return; unlocked = true;
+      try{ audio.muted = false; if (audio.paused) await audio.play(); }
+      finally{ showBtn(); removeUnlockers(); }
+    };
+    function addUnlockers(){
+      ['pointerdown','touchstart','click','keydown','scroll','wheel'].forEach(t=>{
+        window.addEventListener(t, unlock, { passive:true, once:true });
+      });
+    }
+    function removeUnlockers(){
+      ['pointerdown','touchstart','click','keydown','scroll','wheel'].forEach(t=>{
+        window.removeEventListener(t, unlock, { passive:true });
+      });
+    }
+
+    musicBtn.addEventListener('click', async ()=>{
+      try{ if (audio.paused){ await audio.play(); } else { audio.pause(); } }
+      finally{ syncIcon(); }
+    });
+
+    document.addEventListener('DOMContentLoaded', ()=>{ tryAutoplaySilently(); addUnlockers(); });
+    document.addEventListener('visibilitychange', ()=>{
+      if (!document.hidden && audio.paused && !unlocked) tryAutoplaySilently();
+    });
+
+    /* ================= 倒计时 ================= */
     const cd = document.getElementById('countdown');
     if (cd){
-      const ds = cd.dataset.deadline || '2025-12-10T18:00:00';
-      const target = new Date(ds);
+      const target = new Date(cd.dataset.deadline || '2025-12-10T18:00:00');
       const dEl = document.getElementById('cd-days');
       const hEl = document.getElementById('cd-hours');
       const mEl = document.getElementById('cd-mins');
       const sEl = document.getElementById('cd-secs');
-      const pad = n => (n<10?'0':'') + n;
+      const pad = n => (n<10? '0'+n : ''+n);
       function tick(){
-        const now = new Date(); let diff = Math.max(0, target - now);
-        const days  = Math.floor(diff/86400000); diff -= days*86400000;
-        const hours = Math.floor(diff/3600000);  diff -= hours*3600000;
-        const mins  = Math.floor(diff/60000);    diff -= mins*60000;
-        const secs  = Math.floor(diff/1000);
-        dEl.textContent = pad(days); hEl.textContent = pad(hours); mEl.textContent = pad(mins); sEl.textContent = pad(secs);
+        const now = new Date();
+        let diff = Math.max(0, target - now);
+        const days  = Math.floor(diff / (86400000)); diff -= days*86400000;
+        const hours = Math.floor(diff / (3600000));  diff -= hours*3600000;
+        const mins  = Math.floor(diff / (60000));    diff -= mins*60000;
+        const secs  = Math.floor(diff / 1000);
+        dEl.textContent=pad(days); hEl.textContent=pad(hours); mEl.textContent=pad(mins); sEl.textContent=pad(secs);
       }
       tick(); setInterval(tick, 1000);
     }
 
-    /* ========== 3) 留言板：前端调用你的后端 API ========== */
-    (function(){
-      const form   = document.getElementById('rsvp-form');
-      const nameI  = document.getElementById('rsvp-name');
-      const countI = document.getElementById('rsvp-count');
-      const msgI   = document.getElementById('rsvp-msg');
-      const list   = document.getElementById('rsvp-list');
-      const statusEl = document.getElementById('rsvp-status');
+    /* ================= 留言板：提交 + 列表 ================= */
+    const form   = document.getElementById('rsvp-form');
+    const nameI  = document.getElementById('rsvp-name');
+    const countI = document.getElementById('rsvp-count');
+    const msgI   = document.getElementById('rsvp-msg');
+    const list   = document.getElementById('rsvp-list');
+    const statusEl = document.getElementById('rsvp-status');
 
-      function render(data){
-        if (!Array.isArray(data) || !data.length){
-          list.innerHTML = '<li class="rsvp-item" style="text-align:center;color:#666;">暂无留言</li>';
-          return;
-        }
-        list.innerHTML = data.map(item=>{
-          const t = new Date(item.createdAt || Date.now());
-          const time = `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')} ${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}`;
-          const msg = (item.message || '').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-          return `
-            <li class="rsvp-item">
-              <div class="rsvp-head">${item.name}（${item.count}人）：${msg || ''}</div>
-              <div class="rsvp-meta">${time}</div>
-            </li>
-          `;
-        }).join('');
+    function render(items){
+      if (!Array.isArray(items) || !items.length){
+        list.innerHTML = '<li class="rsvp-item" style="text-align:center;color:#666;">暂无留言</li>';
+        return;
       }
+      list.innerHTML = items.map(x=>{
+        const t = new Date(x.createdAt || Date.now());
+        const d = `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')} ${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}`;
+        const msg = (x.message||'').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        return `
+          <li class="rsvp-item">
+            <div class="rsvp-header">${x.name}（${x.count}人）：${msg || '（无留言）'}</div>
+            <div class="rsvp-meta">${d}</div>
+          </li>`;
+      }).join('');
+    }
 
-      async function loadList(){
-        try{
-          statusEl.textContent = '加载留言中...';
-          const res  = await fetch('/api/rsvp/list', { cache: 'no-store' });
-          const data = await res.json();
-          render(data);
-          statusEl.textContent = '';
-        }catch(e){
-          statusEl.textContent = '加载失败，请稍后重试';
-        }
+    async function loadList(){
+      try{
+        statusEl.textContent = '加载留言中...';
+        const res = await fetch('/api/rsvp/list',{ cache:'no-store' });
+        const data = await res.json();
+        statusEl.textContent = '';
+        render(data);
+        // 同步给弹幕池（让弹幕默认就有内容）
+        window.__DM_POOL = Array.isArray(data) ? data : [];
+      }catch(e){
+        statusEl.textContent = '加载失败，请稍后重试';
       }
+    }
 
-      form?.addEventListener('submit', async (e)=>{
-        e.preventDefault();
-        const payload = {
-          name: nameI.value.trim(),
-          count: Number(countI.value || 0),
-          message: msgI.value.trim()
-        };
-        if (!payload.name || !payload.count){
-          statusEl.textContent = '请填写姓名和人数'; return;
+    form?.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const payload = {
+        name:  nameI.value.trim(),
+        count: Number(countI.value || 0),
+        message: msgI.value.trim()
+      };
+      if (!payload.name || !payload.count){
+        statusEl.textContent = '请填写姓名和人数';
+        return;
+      }
+      try{
+        statusEl.textContent = '提交中...';
+        const res = await fetch('/api/rsvp/submit',{
+          method:'POST',
+          headers:{ 'Content-Type':'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const ret = await res.json();
+        if (ret.ok){
+          statusEl.textContent = '提交成功，已更新列表';
+          form.reset();
+          await loadList();
+        }else{
+          statusEl.textContent = '提交失败，请稍后再试';
         }
-        try{
-          statusEl.textContent = '提交中...';
-          const res = await fetch('/api/rsvp/submit', {
-            method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-          });
-          const ret = await res.json();
-          if (ret.ok){ statusEl.textContent = '提交成功，已更新列表'; form.reset(); await loadList(); }
-          else{ statusEl.textContent = '提交失败，请稍后再试'; }
-        }catch(_){ statusEl.textContent = '网络异常，请稍后再试'; }
-      });
-
-      loadList();
-    })();
-
-    /* ========== 4) 音乐：更稳的自动播放与自愈 ========== */
-    const audio = document.getElementById('bgm');
-    const btn   = document.getElementById('music-toggle');
-
-    function syncBtn(){ btn.textContent = audio.paused ? '▶' : '⏸'; }
-    async function safePlay(){ try{ await audio.play(); }catch(_){ /* ignore */ } }
-
-    // 首次用户交互 -> 解除静音并播放
-    let unlocked = false;
-    function unlock(){
-      if (unlocked) return;
-      unlocked = true;
-      audio.muted = false;
-      safePlay();
-      removeUnlockers();
-    }
-    function addUnlockers(){
-      ['pointerdown','touchstart','click','keydown'].forEach(t=>document.addEventListener(t, unlock, { passive:true }));
-    }
-    function removeUnlockers(){
-      ['pointerdown','touchstart','click','keydown'].forEach(t=>document.removeEventListener(t, unlock));
-    }
-    addUnlockers();
-
-    // 多事件自愈：切前台、可顺播、等待、停滞等
-    document.addEventListener('visibilitychange', ()=>{ if (!document.hidden && !audio.paused) safePlay(); });
-    audio.addEventListener('canplaythrough', ()=>{ if (!audio.paused) safePlay(); });
-    audio.addEventListener('waiting', ()=>{ if (!audio.paused) safePlay(); });
-    audio.addEventListener('stalled', ()=>{
-      const keep = !audio.paused;
-      audio.load();
-      if (keep) safePlay();
+      }catch(e){
+        statusEl.textContent = '网络异常，请稍后再试';
+      }
     });
-    audio.addEventListener('error', ()=>{ /* 可选：在控制台查看具体错误 */ });
 
-    // 按钮控制
-    btn.addEventListener('click', async ()=>{
-      if (audio.paused){ await safePlay(); audio.muted = false; }
-      else audio.pause();
-      syncBtn();
+    loadList();
+
+    /* ================= 弹幕：默认开启，数量适中，可重复 ================= */
+    const stage = document.getElementById('dmStage');
+    const toggle = document.getElementById('dmToggle');
+    let dmOn = true;
+    let dmTimer = null;
+
+    function rand(min,max){ return Math.random()*(max-min)+min; }
+    function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+    function makeDanmu(text, i){
+      const el = document.createElement('div');
+      el.className = 'danmu';
+      // 轨道
+      const track = i % (parseInt(getComputedStyle(document.documentElement).getPropertyValue('--danmu-tracks')) || 4);
+      const lineH = 22;   // 每条行高
+      el.style.top = (track * lineH + 6) + 'px';
+      // 速度：根据字长略调，避免拥堵
+      const sec = Math.max(8, Math.min(18, text.length/3 + rand(9,15)));
+      el.style.animationDuration = sec + 's';
+      el.textContent = text;
+      stage.appendChild(el);
+      // 移除
+      setTimeout(()=>{ el.remove(); }, sec*1000 + 200);
+    }
+
+    function seedFromList(){
+      const pool = (window.__DM_POOL || []);
+      // 允许重复：若过少则复用
+      const base = pool.length ? pool.slice(-10) : [];
+      // 只显示留言内容，不带姓名
+      const texts = base.map(x => (x.message||'').trim()).filter(Boolean);
+      if (!texts.length){
+        // 兜底几句，避免一开始空屏
+        texts.push('见证我们的幸福~','期待与你相见','一路有你，真好','欢迎来喝喜酒！');
+      }
+      return texts;
+    }
+
+    function startDanmu(){
+      if (dmTimer) return;
+      const run = ()=>{
+        if (!dmOn) return;
+        const texts = seedFromList();
+        // 每波发 1~2 条，避免过多
+        const count = Math.random() < 0.5 ? 1 : 2;
+        for (let i=0;i<count;i++){
+          const t = pick(texts);
+          if (t) makeDanmu(t, Math.floor(rand(0, 1000)));
+        }
+        dmTimer = setTimeout(()=>{ dmTimer=null; run(); }, 1200 + rand(0,1200));
+      };
+      run();
+    }
+    function stopDanmu(){
+      clearTimeout(dmTimer); dmTimer = null;
+    }
+
+    toggle.addEventListener('click', ()=>{
+      dmOn = !dmOn;
+      toggle.textContent = '弹幕：' + (dmOn ? '开' : '关');
+      if (dmOn){ startDanmu(); } else { stopDanmu(); }
     });
-    audio.addEventListener('play', syncBtn);
-    audio.addEventListener('pause', syncBtn);
 
-    // 初始按钮状态
-    syncBtn();
+    // 默认开启
+    startDanmu();
+
   })();
   </script>
 </body>
