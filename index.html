@@ -12,6 +12,10 @@
       --content-max: 980px;         /* 统一内容最大宽度（桌面） */
       --text-color:#111;
       --pink:#FF7AAE;
+
+      /* 首图高度变量 */
+      --hero-max-h-desktop: 65vh;   /* 放大首图（桌面） */
+      --hero-max-h-mobile: 56svh;   /* 放大首图（移动） */
     }
 
     *{ box-sizing: border-box; }
@@ -29,23 +33,19 @@
     .block{
       width:min(100%, var(--content-max));
       margin:0 auto;
-      padding:0 16px;              /* 与你之前一致的左右内边距 */
+      padding:0 16px;
     }
 
     figure{ margin:0; }
-
-    /* 图片容器都套上 .block，图片100%等比 */
-    .hero.block, .photo.block, .split.block, .countdown.block, .form-card.block{ }
-
     img{ display:block; max-width:100%; height:auto; }
 
-    /* 首图：高度克制，仍然等比；不再决定其他内容宽度 */
+    /* 首图：高度用变量控制 */
     .hero-img{
       width:100%;
       height:auto;
-      max-height:50vh;             /* 控高避免首屏太压 */
-      object-fit:contain;
-      margin:0 auto;
+      max-height: var(--hero-max-h-desktop);
+      object-fit: contain;
+      margin: 0 auto;
     }
 
     /* 文案区块 */
@@ -59,13 +59,8 @@
     }
     .kaipian p, .yaoqing p, .guanyu p, .xianglian p, .jiehun p, .qingjian p{ margin:.5em 0; }
 
-    /* 展示图片（非首图） */
-    .photo-img{
-      width:100%;
-      height:auto;
-      object-fit:contain;
-      margin:0 auto;
-    }
+    /* 展示图片 */
+    .photo-img{ width:100%; height:auto; object-fit:contain; margin:0 auto; }
 
     /* 左右分栏 */
     .split{
@@ -110,7 +105,7 @@
       grid-template-columns:repeat(4, minmax(0,1fr));  /* 防列宽撑破 */
       gap:12px; align-items:end; justify-items:center; margin:6px 0;
     }
-    .cd-item{ min-width:52px; }    /* 适度的最小值，后续在超小屏再降 */
+    .cd-item{ min-width:52px; }
     .cd-num{ font-weight:700; font-variant-numeric:tabular-nums; line-height:1.1; font-size:32px; }
     .cd-lbl{ margin-top:4px; font-size:12px; opacity:.85; display:block; }
     .cd-date{ margin-top:8px; font-size:12px; opacity:.9; }
@@ -186,13 +181,13 @@
 
     /* ========= 移动端优化 ========= */
     @media (max-width:768px){
-      .hero-img{ max-height:45svh; }
+      .hero-img{ max-height: var(--hero-max-h-mobile); }
 
-      /* 订婚分列：缩图、减间距、降字体，避免显得更大 */
+      /* 订婚分列：缩图、减间距、降字体 */
       .split{ grid-template-columns:1fr; gap:16px; }
-      .split-image .half-img{ max-width:82%; margin:0 auto; }
-      .split-text{ font-size:clamp(10px, 2.6vw, 12px); }
-      .split-text h3{ font-size:clamp(10px, 2.2vw, 11px); }
+      .split-image .half-img{ max-width:70%; margin:0 auto; }
+      .split-text{ font-size:clamp(10px, 2.2vw, 11px); }
+      .split-text h3{ font-size:clamp(9px, 2vw, 10px); }
 
       /* 倒计时：收紧列宽与字号，确保不溢出粉色底块 */
       .cd-grid{ gap:10px; grid-template-columns:repeat(4, minmax(0,1fr)); }
@@ -204,63 +199,12 @@
 
     /* 超小屏（例如部分微信WebView机型）进一步收紧 */
     @media (max-width:380px){
-      .split-image .half-img{ max-width:78%; }
+      .split-image .half-img{ max-width:66%; }
       .cd-grid{ gap:8px; }
       .cd-item{ min-width:44px; }
       .cd-num{ font-size:22px; }
       .cd-lbl{ font-size:11px; }
     }
-
-    /* ===== 放大首图：增加可见高度（桌面/移动） ===== */
-    :root{
-      /* 原来无此变量时可新增 */
-      --hero-max-h-desktop: 65vh; /* 原50vh → 65vh 更醒目 */
-      --hero-max-h-mobile: 56svh; /* 原45svh → 56svh 更高 */
-    }
-
-    /* 替换原来的 .hero-img 里 max-height 那一行 */
-    .hero-img{
-      width:100%;
-      height:auto;
-      max-height: var(--hero-max-h-desktop);  /* ← 用变量控制 */
-      object-fit: contain;
-      margin: 0 auto;
-    }
-
-    /* （可选）如果你希望首图在桌面比其他内容略宽一点，解开下面注释：
-    .hero.block{ width: min(100%, calc(var(--content-max) + 120px)); padding: 0 8px; }
-    */
-
-    /* ===== 手机端细化：缩小“订婚”分列、同时增高首图 ===== */
-    @media (max-width: 768px){
-      .hero-img{ max-height: var(--hero-max-h-mobile); }
-
-      /* 分栏整体更紧凑 */
-      .split{ grid-template-columns: 1fr; gap: 12px; }
-
-      /* 订婚图片再小一些（原 82% → 70%） */
-      .split-image .half-img{ max-width: 70%; margin: 0 auto; }
-
-      /* 文字再小一点点，避免显得比其它段落大 */
-      .split-text{ font-size: clamp(10px, 2.2vw, 11px); }
-      .split-text h3{ font-size: clamp(9px, 2vw, 10px); }
-
-      /* 倒计时保持稳定（防“秒”溢出） */
-      .cd-grid{ gap: 10px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
-      .cd-item{ min-width: 48px; }
-      .cd-num{ font-size: clamp(18px, 6vw, 26px); }
-      .cd-lbl, .cd-date, .countdown h3{ font-size: clamp(10px, 2.8vw, 12px); }
-    }
-
-    /* 超小屏再收一点（例如部分微信WebView） */
-    @media (max-width: 380px){
-      .split-image .half-img{ max-width: 66%; }     /* 原78%→66%，更稳 */
-      .cd-grid{ gap: 8px; }
-      .cd-item{ min-width: 44px; }
-      .cd-num{ font-size: 22px; }
-      .cd-lbl{ font-size: 11px; }
-    }
-    
   </style>
 </head>
 <body>
@@ -431,7 +375,7 @@
 
   <!-- 弹幕层 + 按钮 -->
   <div id="danmu-layer" aria-hidden="true"></div>
-  <button id="dm-toggle" aria-label="弹幕开关">💬</button>
+  <button id="dm-toggle" aria-label="弹幕开关" aria-pressed="true">💬</button>
 
   <!-- 背景音乐 -->
   <audio id="bgm" src="music/达尔文.mp3" preload="auto" loop></audio>
@@ -499,17 +443,52 @@
     /* ========= 留言板 + 弹幕 ========= */
     const dmLayer=document.getElementById('danmu-layer');
     const dmBtn=document.getElementById('dm-toggle');
+
     const danmu={
       enabled:true, queue:[], idx:0, timer:null,
       intervalMs:1600, trackH:28,
       get trackCount(){ return window.innerWidth<768?4:6; },
-      start(){ if(this.timer||!this.queue.length) return; this.timer=setInterval(()=>this.fire(), this.intervalMs); dmBtn.textContent='💬'; },
-      stop(){ if(this.timer){ clearInterval(this.timer); this.timer=null; } dmBtn.textContent='🚫'; },
-      setEnabled(v){ this.enabled=v; if(v) this.start(); else this.stop(); },
-      setMessages(msgs){ this.queue=(Array.isArray(msgs)?msgs:[]).filter(s=>s&&s.trim().length>0); this.idx=0; if(this.enabled&&this.queue.length) this.start(); },
-      nextMsg(){ if(!this.queue.length) return ''; const t=this.queue[this.idx%this.queue.length]; this.idx++; return t; },
+
+      start(){
+        if(this.timer || !this.queue.length) { this._syncBtn(); return; }
+        // 先来一条，反馈更及时
+        this.fire();
+        this.timer=setInterval(()=>this.fire(), this.intervalMs);
+        this._syncBtn();
+      },
+      stop(){
+        if(this.timer){ clearInterval(this.timer); this.timer=null; }
+        // 立即清屏，避免“看起来还在播”
+        this.clear();
+        this._syncBtn();
+      },
+      clear(){
+        // 快速移除当前所有弹幕元素
+        dmLayer.querySelectorAll('.dm').forEach(n=>n.remove());
+      },
+      setEnabled(v){
+        this.enabled=v;
+        dmBtn.setAttribute('aria-pressed', v ? 'true' : 'false');
+        if(v) this.start(); else this.stop();
+      },
+      _syncBtn(){
+        // 打开=💬，关闭=🚫
+        dmBtn.textContent = this.enabled ? '💬' : '🚫';
+      },
+      setMessages(msgs){
+        this.queue=(Array.isArray(msgs)?msgs:[]).filter(s=>s&&s.trim().length>0);
+        this.idx=0;
+        if(this.enabled && this.queue.length) this.start();
+        else this._syncBtn();
+      },
+      nextMsg(){
+        if(!this.queue.length) return '';
+        const t=this.queue[this.idx % this.queue.length];
+        this.idx++;
+        return t;
+      },
       fire(){
-        if(!this.enabled||!this.queue.length) return;
+        if(!this.enabled || !this.queue.length) return;
         const text=this.nextMsg(); if(!text) return;
         const el=document.createElement('span'); el.className='dm'; el.textContent=text;
         const track=Math.floor(Math.random()*this.trackCount);
@@ -521,8 +500,11 @@
         dmLayer.appendChild(el);
       }
     };
+
+    // 点击开关
     dmBtn.addEventListener('click', ()=> danmu.setEnabled(!danmu.enabled) );
 
+    // 留言表单 / 列表
     (function(){
       const form   = document.getElementById('rsvp-form');
       const nameI  = document.getElementById('rsvp-name');
